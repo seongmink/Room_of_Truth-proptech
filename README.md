@@ -1,6 +1,6 @@
 # Bloom
 
-[![Bloom 메인사진 or icon]()
+![Bloom 메인사진 or icon]()
 
 
 
@@ -15,13 +15,9 @@
 
 Bloom 설명
 
-
-
 ## Team
 
 팀 소개
-
-
 
 ## Getting Started
 
@@ -33,7 +29,7 @@ Bloom 설명
 
 ## Rule
 
-- Front-End : 
+- Front-End : Camel Case
 
 - Back-End : Camel Case
 
