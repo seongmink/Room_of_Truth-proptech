@@ -89,41 +89,10 @@ Bloom 설명
 
 ## Design
 
-아키텍쳐,  ERD
-
+<img src="./[03] 설계/Bloom_ERD.png">
 
 
 ## Project Schedule
 
-일정
-
-```mermaid
-gantt
-       dateFormat                :YYYY-MM-DD
-       title                      Bloom Project Schedule
-       excludes                  :excludes the named dates/days from being included in a charted task..  
-       section 기획
-       주제 선정                  :done,    des1, 2020-05-04, 2020-05-12
-       기술 스택 선정              :done,    des2, after des1, 12h
-       역할 분담                  :done,    des3, after des2, 12h
-
-       section 설계
-       팀 규칙 결정               :done,    des4, after des3, 1d
-       개발 환경 구축             :    des5, after des3, 1d
-       도식화                    :    des6, after des5, 1d
-       DB 설계                   :    des7, after des6, 1d
-       
-       section 구현
-       Front-End                 :    des8, after des6, 28d
-       Back-End                  :    des9, after des7, 28d
-       블록체인 인프라 구축 및 체인코드 작성              :    des10, after des7, 28d
-       Data-processing            :    des11, after des7, 14d
-       
-       section 테스트
-       테스트                  :    des12, after des11, 16d
-       
-       section 배포
-       배포                  :    des13, after des12, 2d
-       
-```
+<img src="./image/Bloom_schedule.png">
 
