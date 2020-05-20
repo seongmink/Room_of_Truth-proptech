@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="agent">
+
+	<select id="getAgentByLicense" parameterType="java.lang.String" resultType="agent">
+		select * from agent where license=#{license}
+	</select>
+
+	<select id="getAgent" parameterType="agent" resultType="agent">
+		select *
+		from agent where num=#{num} and license=#{license}
+	</select>
+
+	<insert id="createAgent" parameterType="agent">
+		insert into agent(num,
+		name, representative, license, address, createdAt)
+		values(#{num},
+		#{name}, #{representative}, #{license}, #{address}, now())
+	</insert>
+
+	<update id="updateAgent" parameterType="agent">
+		update agent
+		set
+		name=#{name}, representative=#{representative}, address=#{address},
+		delflag=0
+		where num=#{num} and license=#{license}
+	</update>
+
+	<delete id="deleteAgent" parameterType="java.lang.Long">
+		update agent
+		set delflag=1
+		where num=#{num}
+	</delete>
+
+	<update id="pointUp" parameterType="java.lang.String">
+		update agent
+		set point=point+10
+		where license=#{license}
+	</update>
+	
+	<update id="countUp" parameterType="java.lang.String">
+		update agent
+		set count=count+1
+		where license=#{license}
+	</update>
+
+	<update id="reportUp" parameterType="java.lang.Long">
+		update agent
+		set
+		report=report+1
+		where num=#{num}
+	</update>
+
+	<select id="getLicense" parameterType="java.lang.Long"
+		resultType="java.lang.String">
+		select license
+		from agent
+		where num=#{num}
+	</select>
+
+	<select id="getPoint" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		select point
+		from agent
+		where license=#{license}
+	</select>
+
+	<select id="getAgentByNum" parameterType="java.lang.Long" resultType="agent">
+		select * from (select *, rank() over (order by point desc)
+		as rnk from agent) as temp where num=#{num}
+	</select>
+	
+	<update id="updateImage" parameterType="agent">
+		update agent
+		set picture=#{picture}
+		where num=#{num}
+	</update>
+	
+	
+
+</mapper>
