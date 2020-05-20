@@ -13,7 +13,7 @@
 
 #### [Architecture]
 
-![architectures](C:\Users\multicampus\Desktop\blockchain\img\architectures.png)
+![architectures](./image/architectures.png)
 
 ##### Membership Service
 
@@ -68,7 +68,7 @@
 
 #### [peer]
 
-![Peer](C:\Users\multicampus\Desktop\blockchain\img\Peer.png)
+![Peer](./image/Peer.png)
 
 - 블록체인 네트워크는 Peer들의 집합으로 이루어져 있다.
 - Peer는 원장 상태(Ledger State)와 체인코드(Chaincode)를 관리하는 네트워크 노드이다.
@@ -78,7 +78,7 @@
 
 #### [Block Network]
 
-![blockchain_network](C:\Users\multicampus\Desktop\blockchain\img\blockchain_network.png)
+![blockchain_network](./image/blockchain_network.png)
 
 - 블록체인 네트워크는 Peer로 구성되며 각 Peer는 Ledger 사본과 Chaincode 사본을 보유할 수 있다.
 - 네트워크 N은 Peer P1, P2, P3로 구성되어 있으며 각 Peer는 분산 Ledger L1의 자체 인스턴스를 유지관리한다.
@@ -86,7 +86,7 @@
 
 #### [Multiple Ledgers]
 
-![blockchain_multipleledger](C:\Users\multicampus\Desktop\blockchain\img\blockchain_multipleledger.png)
+![blockchain_multipleledger](./image/blockchain_multipleledger.png)
 
 - Peer는 둘 이상의 Ledger를 호스팅할 수 있으므로 유연한 시스템 설계가 가능하다.
 - 단순한 구성은 Peer가 단일 Ledger를 관리하는 것이지만 필요할 때는 둘 이상의 Ledger를 호스팅하는 것이 적합할 수 있다.
@@ -101,7 +101,7 @@
 
 #### [Application and Peers]
 
-![application](C:\Users\multicampus\Desktop\blockchain\img\application.png)
+![application](./image/application.png)
 
 - Peer는 Orderer와 함께 모든 Ledger가 최신 상태로 유지되도록 한다.
 
@@ -121,7 +121,7 @@
 
 #### [Transaction Flow]
 
-![transaction](C:\Users\multicampus\Desktop\blockchain\img\transaction.png)
+![transaction](./image/transaction.png)
 
 - Peer는 query요청에 만족 시킬 수 있는 모든 정보가 Peer's Ledger 사본에 있으므로 query 결과를 즉시 Application에 반환할 수 있다. 또한 query를 위해 다른 Peer들과 통신할 필요가 없다.
 
@@ -141,18 +141,18 @@
 
 #### [Peers and Cahnnels]
 
-![channel](C:\Users\multicampus\Desktop\blockchain\img\channel.png)
+![channel](./image/channel.png)
 
 - Channel: 블록체인 네트워크 내의 구성요소로 개인적으로 통신하고 거래할 수 있는 매커니즘.
 - 구성요소는 일반적으로 Peer, Orderer, Application이며, 채널에 가입함으로써 공동 작업을 통해 해당 채널에 연결된 Ledger의 동일한 복사본을 공동으로 공유하고 관리하는데 동의 되어진다.
 
 #### [Peers and Organization]
 
-![organization](C:\Users\multicampus\Desktop\blockchain\img\organization.png)
+![organization](./image/organization.png)
 
 - 블록체인 네트워크는 조직의 집합에 의해 관리된다. Peer들은 이러한 종류의 분산 네트워크가 어떻게 구성되어있는지에 대한 핵심 역할을 한다.
 - 여러 조직과 블록체인 네트워크에 있는 Peer들, 블록체인 네트워크는 소유된 Peer들과 조직들의 기여로 구성된다. 위 그림은 네트워크 형성을 위해 4개의 조직에 기여가 되는 8개의 Peer를 볼 수 있다.
 - Channel C는 블록체인 네트워크 N에서 Peer P1, P3, P5, P7, P8을 연결한다.
 - Channel C에 가입하지 않았지만 일반적으로 모든 Peer는 하나 이상의 Channel에 가입을 한다.
 - 특정조직에서 개발한 Application은 다른 조직의 Application과 마찬가지로 자신의 조직 Peer와 연결되게 된다.
-- 네트워크는 리소스를 제공하는 여러 조직에 의해 형성되고 관리 되어진다. Peer는 이 항목에서 논의 중인 리소스 이지만 조직에서 제공해주는 리소스는 단순한 것 이상이다. 네트워크는 말 그대로 조직이 개별 리소스를 집단 네트워크에 기여
+- 네트워크는 리소스를 제공하는 여러 조직에 의해 형성되고 관리 되어진다. Peer는 이 항목에서 논의 중인 리소스 이지만 조직에서 제공해주는 리소스는 단순한 것 이상이다.
