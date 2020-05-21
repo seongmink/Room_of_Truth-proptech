@@ -5,5 +5,5 @@ import java.util.List;
 import com.rot.model.Ranking;
 
 public interface IRankingService {
-	List<Ranking> getRanking();
+//	List<Ranking> getRanking();
 }

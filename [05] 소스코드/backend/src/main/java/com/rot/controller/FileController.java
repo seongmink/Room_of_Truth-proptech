@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.rot.model.FileUploadResponse;
+import com.rot.model.File;
 import com.rot.service.impl.FileUploadDownloadService;
 
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +29,7 @@ public class FileController {
 	@ApiOperation("파일 업로드")
 	public String uploadFile(@RequestParam(required = false) MultipartFile file, long num, int flag) {
 	    logger.info("POST : /api/uploadfile");
-	    FileUploadResponse newFile = new FileUploadResponse();
+	    File newFile = new File();
 	    String fileName = "";
 	    
 	    if (file == null) {

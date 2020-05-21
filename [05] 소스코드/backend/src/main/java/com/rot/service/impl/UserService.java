@@ -1,12 +1,7 @@
 package com.rot.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.rot.dao.IUserDao;
-import com.rot.model.User;
 import com.rot.service.IUserService;
 
 @Service

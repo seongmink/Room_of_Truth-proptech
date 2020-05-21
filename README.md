@@ -31,7 +31,10 @@ Bloom 설명
 
 - Front-End : Camel Case
 
-- Back-End : Camel Case
+- Back-End
+
+  - lowerCamelCase : 지역 변수, private 변수, 메소드
+  - UpperCamelCase : 클래스 이름, public 변수, 메소드, 객체 
 
 - Git
 

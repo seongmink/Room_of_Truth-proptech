@@ -1,4 +1,4 @@
-package com.rot;
+package com.rot.config;
 
 import javax.sql.DataSource;
 

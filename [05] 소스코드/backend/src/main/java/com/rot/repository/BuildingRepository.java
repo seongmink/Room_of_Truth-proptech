@@ -1,14 +1,13 @@
-package com.rot.service;
+package com.rot.repository;
 
 import java.util.List;
 
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.rot.model.Building;
 
-public interface IBuildingService {
+public interface BuildingRepository extends JpaRepository<Building, Integer> {
 
-//	@Transactional
 //	int createBuilding(Building building);
 //
 //	List<Building> getAllBuilding();
@@ -26,5 +25,4 @@ public interface IBuildingService {
 //	String getBImage(Building building);
 //
 //	String getMImage(Building building);
-	
 }

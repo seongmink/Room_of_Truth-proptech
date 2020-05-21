@@ -1,7 +1,10 @@
-package com.rot;
+package com.rot.config;
+
+import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -9,8 +12,6 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.Collections;
 
 @Configuration
 @EnableSwagger2
@@ -23,7 +24,7 @@ public class SwaggerConfig {
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfo("RoT-BACKEND APIs", "For RoT API SERVER descriptions.", "v2.0", "Room of Trust",
+		return new ApiInfo("RoT-BACKEND APIs", "For Room of Trust API SERVER descriptions.", "v2.0", "Room of Trust",
 				new Contact("rot", "http://www.rot.co.kr/", "rot@roomoftrust.co.kr"), "License of API", "",
 				Collections.emptyList());
 	}

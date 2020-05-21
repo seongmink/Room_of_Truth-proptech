@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.rot.exception.FileDownloadException;
 import com.rot.exception.FileUploadException;
 import com.rot.model.Agent;
-import com.rot.property.FileUploadProperties;
+import com.rot.property.FileUploadProperty;
 import com.rot.service.IAgentService;
 import com.rot.service.IBuildingService;
 
@@ -36,7 +36,7 @@ public class FileUploadDownloadService {
 	 * 설정클래스인 FileUploadProperties 클래스로 기본 디렉토리를 설정하고 생성한다.
 	 */
 	@Autowired
-	public FileUploadDownloadService(FileUploadProperties prop) {
+	public FileUploadDownloadService(FileUploadProperty prop) {
 		this.fileLocation = Paths.get(prop.getUploadDir()).toAbsolutePath().normalize();
 		// logger.info(this.fileLocation.toString());
 		try {

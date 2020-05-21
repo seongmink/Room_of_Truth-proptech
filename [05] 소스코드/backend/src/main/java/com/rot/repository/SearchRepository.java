@@ -1,10 +1,11 @@
-package com.rot.service;
+package com.rot.repository;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.rot.model.Search;
 
-public interface ISearchService {
+public interface SearchRepository extends JpaRepository<Search, Integer>{
+
 //	List<Search> getAllSearch(long num);
 //
 //	Search isSearched(Search search);

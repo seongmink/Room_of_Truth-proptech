@@ -3,7 +3,8 @@ package com.rot.property;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "file")
-public class FileUploadProperties {
+public class FileUploadProperty {
+	
 	private String uploadDir;
 
 	public String getUploadDir() {
