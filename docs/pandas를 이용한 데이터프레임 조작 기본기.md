@@ -1,4 +1,3 @@
-(작성중 20.05.20)
 # 데이터프레임 조작 기본기
 ## 왜 pandas를 사용할까?
 * pandas 사이트에 있는 소개  
@@ -15,6 +14,25 @@ in-memory 데이터 구조와 CSV 및 텍스트 파일, Microsoft Excel, SQL 데
 
 ## 프로젝트에 사용되는 문법 몇가지 소개
 ## (jupyter notebook 기준으로 설명할거에요)
+ 1. pandas 임포트하기  
+ 2. 데이터 불러오기  
+ 3. 데이터 확인하기  
+	전체 데이터 확인하기  
+	위에서부터 5개만 보기  
+	데이터 프레임의 타입 확인하기  
+	컬럼 목록 확인하기(전체)  
+	일부 컬럼만 확인하기  
+	크기 확인하기  
+	조건에 따른 데이터 확인하기  
+ 4. 데이터 변경하기  
+	칼럼 이름 변경하기  
+	새 칼럼 생성 및 기본값 넣기  
+	칼럼 타입 변경하기  
+	문자열 데이터 자르기  
+	조건에 맞는 열 삭제하기  
+	apply(함수) 사용해서 변경하기  
+ 5. 데이터 저장하기  
+---
 
 ### pandas 임포트하기
 ```python
@@ -177,14 +195,58 @@ df['계약년'] = df['계약년월'].str[:4]
 df['계약월'] = df['계약년월'].str[4:]
 ```
 
----
-추후 추가
-
 #### * 조건에 맞는 열 삭제하기  
-
-
-#### * apply 함수 사용해서 변경하기  
-
+해당 조건을 만족하는 열(row)를 삭제하려면 조회한다고 생각하고 조건을 우선 적습니다.  df 데이터프레임에서 '도로명'에 입력된 값이 없거나(isnull(), 즉 NaN값)  
+'도로명'값이 "" 인 경우 -> <code>df[((df['도로명'].isnull()) | (df['도로명']==""))]</code>  
+조건으로 나온 값들의 인덱스를 가지고 삭제를 할거에요  
+```python
+df = df.drop({삭제할 조건}.index)
+```
+재할당으로 담아주거나 아니면 <code>...index, inplace=True)</code>로 해주면 끝.  
++ 컬럼 통채로 지우는 방법  
+```python
+# 컬럼(시군구, 계약년월) 제거
+df.drop(columns=['시군구','계약년월'],inplace=True)
+```
+#### * apply(함수) 사용해서 변경하기  
+컬럼 전체에 값을 넣어야하는데 <code>df['test']=0</code>같이 한가지 값이 아닌,
+각 열의 데이터값에 따라 값을 변경하고 싶을 때..사용하는 apply  
+```python
+df['latlon'] = df['도로명'].apply(getLatLong)
+```
+df['latlon'] -> apply한 결과를 담을 새 칼럼(혹은 값을 변경할 기존칼럼)  
+df['도로명'] -> latlon값을 넣기위해 재료가 되는 칼럼
+getLatLong -> '도로명' 값을 변경해서 'latlon'에 넣기위해 적용할 함수이름  
+**이때 getLatLong함수는 선언되어있어야 합니당**  
+```python
+def getLatLong(addr):
+        ...
+        if count!=0:
+            res = response.json()
+            try:
+                lat =res['documents'][0]['address']['y']
+                lon = res['documents'][0]['address']['x']
+                address[addr] = lon+"/"+lat
+                return lon+"/"+lat
+            except:
+                return "ERROR"
+        else :
+            return "NO"
+```
+즉, '도로명'칼럼의 각 row값이 addr이라는 이름으로 들어가는데,  
+이 함수를 거친 결과로 해당 row의 'latlon'칼럼 값이 입력되는 것이므로  
+return이 꼭 있어야 적용됩니다 return이 없어도 오류가 나진않지만 값이 들어가진않아요  
+만약 '도로명'뿐만아닌 그냥 row에 있는값 여러개를 쓴다,,  
+그냥 row를 던지려면, axis=1을 추가하고 df['도로명']을 df로 바꿔줍니다.
+```python
+df['latlon'] = df.apply(getLatLong, axis=1)
+```
 
 ### 5. 데이터 저장하기
-
+휴..드디어 마지막.. 어느정도 내가원하는대로 값 변경하고 바꿨다.. 저장해야죠  
+```python
+df.to_csv("./data/"+filename+"_데이터최종1.csv",sep=",",index=False)
+```
+df -> 저장할 데이터프레임 이름
+간단하게 파일경로(이름포함), 구분자, index 저장여부  
+![image alt <](./image/pandas_6.JPG)  
