@@ -1,11 +1,11 @@
 <template>
     <div>
         <div class="context" style="margin:auto; margin-top:200px">
-            <p style="text-align:center; font-size:60px; margin-bottom:-20px;"> <span style="color:#1428A0;">우리 동네</span>의 건물이</p>
+            <p style="text-align:center; font-size:60px; margin-bottom:-20px;"> <span style="color:#00c03f;">우리 동네</span>의 건물이</p>
             <p style="text-align:center; font-size:60px">궁금하세요?</p>
             <br>
             <p style="text-align:center; font-size:25px" >하이퍼레저 패브릭을 이용한 부동산 이력 조회</p>
-            <p style="text-align:center; font-size:20px; color:#1428A0;  font-weight: bold "> “Bloom은 신뢰성 있는 내역을 제공합니다”</p>
+            <p style="text-align:center; font-size:20px; color:#00c03f;  font-weight: bold "> “Bloom은 신뢰성 있는 내역을 제공합니다”</p>
         </div>
         <br>
         <div class="styled__Box-sc-10v4ocj-4 kwmwXI" style="margin-top:20px; width:75%;">
@@ -246,7 +246,7 @@ font-family: 'Jeju Gothic', serif;
     margin: 0px auto;
     border-width: 1px;
     border-style: solid;
-    border-color: #1428A0;
+    border-color: #00c03f;
     border-image: initial;
 }
 
@@ -258,7 +258,7 @@ font-family: 'Jeju Gothic', serif;
     font-size: 16px;
     line-height: 48px;
     letter-spacing: -0.3px;
-    background-color:#1428A0;
+    background-color:#00c03f;
     position: absolute;
     top: 50%;
     right: 6px;
