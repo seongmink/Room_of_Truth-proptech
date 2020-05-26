@@ -119,9 +119,15 @@ const routes = [{
                 component: () =>
                     import ("../components/structure/ConfirmBuilding.vue")
                 
+            },
+            {
+                name: "AddInfo.vue",
+                path: "addinfo.vue",
+                component: () =>
+                    import ("../components/common/AddInfo.vue")
+                
             }
 
-            
         ],
         redirect: () => {
             return "/main";
