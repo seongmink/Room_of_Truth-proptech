@@ -291,7 +291,7 @@ public class JpaMain {
 
 <br/>
 
-# #7 영속성 관리
+# #7 영속성 관리 ⭐
 
 ### JPA에서 가장 중요한 2가지
 
@@ -494,7 +494,6 @@ tx.commit();	// 트랜잭션 커밋
 ### 연관관계 매핑 : @ManyToOne, @JoinColumn
 
 <hr/>
-
 # #13 데이터베이스 스키마 자동 생성
 
 ```java
@@ -534,20 +533,18 @@ tx.commit();	// 트랜잭션 커밋
 3. 회원을 설명할 수 있는 필드가 있어야 한다. 이 필드는 길이 제한이 없다.
 
    <hr/>
-
-   ```java
+```java
    // 회원을 구분하기 위한 enum 생성
    package hellojpa;
    
    public enum RoleType {
        USER, ADMIN
    }
-   ```
+```
 
-   
+
 
 <hr/>
-
 ```java
 package hellojpa;
 
@@ -584,7 +581,6 @@ public class Member {
 ```
 
 <hr/>
-
 ### 매핑 어노테이션 정리
 
 | 어노테이션  | 설명                               |
@@ -610,7 +606,6 @@ public class Member {
 | precision,<br />scale(DDL) | BigDecimal 타입에서 사용한다(BigInteger도 사용할 수 있다)<br />precision은 소수점을 포함한 전체 자릿수를, scale은 소수의 자릿수다. 참고로 double, float 타입에는 적용되지 않는다. | precision=19                        |
 
 <hr/>
-
 ### @Enumerated
 
 자바 Enum 타입을 매핑할 때 사용
@@ -618,7 +613,6 @@ public class Member {
 ### ⚠ ORDINAL 사용 금지 !
 
 <hr/>
-
 ### @Temporal
 
 날짜 타입(java.util.Date, java.util.Calendar)을 매핑할 때 사용
@@ -626,14 +620,12 @@ public class Member {
 **참고 : LocalDate, LocalDateTime을 사용할 때는 생략 가능(하이버네이트 지원)**
 
 <hr/>
-
 ### @Lob
 
 - Lob에는 지정할 수 있는 속성이 없다.
 - 매핑하는 필드 타입이 문자면 CLOB 매핑, 나머지는 BLOB 매핑
 
 <hr/>
-
 # #15 기본키 매핑
 
 ### 기본키 매핑 어노테이션
@@ -660,7 +652,6 @@ private Long id;
   - **AUTO** : 방언에 따라 자동 지정
 
 <hr/>
-
 ### IDENTITY 전략 - 특징
 
 - 기본키 생성을 데이터베이스에 위임
@@ -729,17 +720,250 @@ INSERT QUERY를 날리기 전에 SEQUENCE 값을 먼저 받아온 뒤 실행한�
   - 주문취소
 
 <hr/>
-
 ### 도메인 모델 분석
 
 - **회원과 주문의 관계** : **회원**은 여러 번 **주문**할 수 있다. (일대다)
 - **주문**과 **상품**의 관계 : **주문**할 때 여러 **상품**을 선택할 수 있다. 반대로 같은 상품도 여러 번 주문될 수 있다. **주문상품** 이라는 모델을 만들어서 다대다 관계를 일대다, 다대일 관계로 풀어냄
 
 <center><image src="./img/도메인모델분석.PNG"></center>
-
 <center><image src="./img/테이블설계.PNG"></center>
+<hr/>
+@ **springboot**에서 **DB table**에 컬럼을 만들 때 **카멜케이스**를 기본적으로
+
+**소문자 + 언더스코어**로 변환한다.
+
+ex) orderDate --> order_date
 
 <hr/>
+### 테이블 중심 설계의 문제점
+
+- 현재 방식은 객체 설계를 테이블 설계에 맞춘 방식
+- 테이블의 외래키를 객체에 그대로 가져옴
+- 객체 그래프 탐색이 불가능
+
+<hr/>
+# #17 연관관계 매핑 기초
+
+### 용어 이해
+
+- **방향**(Direction) : 단방향, 양방향
+- **다중성** : 다대일(N:1), 일대다(1:N), 일대일(1:1), 다대다(N:M) 이해
+- **연관관계의 주인(Owner)** : 객체 양방향 연관관계는 관리 주인이 필요
+
+<br/>
+
+### 예제 시나리오
+
+- 회원과 팀이 있다.
+- 회원은 하나의 팀에만 소속될 수 있다.
+- 회원과 팀은 다대일 관계다.
+
+<br/>
+
+<hr/>
+### 객체를 테이블에 맞추어 모델링
+
+(식별자로 다시 조회, 객체 지향적인 방법은 아니다.)
+
+```java
+// 조회
+Member member = em.find(Member.class, member.getId());
+
+//연관관계가 없음
+Team findTeam = em.find(Team.class, team.getId());
+```
+
+이 방법은 연관관계가 없기 때문에 계속 영속성을 부여하고 DB에 조회해야 함.
+
+**좋지 않은 방법**
+
+<br/>
+
+### 단방향 연관관계
+
+<center><image src="./img/단방향_모델링.PNG"></center>
+
+<br/>
+
+<br/>
+
+### 객체 지향 모델링
+
+(연관관계 저장)
+
+```java
+// 팀 저장
+Team team = new Team();
+team.setName("TeamA");
+em.persist(team);
+
+//회원 저장
+Member member = new Member();
+member.setName("member1");
+member.setTeam(team);	// 단방향 연관관계 설정, 참조 저장
+em.persist(member)
+
+```
+
+<br/>
+
+# #18 양방향 연관관계와 주인 ⭐
+
+<center><image src="./img/양방향_모델링.PNG"></center>
+
+<br/>
+
+### 연관관계의 주인과 mappedBy
+
+- mappedBy = JPA의 멘탈붕괴 난이도
+- mappedBy는 처음에는 이해하기 어렵다.
+- 객체와 테이블간에 연관관계를 맺는 차이를 이해해야 한다.
+
+<br/>
+
+### 객체와 테이블이 관계를 맺는 차이
+
+- 객체 연관관계 = 2개
+  - 회원 --> 팀 연관관계 1개(단방향)
+  - 팀 --> 회원 연관관계 1개(단방향)
+- 테이블 연관관계 = 1개
+  - 회원 <--> 팀의 연관관계 1개(양방향)
+
+<br/>
+
+<hr/>
+
+### 객체의 양방향 관계
+
+- 객체의 양방향 관계는 **사실 양방향 관계가 아니라 서로 다른 단방향 관계 2개**다.
+- 객체를 양방향으로 참조하려면 단방향 연관관계를 2개 만들어야 한다.
+
+<br/>
+
+### 테이블의 양방향  연관관계
+
+- 테이블은 외래 키 하나로 두 테이블의 연관관계를 관리
+- MEMBER.TEAM_ID 외래 키 하나로 양방향 연관관계 가짐
+
+```sql
+SELECT *
+FROM MEMBER M
+JOIN TEAM T ON M.TEAM_ID = T.TEAM_ID
+
+SELECT *
+FROM TEAM T
+JOIN MEMBER M ON T.TEAM_ID = M.TEAM_ID
+```
+
+<hr/>
+
+## 딜레마가 온다 - MEMBER, TEAM 중 무슨 KEY를 봐야하나?
+
+<center><image src="./img/외래키.PNG"></center>
+
+<br/>
+
+# 연관관계의 주인(Owner)
+
+### 양방향 매핑 규칙
+
+- 객체의 두 관계중 하나를 연관관계의 주인으로 지정
+- **연관관계의 주인만이 외래 키를 관리(등록, 수정)**
+- **주인이 아닌쪽은 읽기만 가능**
+- 주인은 mappedBy 속성 사용X
+- 주인이 아니면 mappedBy 속성으로 주인 지정
+
+<br/>
+
+<center><image src="./img/주인.PNG"></center>
+
+<br/>
+
+<hr/>
+
+## ⚠ 양방향 매핑시 가장 많이 하는 실수
+
+(연관관계의 주인에 값을 입력하지 않음)
+
+<center><image src="./img/양방향_주의.PNG"></center>
+
+<hr/>
+
+###  양방향 매핑시 연관관계의 주인에 값을 입력해야 한다.
+
+(순수한 객체 관계를 고려하면 항상 양쪽다 값을 입력해야 한다.)
+
+```java
+           Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
+
+            Member member = new Member();
+            member.setUsername("member1");
+            
+            team.getMembers().add(member);
+
+            //연관관계의 주인에 값 설정
+            member.setTeam(team);	// **
+            
+            em.persist(member);
+```
+
+<hr/>
+
+## ⚠  양방향 연관관계 주의
+
+- ### 순수 객체 상태를 고려해서 항상 양쪽에 값을 설정하자
+
+- **연관관계 편의 메소드**를 생성하자
+
+```java
+public void changeTeam(Team team){
+	this.team = team;
+	
+	team.getMembers().add(this);
+}
+```
+
+<br/>
+
+- 양방향 매핑시에 무한 루프를 조심하자
+
+  - 예: toString(), lombok, JSON 생성 라이브러리
+  - **Controller에서 Entity JSON 반환은 하지 말자!**
+
+  <hr/>
+
+  ## 양방향 매핑 정리
+
+- **단방향 매핑만으로도 이미 연관관계 매핑은 완료**
+
+- 양방향 매핑은 반대 방향으로 조회 기능이 추가된 것 뿐
+
+- JPQL에서 역방향으로 탐색할 일이 많음
+
+- 단방향 매핑을 잘 하고 양방향은 필요할 때 추가해도 됨
+
+  (테이블에 영향을 주지 않음)
+
+<br/>
+
+# #20 실전 예제 2 - 연관관계 매핑 시작
+
+<center><image src="./img/테이블구조_2.PNG"></center>
+
+- **하나의 멤버는 여러 개의 주문을 할 수가 있고,**
+- **주문과 아이템 사이의 다대다 관계를 1:N 과 N:1 로 풀어냈다.**
+
+<br/>
+
+<center><image src="./img/객체구조_2.PNG"></center>
+
+
+
+
+
+
 
 
 
