@@ -104,7 +104,7 @@ RoT 설명
 
 ```mermaid
 gantt
-    title 프로젝트 제목
+    title 진실의 방(Room of Truth)
     dateFormat  YYYY-MM-DD #바꾸지 않음 
     section 기획
     주제 선정:done, 2020-05-04, 11d  #완료되면 done을 기입
