@@ -1,6 +1,6 @@
 # 진실의 방(Room of Truth)
 
-![RoT 메인사진 or icon]()
+![RoT 메인사진 or icon](./image/mainpage.PNG)
 
 
 
@@ -97,12 +97,12 @@ RoT 설명
 
 ## Design
 
-<img src="./[03] 설계/Bloom_ERD.png">
+![ERD](./image/ERD.png)
 
 
 ## Project Schedule
 
-<img src="./image/Bloom_schedule.png">
+![schedule](./image/schedule.PNG)
 
 ## Docs
 
