@@ -97,12 +97,12 @@ RoT 설명
 
 ## Design
 
-<img src="./[03] 설계/Bloom_ERD.png">
+![ERD](./image/ERD.png)
 
 
 ## Project Schedule
 
-<img src="./image/schedule.png">
+![schedule](./image/schedule.PNG)
 
 ## Docs
 
