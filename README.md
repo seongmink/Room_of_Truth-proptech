@@ -1,19 +1,24 @@
-# Bloom
+# 진실의 방(Room of Truth)
 
-![Bloom 메인사진 or icon]()
+![RoT 메인사진 or icon]()
 
 
 
 ## Contents
 
-- About Bloom
+- About RoT
+- Team
 - Getting Started
+- Rule
+- Design
+- Project Schedule
+- Docs
 
-## About Bloom
+## About RoT
 
-![Bloom 설명]()
+![RoT 설명]()
 
-Bloom 설명
+RoT 설명
 
 ## Team
 
@@ -99,3 +104,6 @@ Bloom 설명
 
 <img src="./image/Bloom_schedule.png">
 
+## Docs
+
+[공부 정리](./%5B08%5D%20docs)
