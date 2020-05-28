@@ -126,6 +126,15 @@ const routes = [{
                 component: () =>
                     import ("../components/common/AddInfo.vue")
                 
+            },
+
+            //테스트 페이지
+            {
+                name: "hongju",
+                path: "hongju",
+                component: () =>
+                    import ("../test/hongju.vue")
+                
             }
 
         ],
