@@ -8,7 +8,9 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import './lib/CustomCss'
 import VueGeolocation from 'vue-browser-geolocation';
+import { BootstrapVueIcons } from 'bootstrap-vue'
 
+Vue.use(BootstrapVueIcons)
 Vue.use(VueGeolocation);
 Vue.use(BootstrapVue)
 Vue.config.productionTip = false;

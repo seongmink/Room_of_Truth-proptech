@@ -34,8 +34,8 @@
       									></b-form-radio-group>
     									</b-form-group>
 								</div>
-								<b-input-group prepend="생년월일" style="width:40%; height:50px;">
-			 						<b-form-input type="date" v-model="date" style="text-align:center; height:50px;"></b-form-input>
+								<b-input-group prepend="출생년도" style="width:40%; height:50px;">
+			 						<b-form-input type="number" max='4' placeholder="예:1980" v-model="date" style="text-align:center; height:50px;"></b-form-input>
   								</b-input-group>
                             </div>
 								<div class="add-listing-headline" style="margin-left:-250px; margin-top:20px;">
@@ -75,34 +75,19 @@
                                 <div class="col-md-4">
                                     <select class="custom-select mb-4 form-control-alternative" v-model="ranking_1">
 										<option selected="선택없음">1순위</option>
-										<option value="교통">교통</option>
-										<option value="마트/편의점">마트/편의점</option>
-										<option value="교육시설">교육시설</option>
-										<option value="의료시설">의료시설</option>
-										<option value="음식점/카페">음식점/카페</option>
-										<option value="문화공간">문화공간</option>
+										<option v-for="(item, index) in ranklist" :value="item" :key="index">{{ item }}</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
                                     <select class="custom-select mb-4 form-control-alternative" v-model="ranking_2" >
                                         <option selected="선택없음">2순위</option>
-										<option value="교통">교통</option>
-										<option value="마트/편의점">마트/편의점</option>
-										<option value="교육시설">교육시설</option>
-										<option value="의료시설">의료시설</option>
-										<option value="음식점/카페">음식점/카페</option>
-										<option value="문화공간">문화공간</option>
+										<option v-for="(item, index) in sranklist" :value="item" :key="index">{{ item }}</option>
                                     </select>
                                 </div>
 								<div class="col-md-4">
                                     <select class="custom-select mb-4 form-control-alternative" v-model="ranking_3" >
                                         <option selected="선택없음">3순위</option>
-										<option value="교통">교통</option>
-										<option value="마트/편의점">마트/편의점</option>
-										<option value="교육시설">교육시설</option>
-										<option value="의료시설">의료시설</option>
-										<option value="음식점/카페">음식점/카페</option>
-										<option value="문화공간">문화공간</option>
+										<option v-for="(item, index) in tranklist" :value="item" :key="index">{{ item }}</option>
                                     </select>
                                 </div>
 							
@@ -122,6 +107,7 @@
     export default {
         data() {
             return {
+				
 				selected: 'radio1',
         		options: [
           			{ text: '남자', value: 'radio1' },
@@ -153,6 +139,9 @@
 				ranking_2:'2순위',
 				ranking_3:'3순위',
 				date:'',
+				ranklist:['교통','마트/편의점','교육시설','의료시설','음식점/카페','문화공간'],
+				sranklist:[],
+				tranklist:[],
 			}
         },
         created() {
@@ -215,34 +204,68 @@
 			
 				}
 			},
-			ranking_1:function(hook){
-				if(hook==this.ranking_2 || hook==this.ranking_3){
-					alert("이미 다른 순위에서 선택하셨습니다. 다시 선택해주세요.")
-					this.ranking_1 = "1순위"
+
+			date:function(hook){
+	
+				if(hook.length>4){
+					var s = hook.substr(0, 4);
+					alert("4글자 이하로 입력해주세요!");
+					this.date = '';
 				}
 			},
+		
+			ranking_1:function(hook){
+			
+				this.ranking_2='2순위'
+				this.sranklist=[];
+				this.ranking_3='3순위'
+				this.tranklist=[];
+
+				if(hook!='1순위'){
+					for(var i=0; i<this.ranklist.length; i++){
+						if(this.ranklist[i]!=this.ranking_1){
+							this.sranklist.push(this.ranklist[i]);
+						}
+					}
+				}
+			
+			},
 			ranking_2:function(hook){
-				if(hook==this.ranking_1 || hook==this.ranking_3){
-					alert("이미 다른 순위에서 선택하셨습니다. 다시 선택해주세요.")
-					this.ranking_2 = "2순위"
+				this.ranking_3='3순위'
+				this.tranklist=[];
+				if(this.ranking_1=='1순위' && this.ranking_2!='2순위'){
+					alert("1순위 선호도부터 설정해주세요!")
+					this.ranking_2='2순위'
+				}
+
+				if(hook!='2순위'){
+					for(var i=0; i<this.ranklist.length; i++){
+						if(this.sranklist[i]!=this.ranking_2){
+							this.tranklist.push(this.sranklist[i]);
+						}
+					}
 				}
 			},
 			ranking_3:function(hook){
-				if(hook==this.ranking_1 || hook==this.ranking_2){
-					alert("이미 다른 순위에서 선택하셨습니다. 다시 선택해주세요.")
-					this.ranking_3 = "3순위"
+				
+				if(this.ranking_1=='1순위' && this.ranking_3!='3순위'){
+					alert("1순위 선호도부터 설정해주세요!")
+					this.ranking_3='3순위'
+				}else if(this.ranking_2=='2순위' && this.ranking_3!='3순위'){
+					alert("2순위 선호도부터 설정해주세요!")
+					this.ranking_3='3순위'
 				}
 			}
 
 		},
         computed: {
-
+			
 		},
         methods: {
 			submit(){
 			
-				if(this.date==''){
-					alert('생년월일을 모두 입력해주세요!')
+				if(this.date.length!=4){
+					alert('출생년도를 모두 입력해주세요!')
 				}else if(this.locationSelect=='시/도를 선택하세요.'){
 					alert('시/도를 선택해주세요!')
 				}else if(this.locationSelect2=='시/군/구를 선택하세요.'){
