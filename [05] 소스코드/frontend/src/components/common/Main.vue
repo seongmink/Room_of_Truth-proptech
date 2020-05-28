@@ -48,8 +48,8 @@
                 </b-list-group>
                 <button class="styled__SearchBtn-sc-10v4ocj-6 kvrxoz" @click="searches(search)">방 찾기</button>
             </div>
-
-            <MostVisitedPlaces :data="data"></MostVisitedPlaces>
+            <MainRecommendation :data="rdata.categories"></MainRecommendation>
+            <MostVisitedPlaces  :data="data"></MostVisitedPlaces>
             <hr/>
             <div class="context" style="margin:auto; ">
             <p style="text-align:center; font-size:40px; margin-bottom:20px;">About <span style="color:#1428A0;">Bloom</span></p>
@@ -82,7 +82,8 @@
 </template>
 <script>
 import MostVisitedPlaces from "./MostVisitedPlaces";
-import MyData from '../../data/dashboardtwo.json';
+import MainRecommendation from "./MainRecommendation";
+import MyData from '../../data/dashboardone.json';
 import { getKeyword } from "../../api/item.js";
 import { searchAddress } from "../../api/item.js";
 import { getAddress } from "../../api/item.js";
@@ -94,6 +95,7 @@ export default {
     props: ['layout'],
     data() {
         return {
+            rdata: MyData.data,
             data: null,
             listopen: false,
             keywordopen: false,
@@ -136,6 +138,7 @@ export default {
     components: {
         MostVisitedPlaces,
         VueDaumMap,
+        MainRecommendation,
     },
     watch: {
        

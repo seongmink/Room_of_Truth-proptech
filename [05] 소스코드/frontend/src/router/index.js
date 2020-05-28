@@ -121,8 +121,8 @@ const routes = [{
                 
             },
             {
-                name: "AddInfo.vue",
-                path: "addinfo.vue",
+                name: "AddInfo",
+                path: "addinfo",
                 component: () =>
                     import ("../components/common/AddInfo.vue")
                 
