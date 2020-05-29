@@ -2,7 +2,7 @@
 	<div class="block-space ">
 		<div class="container">
 			<div class="block-head text-center mb-5">
-				<h2 class="head-line display-3;" style="margin-top:30px;color:#1428A0;">
+				<h2 class="head-line display-3;" style="margin-top:-40px;color:#00c03f;">
 					실시간 랭킹
 				</h2>
 				<p class="lead mt-2  context" style="margin-bottom:-30px">부동산 공인중개사</p>
@@ -16,7 +16,8 @@
 									<div class="listing-item-container">
 										<div class="listing-item text-center">
 					
-                                            <div class="mostviewed-bg" :style="{'background': 'url(' + url+place.apicture + ')','background-size': '100% 200px','background-repeat': 'no-repeat'}" > 
+                                            <!-- <div class="mostviewed-bg" :style="{'background': 'url(' + url+place.apicture + ')','background-size': '100% 200px','background-repeat': 'no-repeat'}" >  -->
+                                            <div class="mostviewed-bg" :style="{'background': 'url(' + place.apicture + ')','background-size': '100% 200px','background-repeat': 'no-repeat'}" > 
                                             
 												<div class="listing-item-content">
 													<div class="list-logo">

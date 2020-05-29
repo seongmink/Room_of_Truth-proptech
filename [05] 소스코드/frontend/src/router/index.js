@@ -84,13 +84,13 @@ const routes = [{
             path: "auth",
             component: () =>
                 import ("../components/common/Auth.vue"),
-            beforeEnter : rejectAuth
+            //beforeEnter : rejectAuth
             },
             {
             path: "addbuilding",
             component: () =>
                 import ("../components/structure/Addbuilding.vue"),
-            beforeEnter : onlyAuth
+            //beforeEnter : onlyAuth
             },
             {
             name: "Search",
@@ -104,7 +104,7 @@ const routes = [{
             path: "realestate",
             component: () =>
                 import ("../components/common/Realestate.vue"),
-            beforeEnter : onlyAuth
+            ///beforeEnter : onlyAuth
             },
             {
                 name: "UserRealestate",

@@ -3,9 +3,9 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-5 col-sm-6">
-					<img class="footer-logo" src="../../../public/images/logo.png" width="180" alt="" style="margin-top:-35px; margin-bottom:-30px;">
-					<br><br>
-					<p class="text-white">SSAFY 블록체인 프로젝트</p>
+					<img class="footer-logo" src="static/1logo.png" width="180" alt="" style="margin-top:-35px; margin-bottom:-30px;">
+					<br><br><br>
+					<p class="text-white">SSAFY 프로젝트</p>
 					<div class="text-widget text-white" style="font-size:13px;">
 						대표 : <span class="text-white">SSAFY</span> <br>
 						주소 : <span class="text-white">대전광역시 유성구 동서대로 98-39(덕명동)</span> <br>

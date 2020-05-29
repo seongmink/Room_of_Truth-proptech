@@ -1,9 +1,9 @@
 <template>
-	<div style="text-align:center; margin-bottom:-50px;">
-	<div style="margin-top:150px;">
-		<img src="/static/house.png" style="margin-left: auto; margin-right: auto; display: block; margin-bottom:-47px; width:70%;">
-	</div>
-    <div class="card shadow" style=" margin-bottom:200px; width:70%; display: inline-block;">
+	<div>
+	<title-bar title="추가정보 입력하기" subtitle="회원가입에 관한 추가정보를 등록합니다."></title-bar>
+	<div style="text-align:center; margin-bottom:-50px; ">
+		
+    <div class="card shadow" style=" margin-bottom:200px; width:70%; display: inline-block;margin-top:320px;">
 		<div class="context" style="margin:auto; margin-top:60px">
            
             <p style="text-align:center; font-size:25px" >정보를 모두 입력하셔야 회원가입이 완료됩니다!</p>
@@ -101,9 +101,11 @@
         </div>
     </div>
 	</div>
+	</div>
 </template>
 
 <script>
+import TitleBar from '../common/TitleBar';
     export default {
         data() {
             return {
@@ -282,7 +284,7 @@
 			}
 		},
         components: {
-
+			TitleBar,
 		}
     };
 </script>

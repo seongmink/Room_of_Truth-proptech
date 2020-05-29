@@ -5,7 +5,7 @@
 		<nav  id="navbar-main" class="navbar fixed-top navbar-main bg-primary navbar-expand-lg navbar-transparent navbar-light headroom">
 			<div class="container-fluid">
 				<div id="logo">
-					<router-link to="/"><img src="../../..//public/images/logo.png" width="150" alt=""></router-link>
+					<router-link to="/"><img src="static/1logo.png" width="150" alt=""></router-link>
 				</div>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global"
 					aria-expanded="false" aria-label="Toggle navigation">
