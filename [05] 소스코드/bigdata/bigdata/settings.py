@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'rest_framework',
-    'drf_yasg'
+    'drf_yasg',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'bigdata.urls'
@@ -72,22 +74,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bigdata.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 DATABASES = { 
     'default': {
         'ENGINE': 'django.db.backends.mysql', # mysql 엔진 설정
-        'NAME': 'bloom', # 데이터베이스 이름
+        'NAME': 'rot', # 데이터베이스 이름
         'USER': 'mds', # 데이터베이스 연결시 사용할 유저 이름
-        'PASSWORD': 'mds12345678!!', # 유저 패스워드
+        'PASSWORD': 'ssafy', # 유저 패스워드
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
@@ -97,25 +89,22 @@ DATABASES = {
         },
     }
 }
+# DATABASES = { 
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql', # mysql 엔진 설정
+#         'NAME': 'rot', # 데이터베이스 이름
+#         'USER': 'test', # 데이터베이스 연결시 사용할 유저 이름
+#         'PASSWORD': 'rot123456789!!', # 유저 패스워드
+#         'HOST': 'k02b2031.p.ssafy.io',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#             'charset': 'utf8',
+#             'use_unicode': True,
+#         },
+#     }
+# }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
 
 
 # Internationalization
@@ -143,3 +132,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
     ),
 }
+
+##CORS
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = []

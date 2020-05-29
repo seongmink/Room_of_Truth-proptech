@@ -15,6 +15,7 @@ class BuildingSerializer(serializers.ModelSerializer):
             "longitude",
             "exclusive",
             "floor",
+            "ho",
             "detail",
             "cost",
             "monthly",
