@@ -7,7 +7,6 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-
 class Address(models.Model):
     num = models.AutoField(primary_key=True)
     roadaddress = models.CharField(db_column='roadAddress', unique=True, max_length=100, blank=True, null=True)  # Field name made lowercase.
@@ -35,6 +34,21 @@ class Agent(models.Model):
         db_table = 'agent'
 
 
+class Around(models.Model):
+    num = models.AutoField(primary_key=True)
+    address = models.CharField(unique=True, max_length=100, blank=True, null=True)
+    trans = models.IntegerField(blank=True, null=True)
+    comforts = models.IntegerField(blank=True, null=True)
+    education = models.IntegerField(blank=True, null=True)
+    medical = models.IntegerField(blank=True, null=True)
+    eatery = models.IntegerField(blank=True, null=True)
+    culture = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'around'
+
+
 class Building(models.Model):
     num = models.AutoField(primary_key=True)
     address = models.CharField(max_length=100, blank=True, null=True)
@@ -45,6 +59,8 @@ class Building(models.Model):
     longitude = models.CharField(max_length=45, blank=True, null=True)
     exclusive = models.CharField(max_length=10, blank=True, null=True)
     floor = models.CharField(max_length=10, blank=True, null=True)
+    ho = models.CharField(max_length=10, blank=True, null=True)
+    kind = models.CharField(max_length=10, blank=True, null=True)
     detail = models.CharField(max_length=10, blank=True, null=True)
     cost = models.CharField(max_length=10, blank=True, null=True)
     monthly = models.CharField(max_length=10, blank=True, null=True)
@@ -56,7 +72,6 @@ class Building(models.Model):
     class Meta:
         managed = False
         db_table = 'building'
-
 
 
 class Search(models.Model):
@@ -73,7 +88,7 @@ class Search(models.Model):
 class User(models.Model):
     num = models.BigIntegerField(primary_key=True)
     nickname = models.CharField(max_length=45, blank=True, null=True)
-    auth = models.CharField(max_length=1, blank=True, null=True)
+    auth = models.CharField(max_length=10, blank=True, null=True)
     phonenum = models.CharField(db_column='phoneNum', max_length=20, blank=True, null=True)  # Field name made lowercase.
     age = models.IntegerField(blank=True, null=True)
     gender = models.CharField(max_length=4, blank=True, null=True)

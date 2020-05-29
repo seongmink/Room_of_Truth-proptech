@@ -13,7 +13,7 @@ schema_view = get_schema_view(
    openapi.Info(
       title="Snippets API",
       default_version='v1',
-      description="맛동산",
+      description="진실의 방",
       terms_of_service="https://www.google.com/policies/terms/",
       license=openapi.License(name="BSD License"),
    ),
@@ -28,5 +28,6 @@ urlpatterns = [
    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
    path('buildings/', views.Building.as_view()),
+   path('buildings/<int:pk>', views.BuildingChart.as_view()),
     
 ]
