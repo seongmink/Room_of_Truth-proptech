@@ -340,8 +340,6 @@ export default {
                             this.marker.setMap(map);
                         }
 
-                        
-                        
                     }
                     
                     });

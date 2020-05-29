@@ -1,12 +1,16 @@
 <template>
     <div>
-        <div class="context" style="margin:auto; margin-top:200px">
-            <p style="text-align:center; font-size:60px; margin-bottom:-20px;"> <span style="color:#00c03f;">우리 동네</span>의 건물이</p>
-            <p style="text-align:center; font-size:60px">궁금하세요?</p>
+        <div class="context" style="margin:auto; margin-top:0px; ">
+       
+            <p style="text-align:center; font-size:60px; margin-bottom:20px; margin-top:200px;"> <span style="color:#00c03f;">진실의 방</span>으로</p>
+            <!-- <p style="text-align:center; font-size:60px">궁금하세요?</p> -->
+             
             <br>
             <p style="text-align:center; font-size:25px" >하이퍼레저 패브릭을 이용한 부동산 이력 조회</p>
-            <p style="text-align:center; font-size:20px; color:#00c03f;  font-weight: bold "> “Bloom은 신뢰성 있는 내역을 제공합니다”</p>
+            <p style="text-align:center; font-size:20px; color:#00c03f;  font-weight: bold "> “진실의 방은 신뢰성 있는 내역을 제공합니다”</p>
+     
         </div>
+       
         <br>
         <div class="styled__Box-sc-10v4ocj-4 kwmwXI" style="margin-top:20px; width:75%;">
             <svg width="18" height="17" viewBox="0 0 18 17">
@@ -49,10 +53,11 @@
                 <button class="styled__SearchBtn-sc-10v4ocj-6 kvrxoz" @click="searches(search)">방 찾기</button>
             </div>
             <MainRecommendation :data="rdata.categories"></MainRecommendation>
-            <MostVisitedPlaces  :data="data"></MostVisitedPlaces>
+            <!-- <MostVisitedPlaces  :data="data"></MostVisitedPlaces> -->
+            <MostVisitedPlaces  :data="rankdata.places"></MostVisitedPlaces>
             <hr/>
             <div class="context" style="margin:auto; ">
-            <p style="text-align:center; font-size:40px; margin-bottom:20px;">About <span style="color:#1428A0;">Bloom</span></p>
+            <p style="text-align:center; font-size:40px; margin-bottom:20px;">About <span style="color:#00c03f;">진실의 방</span></p>
             </div>
             <img src="/static/chain.png" style="width:100%; margin-bottom:120px;">
             <!-- <div class="block-space" style="margin-top:-100px">
@@ -84,6 +89,7 @@
 import MostVisitedPlaces from "./MostVisitedPlaces";
 import MainRecommendation from "./MainRecommendation";
 import MyData from '../../data/dashboardone.json';
+import MyData2 from '../../data/dashboardtwo.json';
 import { getKeyword } from "../../api/item.js";
 import { searchAddress } from "../../api/item.js";
 import { getAddress } from "../../api/item.js";
@@ -95,6 +101,7 @@ export default {
     props: ['layout'],
     data() {
         return {
+            rankdata : MyData2.data,
             rdata: MyData.data,
             data: null,
             listopen: false,

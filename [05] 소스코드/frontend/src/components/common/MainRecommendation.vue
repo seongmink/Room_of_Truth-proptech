@@ -27,7 +27,7 @@
 									</div>
 									<div class="category-box-background" :style="{'background-image': 'url(' + item.image + ')'}">
 									</div>
-									<span class="like-banner d-block h2 mb-2" style="color: #00c03f; z-index:1000"><b-icon icon="heart-fill"></b-icon></span>
+									<span class="like-banner d-block h4 mb-2" style="color: #00c03f; z-index:1000"><b-icon icon="heart-fill"></b-icon></span>
 								</div>
 							</div>
 						</div>
@@ -37,8 +37,8 @@
 		</div>
 		<!-- 모달 -->
 		<b-modal id="modal-3" title="상세보기" scrollable  size="lg" hide-footer >   
-			<span v-if="like==0" class="like-banner d-block h2 mb-2" style="color: #00c03f;" @click="toggle()" ><b-icon icon="heart"></b-icon></span>
-			<span v-if="like==1" class="like-banner d-block h2 mb-2" style="color: #00c03f;" @click="toggle()" ><b-icon icon="heart-fill"></b-icon></span>
+			<span v-if="like==0" class="like-banner d-block h4 mb-2" style="color: #00c03f;" @click="toggle()" ><b-icon icon="heart"></b-icon></span>
+			<span v-if="like==1" class="like-banner d-block h4 mb-2" style="color: #00c03f;" @click="toggle()" ><b-icon icon="heart-fill"></b-icon></span>
             <div style="text-align:center; margin-top:-10px">
             <div id="add-listing" style=" width:690px; display: inline-block;">
             <div class="mb-4" style="margin-left:-50px; margin-right:-50px;">
