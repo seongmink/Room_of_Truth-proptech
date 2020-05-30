@@ -18,8 +18,8 @@ public class Search {
 	@Column(name = "search_id")
 	private long id;
 
-	@Column(name = "user_id")
-	private long userId;
+//	@Column(updatable = false, insertable = false, name = "user_id")
+//	private long userId;
 
 	private String keyword;
 

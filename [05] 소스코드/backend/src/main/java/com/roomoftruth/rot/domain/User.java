@@ -1,8 +1,6 @@
 package com.roomoftruth.rot.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.*;
 
@@ -11,8 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "user")
 @Getter
+@Table(name = "user")
 @NoArgsConstructor
 public class User {
 	
@@ -26,31 +24,39 @@ public class User {
 	
 	@Enumerated(EnumType.STRING)
 	private Auth auth;
-	
+
 	private String phoneNum;
-	private String birthYear;
+
+	private String birth;
 	private Gender gender;
 	private String address;
 	private String picture;
 
+	@Column(name = "created_at")
 	private LocalDateTime createdAt;
+
+	@Column(name = "entered_at")
 	private LocalDateTime enteredAt;
 	
-	@OneToMany(mappedBy = "user")
-	private List<Search> searches = new ArrayList<>();
-	
-	@OneToOne(mappedBy = "user")
-	private Interest interest;
-
+//	@OneToMany(mappedBy = "user")
+//	private List<Search> searches = new ArrayList<>();
+//
+//	@OneToOne(mappedBy = "user")
+//	private Interest interest;
+//
 //	@OneToOne(mappedBy = "user")
 //	private Agent agent;
 //
-//	public User update(long num, String nickname, String picture) {
-//		this.nickname = nickname;
-//		this.picture = picture;
-//
-//		return this;
-//	}
+
+	@Builder
+	public User(long num, String nickname, Auth auth, String picture) {
+		this.num = num;
+		this.nickname = nickname;
+		this.auth = auth;
+		this.picture = picture;
+		this.createdAt = LocalDateTime.now();
+		this.enteredAt = LocalDateTime.now();
+	}
 	
 	public String getAuthKey() {
 		return this.auth.getKey();

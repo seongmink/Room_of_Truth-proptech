@@ -17,8 +17,8 @@ public class Interest {
 	@Column(name = "interest_id")
 	private Long id;
 
-	@Column(name = "user_id")
-	private Long userId;
+//	@Column(name = "user_id")
+//	private Long userId;
 
 	private String first;
 	private String second;

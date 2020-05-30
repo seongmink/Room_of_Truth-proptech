@@ -2,7 +2,7 @@ package com.roomoftruth.rot.fabric;
 
 import java.util.Properties;
 
-import com.rot.util.CommonUtil;
+import com.roomoftruth.rot.util.CommonUtil;
 
 public class FabricUtil {
 	public static Properties getPropertiesWith(String filename) {
