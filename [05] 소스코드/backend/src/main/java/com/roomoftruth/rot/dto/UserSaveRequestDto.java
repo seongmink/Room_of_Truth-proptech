@@ -1,7 +1,6 @@
 package com.roomoftruth.rot.dto;
 
 import com.roomoftruth.rot.domain.Auth;
-import com.roomoftruth.rot.domain.Gender;
 import com.roomoftruth.rot.domain.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,10 +13,6 @@ public class UserSaveRequestDto {
     private long num;
     private String nickname;
     private Auth auth;
-    private String phoneNum;
-    private String birthYear;
-    private Gender gender;
-    private String address;
     private String picture;
 
     @Builder

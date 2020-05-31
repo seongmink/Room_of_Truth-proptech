@@ -33,7 +33,7 @@ public class UserController {
 	@PostMapping("/kakaologin")
 	@ApiOperation("카카오 로그인")
 	public String login(@RequestParam String access_Token) {
-		logger.info("POST : /api/kakaologin");
+		logger.info("UserController : login");
 
 		JsonNode json = kakaoAPIService.getKaKaoUserInfo(access_Token);
 
@@ -51,7 +51,7 @@ public class UserController {
 	@PostMapping("/loginToken")
 	@ApiOperation("토큰 검증")
 	public Object token(@RequestParam String access_token) {
-		logger.info("POST : /api/loginToken");
+		logger.info("UserController : token");
 
 		Object result = null;
 
@@ -66,7 +66,7 @@ public class UserController {
 	@GetMapping("/user/{num}")
 	@ApiOperation("num으로 유저 정보 가져오기")
 	public UserResponseDto getUserByNum(@PathVariable long num) {
-		logger.info("GET : /api/users/{num} = " + num);
+		logger.info("UserController : getUserByNum / {}", num);
 		UserResponseDto user = userService.findByNum(num);
 
 		return user;
@@ -74,9 +74,9 @@ public class UserController {
 	
 
 	@PatchMapping("/user")
-	@ApiOperation("유저 내 정보 수정")
-	public String getAllUser(@RequestBody UserUpdateRequestDto updateRequestDto) {
-		logger.info("PATCH : /api/users/{} = " + updateRequestDto.getNum());
+	@ApiOperation("유저 정보 수정")
+	public String updateUser(@RequestBody UserUpdateRequestDto updateRequestDto) {
+		logger.info("UserController : updateUser / {}" + updateRequestDto.getNum());
 
 		userService.save(updateRequestDto);
 

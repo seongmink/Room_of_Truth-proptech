@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
 	Long save(UserSaveRequestDto requestDto); // 로그인 시
 
-	User save(UserUpdateRequestDto updateRequestDto); // 사용자 정보 업데이트
+	Long save(UserUpdateRequestDto updateRequestDto); // 사용자 정보 업데이트
 
 //	public List<User> getAllUser();
 //	

@@ -23,18 +23,13 @@ public class UserService implements IUserService {
 		return new UserResponseDto(entity);
 	}
 
-	public User save(UserSaveRequestDto saveRequestDto) {
-		return userRepository.save(saveRequestDto.toEntity());
+	public Long save(UserSaveRequestDto saveRequestDto) {
+		return userRepository.save(saveRequestDto);
 	}
 
-	public User save(UserUpdateRequestDto updateRequestDto) {
+	public Long save(UserUpdateRequestDto updateRequestDto) {
 		return userRepository.save(updateRequestDto);
 	}
-
-//	@Override
-//	public Long save(UserResponseDto entity) {
-//		userRepository.save(entity);
-//	}
 
 	
 //	@Autowired

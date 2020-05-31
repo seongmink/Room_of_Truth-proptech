@@ -1,6 +1,5 @@
 package com.roomoftruth.rot.service;
 
-import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.UserResponseDto;
 import com.roomoftruth.rot.dto.UserSaveRequestDto;
 import com.roomoftruth.rot.dto.UserUpdateRequestDto;
@@ -13,10 +12,10 @@ public interface IUserService {
 	UserResponseDto findByNum(long num);
 
 	@Transactional
-	User save(UserSaveRequestDto requestDto);
+	Long save(UserSaveRequestDto requestDto);
 
 	@Transactional
-	User save(UserUpdateRequestDto updateRequestDto);
+	Long save(UserUpdateRequestDto updateRequestDto);
 
 	
 //	List<User> getAllUser();

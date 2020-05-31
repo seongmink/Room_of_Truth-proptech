@@ -32,7 +32,7 @@ public class KakaoAPIService implements IKaKaoAPIService {
 	private IJwtService IJwtService;
 
 	public JsonNode getKaKaoUserInfo(String access_Token) {
-		logger.info("KakaoAPIService - getKaKaoUserInfo");
+		logger.info("KakaoAPIService : getKaKaoUserInfo");
 		final HttpClient client = HttpClientBuilder.create().build();
 		final HttpPost post = new HttpPost(requestURL);
 
@@ -69,27 +69,27 @@ public class KakaoAPIService implements IKaKaoAPIService {
 		}
 
 		UserResponseDto user = userService.findByNum(num);
+		UserSaveRequestDto requestDto = null;
 
 		if (user == null) { // 없는 사용자면?
 			logger.info("New Account : " + num);
-			UserSaveRequestDto requestDto = UserSaveRequestDto.builder()
+			requestDto = UserSaveRequestDto.builder()
 					.num(num)
 					.nickname(nickname)
 					.picture(picture)
 					.auth(Auth.GENERAL).build();
-			userService.save(requestDto);
 		} else {
 			logger.info("UPDATE enteredAt : " + num);
-			// 마지막 접속 날짜를 갱신해 주고 토큰 발행
-			UserSaveRequestDto requestDto = UserSaveRequestDto.builder()
+			requestDto = UserSaveRequestDto.builder()
 					.num(num)
 					.nickname(nickname)
 					.picture(picture)
 					.auth(user.getAuth()).build();
-			userService.save(requestDto);
 		}
 
-		user = userService.findByNum(num);
+		userService.save(requestDto); // 갱신(저장)하고
+
+		user = userService.findByNum(num); // 그 번호의 정보를 찾아서 JWT 발행
 
 		String jwt = IJwtService.create("user", user, "user");
 		logger.info("JWT : " + jwt);
