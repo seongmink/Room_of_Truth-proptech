@@ -11,19 +11,17 @@ import java.time.LocalDateTime;
 @Table(name = "search")
 @Getter
 @NoArgsConstructor
-public class Search {
+public class Search extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "search_id")
 	private long id;
 
-	@Column(name = "user_id")
-	private long userId;
+//	@Column(updatable = false, insertable = false, name = "user_id")
+//	private long userId;
 
 	private String keyword;
-
-	private LocalDateTime date;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")

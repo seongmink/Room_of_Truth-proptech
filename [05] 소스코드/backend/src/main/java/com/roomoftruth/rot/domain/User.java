@@ -1,56 +1,56 @@
 package com.roomoftruth.rot.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.*;
-
+import com.roomoftruth.rot.dto.UserUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
 @Entity
-@Table(name = "user")
 @Getter
+@Table(name = "user")
 @NoArgsConstructor
-public class User {
+public class User extends BaseTimeEntity {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id")
-	private long id;
-
 	private long num;
 	private String nickname;
 	
 	@Enumerated(EnumType.STRING)
 	private Auth auth;
-	
+
 	private String phoneNum;
-	private String birthYear;
+
+	private String birth;
 	private Gender gender;
 	private String address;
 	private String picture;
 
-	private LocalDateTime createdAt;
-	private LocalDateTime enteredAt;
-	
-	@OneToMany(mappedBy = "user")
-	private List<Search> searches = new ArrayList<>();
-	
-	@OneToOne(mappedBy = "user")
-	private Interest interest;
-
+//	@OneToMany(mappedBy = "user")
+//	private List<Search> searches = new ArrayList<>();
+//
+//	@OneToOne(mappedBy = "user")
+//	private Interest interest;
+//
 //	@OneToOne(mappedBy = "user")
 //	private Agent agent;
 //
-//	public User update(long num, String nickname, String picture) {
-//		this.nickname = nickname;
-//		this.picture = picture;
-//
-//		return this;
-//	}
+
+	@Builder
+	public User(long num, String nickname, Auth auth, String picture) {
+		this.num = num;
+		this.nickname = nickname;
+		this.auth = auth;
+		this.picture = picture;
+	}
+
+	public void update(UserUpdateRequestDto updateRequestDto) {
+		this.phoneNum = updateRequestDto.getPhoneNum();
+		this.birth = updateRequestDto.getBirth();
+		this.gender = updateRequestDto.getGender();
+		this.address = updateRequestDto.getAddress();
+	}
 	
 	public String getAuthKey() {
 		return this.auth.getKey();
