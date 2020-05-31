@@ -2,7 +2,8 @@ package com.roomoftruth.rot.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.roomoftruth.rot.dto.UserResponseDto;
-import com.roomoftruth.rot.dto.UserUpdateRequestDto;
+import com.roomoftruth.rot.dto.UserInterestUpdateRequestDto;
+import com.roomoftruth.rot.dto.UserInfoUpdateRequestDto;
 import com.roomoftruth.rot.jwt.IJwtService;
 import com.roomoftruth.rot.service.IKaKaoAPIService;
 import com.roomoftruth.rot.service.IUserService;
@@ -73,18 +74,32 @@ public class UserController {
 	}
 	
 
-	@PatchMapping("/user")
+	@PatchMapping("/user/info")
 	@ApiOperation("유저 정보 수정")
-	public String updateUser(@RequestBody UserUpdateRequestDto updateRequestDto) {
-		logger.info("UserController : updateUser / {}" + updateRequestDto.getNum());
+	public String updateUser(@RequestBody UserInfoUpdateRequestDto requestDto) {
+		logger.info("UserController : updateUser / {}", requestDto.getNum());
 
-		userService.save(updateRequestDto);
+		userService.save(requestDto);
 
-		UserResponseDto userResponseDto = userService.findByNum(updateRequestDto.getNum());
+		UserResponseDto userResponseDto = userService.findByNum(requestDto.getNum());
 
 		String jwt = jwtService.create("user", userResponseDto, "user");
 
 		return jwt;
+	}
+
+	@PatchMapping("/user/interest")
+	@ApiOperation("유저 선호도 수정")
+	public String updateUserInterest(@RequestBody UserInterestUpdateRequestDto requestDto) {
+		logger.info("UserController : updateUserInterest / {}", requestDto.getNum());
+
+		System.out.println(requestDto.toString());
+		if(userService.save(requestDto) == 0){
+			return "failed";
+		} else {
+			return "success";
+		}
+
 	}
 
 }

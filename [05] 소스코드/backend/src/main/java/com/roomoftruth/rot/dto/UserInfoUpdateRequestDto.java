@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UserUpdateRequestDto {
+public class UserInfoUpdateRequestDto {
 
     private long num;
     private String phoneNum;
@@ -16,7 +16,7 @@ public class UserUpdateRequestDto {
     private String address;
 
     @Builder
-    public UserUpdateRequestDto(long num, String phoneNum, String birth, Gender gender, String address) {
+    public UserInfoUpdateRequestDto(long num, String phoneNum, String birth, Gender gender, String address) {
         this.num = num;
         this.phoneNum = phoneNum;
         this.birth = birth;

@@ -1,6 +1,6 @@
 package com.roomoftruth.rot.domain;
 
-import com.roomoftruth.rot.dto.UserUpdateRequestDto;
+import com.roomoftruth.rot.dto.UserInfoUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,8 +30,8 @@ public class User extends BaseTimeEntity {
 //	@OneToMany(mappedBy = "user")
 //	private List<Search> searches = new ArrayList<>();
 //
-//	@OneToOne(mappedBy = "user")
-//	private Interest interest;
+	@OneToOne(mappedBy = "user")
+	private Interest interest;
 //
 //	@OneToOne(mappedBy = "user")
 //	private Agent agent;
@@ -45,7 +45,7 @@ public class User extends BaseTimeEntity {
 		this.picture = picture;
 	}
 
-	public void update(UserUpdateRequestDto updateRequestDto) {
+	public void update(UserInfoUpdateRequestDto updateRequestDto) {
 		this.phoneNum = updateRequestDto.getPhoneNum();
 		this.birth = updateRequestDto.getBirth();
 		this.gender = updateRequestDto.getGender();

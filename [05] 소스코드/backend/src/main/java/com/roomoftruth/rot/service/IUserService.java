@@ -1,8 +1,9 @@
 package com.roomoftruth.rot.service;
 
+import com.roomoftruth.rot.dto.UserInterestUpdateRequestDto;
 import com.roomoftruth.rot.dto.UserResponseDto;
 import com.roomoftruth.rot.dto.UserSaveRequestDto;
-import com.roomoftruth.rot.dto.UserUpdateRequestDto;
+import com.roomoftruth.rot.dto.UserInfoUpdateRequestDto;
 
 import javax.transaction.Transactional;
 
@@ -15,7 +16,10 @@ public interface IUserService {
 	Long save(UserSaveRequestDto requestDto);
 
 	@Transactional
-	Long save(UserUpdateRequestDto updateRequestDto);
+	Long save(UserInfoUpdateRequestDto requestDto);
+
+	@Transactional
+	Long save(UserInterestUpdateRequestDto requestDto);
 
 	
 //	List<User> getAllUser();

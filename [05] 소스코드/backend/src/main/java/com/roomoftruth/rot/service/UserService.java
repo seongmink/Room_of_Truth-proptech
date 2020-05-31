@@ -1,9 +1,10 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.dto.UserInterestUpdateRequestDto;
 import com.roomoftruth.rot.dto.UserResponseDto;
 import com.roomoftruth.rot.dto.UserSaveRequestDto;
-import com.roomoftruth.rot.dto.UserUpdateRequestDto;
+import com.roomoftruth.rot.dto.UserInfoUpdateRequestDto;
 import com.roomoftruth.rot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,15 +24,22 @@ public class UserService implements IUserService {
 		return new UserResponseDto(entity);
 	}
 
-	public Long save(UserSaveRequestDto saveRequestDto) {
-		return userRepository.save(saveRequestDto);
+	@Override
+	public Long save(UserSaveRequestDto requestDto) {
+		return userRepository.save(requestDto);
 	}
 
-	public Long save(UserUpdateRequestDto updateRequestDto) {
-		return userRepository.save(updateRequestDto);
+	@Override
+	public Long save(UserInfoUpdateRequestDto requestDto) {
+		return userRepository.save(requestDto);
 	}
 
-	
+	@Override
+	public Long save(UserInterestUpdateRequestDto requestDto) {
+		return userRepository.save(requestDto);
+	}
+
+
 //	@Autowired
 //	private IUserDao userDao;
 //
