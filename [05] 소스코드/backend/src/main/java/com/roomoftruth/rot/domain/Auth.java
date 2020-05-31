@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Auth {
 
-    NORMAL("ROLE_USER", "일반사용자"),
-	AGENT("ROLE_AGENT", "공인중개사");
+    GENERAL("AUTH_GENERAL", "일반사용자"),
+	AGENT("AUTH_AGENT", "공인중개사");
 
     private final String key;
     private final String title;

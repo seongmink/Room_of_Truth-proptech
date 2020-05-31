@@ -8,7 +8,6 @@ import lombok.Getter;
 @Getter
 public class UserResponseDto {
 
-    private long id;
     private long num;
     private String nickname;
     private Auth auth;
@@ -19,7 +18,6 @@ public class UserResponseDto {
     private String picture;
 
     public UserResponseDto(User entity){
-        this.id = entity.getId();
         this.num = entity.getNum();
         this.nickname = entity.getNickname();
         this.auth = entity.getAuth();

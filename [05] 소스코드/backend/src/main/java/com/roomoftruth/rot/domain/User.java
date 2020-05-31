@@ -1,24 +1,19 @@
 package com.roomoftruth.rot.domain;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.*;
-
+import com.roomoftruth.rot.dto.UserUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
 @Table(name = "user")
 @NoArgsConstructor
-public class User {
+public class User extends BaseTimeEntity {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id")
-	private long id;
-
 	private long num;
 	private String nickname;
 	
@@ -32,12 +27,6 @@ public class User {
 	private String address;
 	private String picture;
 
-	@Column(name = "created_at")
-	private LocalDateTime createdAt;
-
-	@Column(name = "entered_at")
-	private LocalDateTime enteredAt;
-	
 //	@OneToMany(mappedBy = "user")
 //	private List<Search> searches = new ArrayList<>();
 //
@@ -54,8 +43,13 @@ public class User {
 		this.nickname = nickname;
 		this.auth = auth;
 		this.picture = picture;
-		this.createdAt = LocalDateTime.now();
-		this.enteredAt = LocalDateTime.now();
+	}
+
+	public void update(UserUpdateRequestDto updateRequestDto) {
+		this.phoneNum = updateRequestDto.getPhoneNum();
+		this.birth = updateRequestDto.getBirth();
+		this.gender = updateRequestDto.getGender();
+		this.address = updateRequestDto.getAddress();
 	}
 	
 	public String getAuthKey() {

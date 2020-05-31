@@ -1,7 +1,8 @@
 package com.roomoftruth.rot.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roomoftruth.rot.domain.Auth;
-import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.UserResponseDto;
 import com.roomoftruth.rot.dto.UserSaveRequestDto;
 import com.roomoftruth.rot.jwt.IJwtService;
@@ -14,9 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
@@ -73,21 +71,25 @@ public class KakaoAPIService implements IKaKaoAPIService {
 		UserResponseDto user = userService.findByNum(num);
 
 		if (user == null) { // 없는 사용자면?
-
-			User.builder()
-				.num(num)
-				.nickname(nickname)
-				.picture(picture)
-				.auth(Auth.NORMAL).build();
 			logger.info("New Account : " + num);
-//			userService.save(user);
+			UserSaveRequestDto requestDto = UserSaveRequestDto.builder()
+					.num(num)
+					.nickname(nickname)
+					.picture(picture)
+					.auth(Auth.GENERAL).build();
+			userService.save(requestDto);
 		} else {
 			logger.info("UPDATE enteredAt : " + num);
-
-//			userService.updateEntered(user); // 마지막 접속 날짜를 갱신해 주고 토큰 발행
+			// 마지막 접속 날짜를 갱신해 주고 토큰 발행
+			UserSaveRequestDto requestDto = UserSaveRequestDto.builder()
+					.num(num)
+					.nickname(nickname)
+					.picture(picture)
+					.auth(user.getAuth()).build();
+			userService.save(requestDto);
 		}
 
-//		user = userService.getUserByNum(num);
+		user = userService.findByNum(num);
 
 		String jwt = IJwtService.create("user", user, "user");
 		logger.info("JWT : " + jwt);

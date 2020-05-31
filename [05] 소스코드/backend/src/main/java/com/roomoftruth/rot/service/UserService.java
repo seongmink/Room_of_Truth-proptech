@@ -2,6 +2,8 @@ package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.UserResponseDto;
+import com.roomoftruth.rot.dto.UserSaveRequestDto;
+import com.roomoftruth.rot.dto.UserUpdateRequestDto;
 import com.roomoftruth.rot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +17,18 @@ public class UserService implements IUserService {
 	@Override
 	public UserResponseDto findByNum(long num) {
 
-
 		User entity = userRepository.findByNum(num)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않은 회원입니다."));
-		System.out.println(num);
-
-		System.out.println("entity = " + entity);
 
 		return new UserResponseDto(entity);
+	}
+
+	public User save(UserSaveRequestDto saveRequestDto) {
+		return userRepository.save(saveRequestDto.toEntity());
+	}
+
+	public User save(UserUpdateRequestDto updateRequestDto) {
+		return userRepository.save(updateRequestDto);
 	}
 
 //	@Override

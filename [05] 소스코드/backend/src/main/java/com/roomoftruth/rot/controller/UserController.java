@@ -1,26 +1,18 @@
 package com.roomoftruth.rot.controller;
 
-import com.roomoftruth.rot.domain.User;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.roomoftruth.rot.dto.UserResponseDto;
+import com.roomoftruth.rot.dto.UserUpdateRequestDto;
 import com.roomoftruth.rot.jwt.IJwtService;
 import com.roomoftruth.rot.service.IKaKaoAPIService;
 import com.roomoftruth.rot.service.IUserService;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -33,7 +25,7 @@ public class UserController {
 	private IKaKaoAPIService kakaoAPIService;
 
 	@Autowired
-	private IJwtService JwtService;
+	private IJwtService jwtService;
 
 	@Autowired
 	private IUserService userService;
@@ -63,8 +55,8 @@ public class UserController {
 
 		Object result = null;
 
-		if (JwtService.isUsable(access_token)) {
-			result = JwtService.get("user");
+		if (jwtService.isUsable(access_token)) {
+			result = jwtService.get("user");
 		}
 		logger.info(result.toString());
 
@@ -73,29 +65,26 @@ public class UserController {
 
 	@GetMapping("/user/{num}")
 	@ApiOperation("num으로 유저 정보 가져오기")
-	public UserResponseDto getUserByNum(@PathVariable long	num) {
+	public UserResponseDto getUserByNum(@PathVariable long num) {
 		logger.info("GET : /api/users/{num} = " + num);
 		UserResponseDto user = userService.findByNum(num);
 
 		return user;
 	}
 	
-//
-//	@PatchMapping("/user/{num}")
-//	@ApiOperation("유저 내 정보 수정")
-//	public String getAllUser(@RequestBody User userInfo) {
-//		logger.info("PATCH : /api/users/{num} = " + userInfo.getNum());
-//
-//		if (userService.updateUser(userInfo) == 0) {
-//			logger.error("update failed");
-//			return "update failed";
-//		}
-//
-//		User user = userService.getUserByNum(userInfo.getNum());
-//
-//		String jwt = jwtService.create("user", user, "user");
-//
-//		return jwt;
-//	}
+
+	@PatchMapping("/user")
+	@ApiOperation("유저 내 정보 수정")
+	public String getAllUser(@RequestBody UserUpdateRequestDto updateRequestDto) {
+		logger.info("PATCH : /api/users/{} = " + updateRequestDto.getNum());
+
+		userService.save(updateRequestDto);
+
+		UserResponseDto userResponseDto = userService.findByNum(updateRequestDto.getNum());
+
+		String jwt = jwtService.create("user", userResponseDto, "user");
+
+		return jwt;
+	}
 
 }
