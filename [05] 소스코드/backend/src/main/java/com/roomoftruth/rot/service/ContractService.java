@@ -59,7 +59,7 @@ public class ContractService {
     }
 
     /**
-     *  4. latitude, longitude로 건물 정보 찾기 -> 군집 해당하는 목록 모두
+     *  4. latitude, longitude로 건물 정보 찾기 -> 군집 해당하는 목록 모두 (1개씩)
      *  List<Building> getBuildingDetail(Building building);
      *
      */
@@ -116,19 +116,20 @@ public class ContractService {
         return result;
     }
 
+    /**
+     *  8. 해당 주소(도로명, floor, ho) 해당하는 모든 계약, 유지보수 찾기
+     *  List<Building> getDetailList(Building tempBuilding);
+     *
+     *      <select id="getDetailLis" parameterType="building"
+     *         resultType="building">
+     *
+     *         select distinct address, dong, ho ,longitude, latitude from (
+     *         select distinct address, dong, ho ,longitude, latitude from building
+     *         union
+     *         select distinct address,dong,ho,longitude, latitude  from maintenance
+     *         ) as main  where latitude=#{latitude} and longitude=#{longitude}
+     *         order by dong asc, ho asc
+     *     </select>
+     */
+
 }
-/**
- *  해당 주소(도로명, floor, ho) 해당하는 모든 계약, 유지보수 찾기
- * 	List<Building> getDetailList(Building tempBuilding);
- *
- *
- *
- *  latitude, longitude로 유지보수 정보 찾기 -> 군집 해당하는 목록 모두
- *  List<Building> getMaintenanceDetail(Building b);
- *
- *  status 테이블에서 ID로 이미지 가져오기
- * 	String getStatusImage(long status_id);
- *
- *  공인중개사가 등록한 status 이력 가져오기
- * 	List<Maintenance> getAgentContributionM(String license);
- */
