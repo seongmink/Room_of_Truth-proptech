@@ -1,13 +1,13 @@
 package com.roomoftruth.rot.dto;
 
-import com.roomoftruth.rot.domain.Gender;
+import com.roomoftruth.rot.domain.Interest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UserInfoUpdateRequestDto {
+public class UserInfoSaveRequestDto {
 
     private long num;
     private String phoneNum;
@@ -16,7 +16,7 @@ public class UserInfoUpdateRequestDto {
     private String address;
 
     @Builder
-    public UserInfoUpdateRequestDto(long num, String phoneNum, String birth, Gender gender, String address) {
+    public UserInfoSaveRequestDto(long num, String phoneNum, String birth, Gender gender, String address) {
         this.num = num;
         this.phoneNum = phoneNum;
         this.birth = birth;
@@ -24,4 +24,12 @@ public class UserInfoUpdateRequestDto {
         this.address = address;
     }
 
+    public User toUser(){
+        return User;
+
+    }
+
+    public Interest toInterest(){
+        return
+    }
 }

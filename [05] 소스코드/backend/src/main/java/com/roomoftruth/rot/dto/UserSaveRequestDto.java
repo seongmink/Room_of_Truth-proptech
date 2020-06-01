@@ -1,6 +1,5 @@
 package com.roomoftruth.rot.dto;
 
-import com.roomoftruth.rot.domain.Auth;
 import com.roomoftruth.rot.domain.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,11 +11,11 @@ public class UserSaveRequestDto {
 
     private long num;
     private String nickname;
-    private Auth auth;
+    private String auth;
     private String picture;
 
     @Builder
-    public UserSaveRequestDto(long num, String nickname, String picture, Auth auth) {
+    public UserSaveRequestDto(long num, String nickname, String picture, String auth) {
         this.num = num;
         this.nickname = nickname;
         this.picture = picture;
@@ -28,7 +27,7 @@ public class UserSaveRequestDto {
                 .num(num)
                 .nickname(nickname)
                 .picture(picture)
-                .auth(Auth.GENERAL).build();
+                .auth(auth).build();
     }
 
 }

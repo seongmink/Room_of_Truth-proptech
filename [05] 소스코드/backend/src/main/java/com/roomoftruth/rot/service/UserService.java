@@ -1,41 +1,34 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.User;
-import com.roomoftruth.rot.dto.UserInterestUpdateRequestDto;
-import com.roomoftruth.rot.dto.UserResponseDto;
-import com.roomoftruth.rot.dto.UserSaveRequestDto;
-import com.roomoftruth.rot.dto.UserInfoUpdateRequestDto;
+import com.roomoftruth.rot.dto.UserInfoSaveRequestDto;
 import com.roomoftruth.rot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService implements IUserService {
+public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
 
-	@Override
-	public UserResponseDto findByNum(long num) {
+	public User findByNum(long num) {
 
-		User entity = userRepository.findByNum(num)
+		User user = userRepository.findByNum(num)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않은 회원입니다."));
 
-		return new UserResponseDto(entity);
+		return user;
 	}
 
-	@Override
-	public Long save(UserSaveRequestDto requestDto) {
-		return userRepository.save(requestDto);
+	public Long save(User user){
+		return userRepository.save(user).getNum();
 	}
 
-	@Override
-	public Long save(UserInfoUpdateRequestDto requestDto) {
-		return userRepository.save(requestDto);
-	}
+//	public Long save(UserSaveRequestDto requestDto) {
+//		return userRepository.save(requestDto);
+//	}
 
-	@Override
-	public Long save(UserInterestUpdateRequestDto requestDto) {
+	public Long save(UserInfoSaveRequestDto requestDto) {
 		return userRepository.save(requestDto);
 	}
 

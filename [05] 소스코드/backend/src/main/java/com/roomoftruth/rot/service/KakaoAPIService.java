@@ -2,10 +2,8 @@ package com.roomoftruth.rot.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.roomoftruth.rot.domain.Auth;
-import com.roomoftruth.rot.dto.UserResponseDto;
-import com.roomoftruth.rot.dto.UserSaveRequestDto;
-import com.roomoftruth.rot.jwt.IJwtService;
+import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.jwt.JwtService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -19,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class KakaoAPIService implements IKaKaoAPIService {
+public class KakaoAPIService {
 
 	private static final Logger logger = LoggerFactory.getLogger(KakaoAPIService.class);
 
@@ -29,7 +27,7 @@ public class KakaoAPIService implements IKaKaoAPIService {
 	private UserService userService;
 
 	@Autowired
-	private IJwtService IJwtService;
+	private JwtService jwtService;
 
 	public JsonNode getKaKaoUserInfo(String access_Token) {
 		logger.info("KakaoAPIService : getKaKaoUserInfo");
@@ -68,30 +66,24 @@ public class KakaoAPIService implements IKaKaoAPIService {
 			picture = temp + "s" + temp2; // https 작업
 		}
 
-		UserResponseDto user = userService.findByNum(num);
-		UserSaveRequestDto requestDto = null;
+		User user = userService.findByNum(num);
 
 		if (user == null) { // 없는 사용자면?
 			logger.info("New Account : " + num);
-			requestDto = UserSaveRequestDto.builder()
+			user = User.builder()
 					.num(num)
 					.nickname(nickname)
+					.auth("일반사용자")
 					.picture(picture)
-					.auth(Auth.GENERAL).build();
+					.build();
+			userService.save(user);
 		} else {
 			logger.info("UPDATE enteredAt : " + num);
-			requestDto = UserSaveRequestDto.builder()
-					.num(num)
-					.nickname(nickname)
-					.picture(picture)
-					.auth(user.getAuth()).build();
+			user.update(nickname, picture);
 		}
 
-		userService.save(requestDto); // 갱신(저장)하고
+		String jwt = jwtService.create("user", user, "user");
 
-		user = userService.findByNum(num); // 그 번호의 정보를 찾아서 JWT 발행
-
-		String jwt = IJwtService.create("user", user, "user");
 		logger.info("JWT : " + jwt);
 
 		return jwt;

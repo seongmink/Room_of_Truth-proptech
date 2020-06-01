@@ -14,19 +14,22 @@ public class Interest {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "interest_id")
-	private Long id;
+	private Long interestId;
 
+	private String sd;
+	private String sgg;
 	private String first;
 	private String second;
 	private String third;
+	private String birth;
+	private String gender;
 
-	@OneToOne
-	@JoinColumn(name = "user_num")
+	@OneToOne(cascade = CascadeType.ALL)
 	private User user;
-	
+
 	@Builder
-	public Interest(String first, String second, String third) {
+	public Interest(User user, String first, String second, String third) {
+		this.user = user;
 		this.first = first;
 		this.second = second;
 		this.third = third;

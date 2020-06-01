@@ -1,11 +1,10 @@
 package com.roomoftruth.rot.domain;
 
-import javax.persistence.*;
-
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "search")
@@ -15,15 +14,16 @@ public class Search extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "search_id")
-	private long id;
-
-//	@Column(updatable = false, insertable = false, name = "user_id")
-//	private long userId;
+	private long searchId;
 
 	private String keyword;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@ManyToOne(cascade = CascadeType.ALL)
 	private User user;
+
+	@Builder
+	public Search(User user, String keyword) {
+		this.user = user;
+		this.keyword = keyword;
+	}
 }

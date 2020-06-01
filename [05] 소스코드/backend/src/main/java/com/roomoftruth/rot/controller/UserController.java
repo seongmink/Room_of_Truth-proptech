@@ -1,12 +1,12 @@
 package com.roomoftruth.rot.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.dto.UserInfoSaveRequestDto;
 import com.roomoftruth.rot.dto.UserResponseDto;
-import com.roomoftruth.rot.dto.UserInterestUpdateRequestDto;
-import com.roomoftruth.rot.dto.UserInfoUpdateRequestDto;
-import com.roomoftruth.rot.jwt.IJwtService;
-import com.roomoftruth.rot.service.IKaKaoAPIService;
-import com.roomoftruth.rot.service.IUserService;
+import com.roomoftruth.rot.jwt.JwtService;
+import com.roomoftruth.rot.service.KakaoAPIService;
+import com.roomoftruth.rot.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +23,15 @@ public class UserController {
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
-	private IKaKaoAPIService kakaoAPIService;
+	private KakaoAPIService kakaoAPIService;
 
 	@Autowired
-	private IJwtService jwtService;
+	private JwtService jwtService;
 
 	@Autowired
-	private IUserService userService;
+	private UserService userService;
 
-	@PostMapping("/kakaologin")
+	@PostMapping("/user/kakaologin")
 	@ApiOperation("카카오 로그인")
 	public String login(@RequestParam String access_Token) {
 		logger.info("UserController : login");
@@ -49,7 +49,7 @@ public class UserController {
 		return result;
 	}
 
-	@PostMapping("/loginToken")
+	@PostMapping("/user/logintoken")
 	@ApiOperation("토큰 검증")
 	public Object token(@RequestParam String access_token) {
 		logger.info("UserController : token");
@@ -66,17 +66,16 @@ public class UserController {
 
 	@GetMapping("/user/{num}")
 	@ApiOperation("num으로 유저 정보 가져오기")
-	public UserResponseDto getUserByNum(@PathVariable long num) {
+	public User getUserByNum(@PathVariable long num) {
 		logger.info("UserController : getUserByNum / {}", num);
-		UserResponseDto user = userService.findByNum(num);
+		User user = userService.findByNum(num);
 
 		return user;
 	}
-	
 
 	@PatchMapping("/user/info")
 	@ApiOperation("유저 정보 수정")
-	public String updateUser(@RequestBody UserInfoUpdateRequestDto requestDto) {
+	public String updateUser(@RequestBody UserInfoSaveRequestDto requestDto) {
 		logger.info("UserController : updateUser / {}", requestDto.getNum());
 
 		userService.save(requestDto);
@@ -86,20 +85,6 @@ public class UserController {
 		String jwt = jwtService.create("user", userResponseDto, "user");
 
 		return jwt;
-	}
-
-	@PatchMapping("/user/interest")
-	@ApiOperation("유저 선호도 수정")
-	public String updateUserInterest(@RequestBody UserInterestUpdateRequestDto requestDto) {
-		logger.info("UserController : updateUserInterest / {}", requestDto.getNum());
-
-		System.out.println(requestDto.toString());
-		if(userService.save(requestDto) == 0){
-			return "failed";
-		} else {
-			return "success";
-		}
-
 	}
 
 }
