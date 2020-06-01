@@ -1,4 +1,63 @@
 package com.roomoftruth.rot.domain;
 
-public class Contract {
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+@Getter
+@NoArgsConstructor
+public class Contract extends BaseTimeEntity {
+
+    @Id
+    private long contractId;
+
+    @Column(nullable = false)
+    private String address;
+    private String sd;
+    private String sgg;
+    private String emd;
+
+    @Column(nullable = false)
+    private String latitude;
+
+    @Column(nullable = false)
+    private String longitude;
+    private String exclusive;
+    private String floor;
+    private String ho;
+    private String kind;
+    private String detail;
+    private String cost;
+    private String monthly;
+
+    @Column(nullable = false)
+    private String license;
+    private String image;
+
+    @Builder
+    public Contract(long contractId, String address, String sd, String sgg, String emd,
+                    String latitude, String longitude, String exclusive, String floor, String ho,
+                    String kind, String detail, String cost, String monthly, String license, String image){
+        this.contractId = contractId;
+        this.address = address;
+        this.sd = sd;
+        this.sgg = sgg;
+        this.emd = emd;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.exclusive = exclusive;
+        this.floor = floor;
+        this.ho = ho;
+        this.kind = kind;
+        this.detail = detail;
+        this.cost = cost;
+        this.monthly = monthly;
+        this.license = license;
+        this.image = image;
+    }
 }
