@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SearchSaveRequestDto {
 
-    private long num;
+    private long userNum;
     private String keyword;
 
     @Builder
-    public SearchSaveRequestDto(long num, String keyword) {
-        this.num = num;
+    public SearchSaveRequestDto(long userNum, String keyword) {
+        this.userNum = userNum;
         this.keyword = keyword;
     }
 

@@ -4,12 +4,11 @@ import com.roomoftruth.rot.domain.Interest;
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.InterestResponseDto;
 import com.roomoftruth.rot.dto.InterestSaveRequestDto;
+import com.roomoftruth.rot.dto.UserFirstSaveRequestDto;
 import com.roomoftruth.rot.repository.InterestRepository;
 import com.roomoftruth.rot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -28,11 +27,21 @@ public class InterestService {
 		return new InterestResponseDto(interest);
 	}
 
-	@Transactional
 	public Long save(InterestSaveRequestDto requestDto) {
+
+		User user = userRepository.findByNum(requestDto.getUserNum());
+
+		return interestRepository.save(requestDto.toEntity(user)).getInterestId();
+	}
+
+	public Long save(UserFirstSaveRequestDto requestDto){
 
 		User user = userRepository.findByNum(requestDto.getNum());
 
-		return interestRepository.save(requestDto.toEntity(user)).getInterestId();
+		Interest interest = Interest.builder().user(user).sd(requestDto.getSd()).sgg(requestDto.getSgg())
+				.first(requestDto.getFirst()).second(requestDto.getSecond()).third(requestDto.getThird())
+				.gender(requestDto.getGender()).birth(requestDto.getBirth()).build();
+
+		return interestRepository.save(interest).getUser().getNum();
 	}
 }

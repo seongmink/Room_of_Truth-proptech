@@ -46,15 +46,14 @@ public class SearchService {
 
 	public Long search(SearchSaveRequestDto requestDto) {
 
-		User user = userRepository.findByNum(requestDto.getNum());
+		User user = userRepository.findByNum(requestDto.getUserNum());
 
 		Search search = searchRepository.findByUserAndKeyword(user, requestDto.getKeyword());
 
 		if (search == null) {
-
 			search = searchRepository.save(requestDto.toEntity(user));
 		} else {
-			search.logined(LocalDateTime.now());
+			search.updateTime(LocalDateTime.now());
 		}
 
 		return search.getSearchId();

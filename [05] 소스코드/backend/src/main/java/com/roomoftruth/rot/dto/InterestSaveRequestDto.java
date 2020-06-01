@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InterestSaveRequestDto {
 
-    private long num;
+    private long userNum;
     private String sd;
     private String sgg;
     private String first;
@@ -20,8 +20,8 @@ public class InterestSaveRequestDto {
     private String gender;
 
     @Builder
-    public InterestSaveRequestDto(long num, String sd, String sgg, String first, String second, String third, String gender, String birth) {
-        this.num = num;
+    public InterestSaveRequestDto(long userNum, String sd, String sgg, String first, String second, String third, String gender, String birth) {
+        this.userNum = userNum;
         this.sd = sd;
         this.sgg = sgg;
         this.first = first;

@@ -20,7 +20,7 @@ public abstract class BaseTimeEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public void login(LocalDateTime updatedAt) {
+    public void updateTime(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

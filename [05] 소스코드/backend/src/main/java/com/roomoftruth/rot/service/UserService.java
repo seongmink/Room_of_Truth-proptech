@@ -2,7 +2,7 @@ package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Interest;
 import com.roomoftruth.rot.domain.User;
-import com.roomoftruth.rot.dto.UserSaveRequestDto;
+import com.roomoftruth.rot.dto.UserFirstSaveRequestDto;
 import com.roomoftruth.rot.repository.InterestRepository;
 import com.roomoftruth.rot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +22,17 @@ public class UserService {
 		return user;
 	}
 
-	public Long save(UserSaveRequestDto requestDto){
+	public Long save(UserFirstSaveRequestDto requestDto) {
+
 		User user = User.builder().num(requestDto.getNum()).build();
+
 		userRepository.save(user);
 
 		Interest interest = Interest.builder().user(user).sd(requestDto.getSd()).sgg(requestDto.getSgg())
 				.first(requestDto.getFirst()).second(requestDto.getSecond()).third(requestDto.getThird())
 				.gender(requestDto.getGender()).birth(requestDto.getBirth()).build();
-		System.out.println("interest = " + interest);
-		interestRepository.save(interest);
 
-		return user.getNum();
+		return interestRepository.save(interest).getUser().getNum();
 	}
 
 

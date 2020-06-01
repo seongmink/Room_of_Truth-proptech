@@ -35,7 +35,7 @@ public class InterestController {
 	@PatchMapping("/interest")
 	@ApiOperation("유저 관심 정보 수정")
 	public String updateInterest(@RequestBody InterestSaveRequestDto requestDto) {
-		log.info("InterestController : updateInterest / {}", requestDto.getNum());
+		log.info("InterestController : updateInterest / {}", requestDto.getUserNum());
 
 		if(interestService.save(requestDto) == 0) {
 			return "failed";
@@ -43,19 +43,5 @@ public class InterestController {
 			return "success";
 		}
 	}
-
-//	@PatchMapping("/user/info")
-//	@ApiOperation("유저 정보 수정")
-//	public String updateUser(@RequestBody UserInfoSaveRequestDto requestDto) {
-//		logger.info("UserController : updateUser / {}", requestDto.getNum());
-//
-//		userService.save(requestDto);
-//
-//		UserResponseDto userResponseDto = userService.findByNum(requestDto.getNum());
-//
-//		String jwt = jwtService.create("user", userResponseDto, "user");
-//
-//		return jwt;
-//	}
 
 }

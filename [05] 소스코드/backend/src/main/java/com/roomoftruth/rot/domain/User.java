@@ -1,5 +1,6 @@
 package com.roomoftruth.rot.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,16 +22,24 @@ public class User extends BaseTimeEntity {
 	private String picture;
 
 	@OneToMany(mappedBy = "user")
+	@JsonBackReference
 	private List<Search> searches = new ArrayList<>();
 
-	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToOne(mappedBy = "user")
+	@JsonBackReference
 	private Interest interest;
-//
-//	@OneToOne(mappedBy = "user")
-//	private Agent agent;
-//
-	// 찜
-	// 본것도
+
+	@OneToOne(mappedBy = "user")
+	@JsonBackReference
+	private Agent agent;
+
+	@OneToMany(mappedBy = "user")
+	@JsonBackReference
+	private List<Attract> attracts = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user")
+	@JsonBackReference
+	private List<Look> looks = new ArrayList<>();
 
 	@Builder
 	public User(long num, String nickname, String auth, String picture, Interest interest) {

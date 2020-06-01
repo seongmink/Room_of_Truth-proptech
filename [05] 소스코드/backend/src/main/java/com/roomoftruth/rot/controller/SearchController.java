@@ -30,7 +30,7 @@ public class SearchController {
 	@PostMapping("/search")
 	@ApiOperation("키워드 검색")
 	public Long updateSearch(@RequestBody SearchSaveRequestDto requestDto) {
-		log.info("InterestController : updateInterest / {}", requestDto.getNum());
+		log.info("SearchController : updateSearch / {}", requestDto.getUserNum());
 
 		return searchService.search(requestDto);
 	}

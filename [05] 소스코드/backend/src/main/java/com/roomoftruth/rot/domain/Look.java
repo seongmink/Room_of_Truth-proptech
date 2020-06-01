@@ -6,31 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Search extends BaseTimeEntity {
+public class Look extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long searchId;
-
-	private String keyword;
+	private Long lookId;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private User user;
 
 	@Builder
-	public Search(User user, String keyword) {
+	public Look(User user) {
 		this.user = user;
-		this.keyword = keyword;
 	}
-
-	public void updateTime(LocalDateTime now){
-		this.updateTime(now);
-	}
-
 }
