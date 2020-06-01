@@ -1,6 +1,7 @@
 package com.roomoftruth.rot.dto;
 
 import com.roomoftruth.rot.domain.Search;
+import com.roomoftruth.rot.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,18 +10,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SearchSaveRequestDto {
 
-    private long userNum;
+    private long num;
     private String keyword;
 
     @Builder
-    public SearchSaveRequestDto(long userNum, String keyword) {
-        this.userNum = userNum;
+    public SearchSaveRequestDto(long num, String keyword) {
+        this.num = num;
         this.keyword = keyword;
     }
 
-    public Search toEntity() {
+    public Search toEntity(User user) {
         return Search.builder()
-                .userNum(userNum)
+                .user(user)
                 .keyword(keyword).build();
     }
 

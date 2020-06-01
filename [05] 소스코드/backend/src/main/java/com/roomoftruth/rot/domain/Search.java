@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "search")
@@ -26,4 +27,9 @@ public class Search extends BaseTimeEntity {
 		this.user = user;
 		this.keyword = keyword;
 	}
+
+	public void logined(LocalDateTime now){
+		this.login(now);
+	}
+
 }

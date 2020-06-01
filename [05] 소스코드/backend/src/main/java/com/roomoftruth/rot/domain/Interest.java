@@ -28,11 +28,16 @@ public class Interest {
 	private User user;
 
 	@Builder
-	public Interest(User user, String first, String second, String third) {
+	public Interest(User user, String sd, String sgg, String first, String second, String third, String gender, String birth) {
 		this.user = user;
+		this.sd = sd;
+		this.sgg = sgg;
 		this.first = first;
 		this.second = second;
 		this.third = third;
+		this.birth = birth;
+		this.gender = gender;
 	}
-	
+
+
 }

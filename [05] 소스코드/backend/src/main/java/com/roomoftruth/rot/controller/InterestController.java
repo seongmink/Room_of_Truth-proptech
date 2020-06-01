@@ -6,31 +6,25 @@ import com.roomoftruth.rot.jwt.JwtService;
 import com.roomoftruth.rot.service.InterestService;
 import com.roomoftruth.rot.service.UserService;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
+@Slf4j
 public class InterestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(InterestController.class);
-
-	@Autowired
-	private InterestService interestService;
-
-	@Autowired
-	private JwtService jwtService;
-
-	@Autowired
-	private UserService userService;
+	private final InterestService interestService;
+	private final JwtService jwtService;
+	private final UserService userService;
 
 	@GetMapping("/interest/{num}")
-	@ApiOperation("num으로 선호도 가져오기")
+	@ApiOperation("num으로 관심 정보 가져오기")
 	public InterestResponseDto getInterestByNum(@PathVariable long num) {
-		logger.info("InterestController : getInterestByNum / {}", num);
+		log.info("InterestController : getInterestByNum / {}", num);
 		InterestResponseDto interest = interestService.findByNum(num);
 
 		System.out.println("interest = " + interest);
@@ -39,9 +33,9 @@ public class InterestController {
 	}
 
 	@PatchMapping("/interest")
-	@ApiOperation("유저 선호도 수정")
+	@ApiOperation("유저 관심 정보 수정")
 	public String updateInterest(@RequestBody InterestSaveRequestDto requestDto) {
-		logger.info("InterestController : updateInterest / {}", requestDto.getUserNum());
+		log.info("InterestController : updateInterest / {}", requestDto.getNum());
 
 		if(interestService.save(requestDto) == 0) {
 			return "failed";
@@ -49,5 +43,19 @@ public class InterestController {
 			return "success";
 		}
 	}
+
+//	@PatchMapping("/user/info")
+//	@ApiOperation("유저 정보 수정")
+//	public String updateUser(@RequestBody UserInfoSaveRequestDto requestDto) {
+//		logger.info("UserController : updateUser / {}", requestDto.getNum());
+//
+//		userService.save(requestDto);
+//
+//		UserResponseDto userResponseDto = userService.findByNum(requestDto.getNum());
+//
+//		String jwt = jwtService.create("user", userResponseDto, "user");
+//
+//		return jwt;
+//	}
 
 }

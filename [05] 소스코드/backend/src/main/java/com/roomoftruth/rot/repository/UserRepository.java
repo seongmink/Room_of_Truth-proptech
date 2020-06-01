@@ -1,8 +1,6 @@
 package com.roomoftruth.rot.repository;
 
 import com.roomoftruth.rot.domain.User;
-import com.roomoftruth.rot.dto.UserSaveRequestDto;
-import com.roomoftruth.rot.dto.UserInfoSaveRequestDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -10,10 +8,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long>{
 
 	Optional<User> findByNum(long num);
-
-	Long save(UserSaveRequestDto requestDto); // 로그인 시
-
-	Long save(UserInfoSaveRequestDto requestDto); // 사용자 정보 업데이트
 
 //	public List<User> getAllUser();
 //	

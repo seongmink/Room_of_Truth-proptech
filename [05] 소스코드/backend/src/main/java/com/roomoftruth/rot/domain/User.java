@@ -30,6 +30,9 @@ public class User extends BaseTimeEntity {
 //	@OneToOne(mappedBy = "user")
 //	private Agent agent;
 //
+	// 찜
+	// 본것도
+
 	@Builder
 	public User(long num, String nickname, String auth, String picture) {
 		this.num = num;

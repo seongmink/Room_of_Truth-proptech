@@ -1,7 +1,6 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.User;
-import com.roomoftruth.rot.dto.UserInfoSaveRequestDto;
 import com.roomoftruth.rot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,14 +21,6 @@ public class UserService {
 
 	public Long save(User user){
 		return userRepository.save(user).getNum();
-	}
-
-//	public Long save(UserSaveRequestDto requestDto) {
-//		return userRepository.save(requestDto);
-//	}
-
-	public Long save(UserInfoSaveRequestDto requestDto) {
-		return userRepository.save(requestDto);
 	}
 
 
