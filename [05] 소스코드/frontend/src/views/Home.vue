@@ -1,9 +1,9 @@
 <template>
-  <div >
+  <div>
     <Menu></Menu>
 
-    <div id="main-overview" class="container ">
-    <router-view></router-view>
+    <div id="main-overview" class="container">
+      <router-view></router-view>
    
     </div>
     <Footer></Footer>
