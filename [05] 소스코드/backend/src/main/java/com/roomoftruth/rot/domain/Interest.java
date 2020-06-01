@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "interest")
 @Getter
 @NoArgsConstructor
 public class Interest {
@@ -24,7 +23,7 @@ public class Interest {
 	private String birth;
 	private String gender;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private User user;
 
 	@Builder
@@ -39,5 +38,18 @@ public class Interest {
 		this.gender = gender;
 	}
 
-
+	@Override
+	public String toString() {
+		return "Interest{" +
+				"interestId=" + interestId +
+				", sd='" + sd + '\'' +
+				", sgg='" + sgg + '\'' +
+				", first='" + first + '\'' +
+				", second='" + second + '\'' +
+				", third='" + third + '\'' +
+				", birth='" + birth + '\'' +
+				", gender='" + gender + '\'' +
+				", user=" + user +
+				'}';
+	}
 }

@@ -19,7 +19,10 @@ public class InterestService {
 	private final UserRepository userRepository;
 
 	public InterestResponseDto findByNum(Long num) {
-		Interest interest = interestRepository.findByNum(num)
+
+		User user = userRepository.findByNum(num);
+
+		Interest interest = interestRepository.findByUser(user)
 				.orElseThrow(() -> new IllegalArgumentException("관심 정보 내역이 없습니다. num = " + num));
 
 		return new InterestResponseDto(interest);
@@ -28,8 +31,7 @@ public class InterestService {
 	@Transactional
 	public Long save(InterestSaveRequestDto requestDto) {
 
-		User user = userRepository.findByNum(requestDto.getNum())
-				.orElseThrow(() -> new IllegalArgumentException("해당 회원이 없습니다. num = " + requestDto.getNum()));
+		User user = userRepository.findByNum(requestDto.getNum());
 
 		return interestRepository.save(requestDto.toEntity(user)).getInterestId();
 	}

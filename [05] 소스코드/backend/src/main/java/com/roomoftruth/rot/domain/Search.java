@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "search")
 @Getter
 @NoArgsConstructor
 public class Search extends BaseTimeEntity {

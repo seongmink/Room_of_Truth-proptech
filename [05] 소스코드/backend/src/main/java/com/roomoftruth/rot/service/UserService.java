@@ -1,26 +1,38 @@
 package com.roomoftruth.rot.service;
 
+import com.roomoftruth.rot.domain.Interest;
 import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.dto.UserSaveRequestDto;
+import com.roomoftruth.rot.repository.InterestRepository;
 import com.roomoftruth.rot.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
+	private final InterestRepository interestRepository;
 
 	public User findByNum(long num) {
 
-		User user = userRepository.findByNum(num)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않은 회원입니다."));
+		User user = userRepository.findByNum(num);
 
 		return user;
 	}
 
-	public Long save(User user){
-		return userRepository.save(user).getNum();
+	public Long save(UserSaveRequestDto requestDto){
+		User user = User.builder().num(requestDto.getNum()).build();
+		userRepository.save(user);
+
+		Interest interest = Interest.builder().user(user).sd(requestDto.getSd()).sgg(requestDto.getSgg())
+				.first(requestDto.getFirst()).second(requestDto.getSecond()).third(requestDto.getThird())
+				.gender(requestDto.getGender()).birth(requestDto.getBirth()).build();
+		System.out.println("interest = " + interest);
+		interestRepository.save(interest);
+
+		return user.getNum();
 	}
 
 

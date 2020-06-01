@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table(name = "user")
 @NoArgsConstructor
 public class User extends BaseTimeEntity {
 	
@@ -24,7 +23,7 @@ public class User extends BaseTimeEntity {
 	@OneToMany(mappedBy = "user")
 	private List<Search> searches = new ArrayList<>();
 
-	@OneToOne(mappedBy = "user")
+	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
 	private Interest interest;
 //
 //	@OneToOne(mappedBy = "user")
@@ -34,11 +33,12 @@ public class User extends BaseTimeEntity {
 	// 본것도
 
 	@Builder
-	public User(long num, String nickname, String auth, String picture) {
+	public User(long num, String nickname, String auth, String picture, Interest interest) {
 		this.num = num;
 		this.nickname = nickname;
 		this.auth = auth;
 		this.picture = picture;
+		this.interest = interest;
 	}
 
 	public void update(String nickname, String picture) {

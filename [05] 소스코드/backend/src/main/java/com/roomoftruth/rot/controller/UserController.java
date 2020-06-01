@@ -3,6 +3,7 @@ package com.roomoftruth.rot.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.UserResponseDto;
+import com.roomoftruth.rot.dto.UserSaveRequestDto;
 import com.roomoftruth.rot.jwt.JwtService;
 import com.roomoftruth.rot.service.KakaoAPIService;
 import com.roomoftruth.rot.service.UserService;
@@ -26,10 +27,16 @@ public class UserController {
 
 	@PostMapping("/user/kakaologin")
 	@ApiOperation("카카오 로그인")
-	public String login(@RequestParam String access_Token) {
-		log.info("UserController : login");
+	public String kakaoLogin(@RequestParam String access_Token) {
+		log.info("UserController : kakaoLogin");
 
 		JsonNode json = kakaoAPIService.getKaKaoUserInfo(access_Token);
+
+		long num = json.get("id").asLong();
+
+		if(userService.findByNum(num) == null) {
+			return String.valueOf(num);
+		}
 
 		String result = null;
 
@@ -64,6 +71,16 @@ public class UserController {
 		User entity = userService.findByNum(num);
 
 		return new UserResponseDto(entity);
+	}
+
+	@PostMapping("/user")
+	@ApiOperation("유저 정보 저장하기")
+	public Long saveUser(@RequestBody UserSaveRequestDto requestDto) {
+		log.info("UserController : saveUser / {}", requestDto.getNum());
+
+		System.out.println("requestDto = " + requestDto);
+
+		return userService.save(requestDto);
 	}
 
 }

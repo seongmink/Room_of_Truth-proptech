@@ -23,7 +23,10 @@ public class SearchService {
 	private final UserRepository userRepository;
 
 	public List<SearchResponseDto> findByNum(Long num) {
-		List<Search> temp = searchRepository.findByNum(num);
+
+		User user = userRepository.findByNum(num);
+
+		List<Search> temp = searchRepository.findByUser(user);
 
 		List<SearchResponseDto> searches =  new ArrayList<>();
 
@@ -43,12 +46,11 @@ public class SearchService {
 
 	public Long search(SearchSaveRequestDto requestDto) {
 
-		Search search = searchRepository.findByNumAndKeyword(requestDto.getNum(), requestDto.getKeyword());
+		User user = userRepository.findByNum(requestDto.getNum());
 
+		Search search = searchRepository.findByUserAndKeyword(user, requestDto.getKeyword());
 
 		if (search == null) {
-			User user = userRepository.findByNum(requestDto.getNum())
-					.orElseThrow(() -> new IllegalArgumentException("정보가 없어염~~"));
 
 			search = searchRepository.save(requestDto.toEntity(user));
 		} else {

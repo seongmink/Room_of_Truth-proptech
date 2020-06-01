@@ -68,19 +68,7 @@ public class KakaoAPIService {
 
 		User user = userService.findByNum(num);
 
-		if (user == null) { // 없는 사용자면?
-			logger.info("New Account : " + num);
-			user = User.builder()
-					.num(num)
-					.nickname(nickname)
-					.auth("일반사용자")
-					.picture(picture)
-					.build();
-			userService.save(user);
-		} else {
-			logger.info("UPDATE enteredAt : " + num);
-			user.update(nickname, picture);
-		}
+		user.update(nickname, picture);
 
 		String jwt = jwtService.create("user", user, "user");
 

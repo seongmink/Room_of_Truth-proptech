@@ -3,11 +3,9 @@ package com.roomoftruth.rot.repository;
 import com.roomoftruth.rot.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
 public interface UserRepository extends JpaRepository<User, Long>{
 
-	Optional<User> findByNum(long num);
+	User findByNum(long num);
 
 //	public List<User> getAllUser();
 //	
