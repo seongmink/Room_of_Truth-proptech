@@ -7,13 +7,17 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Status extends BaseTimeEntity {
+@Table(name = "status")
+public class Status {
 
     @Id
+    @Column(name = "status_id")
     private long statusId;
 
     @Column(nullable = false)
@@ -37,6 +41,8 @@ public class Status extends BaseTimeEntity {
     @Column(nullable = false)
     private String license;
     private String image;
+    @Column(name = "report_date")
+    private LocalDateTime reportDate;
 
     @Builder
     public Status(long statusId, String address, String sd, String sgg, String emd,
@@ -57,5 +63,6 @@ public class Status extends BaseTimeEntity {
         this.cost = cost;
         this.license = license;
         this.image = image;
+        this.reportDate = LocalDateTime.now();
     }
 }
