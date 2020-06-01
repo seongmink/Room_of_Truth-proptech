@@ -7,13 +7,16 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Contract extends BaseTimeEntity {
+@Table(name = "contract")
+public class Contract {
 
-    @Id
+    @Id @Column(name = "contract_id")
     private long contractId;
 
     @Column(nullable = false)
@@ -39,6 +42,9 @@ public class Contract extends BaseTimeEntity {
     private String license;
     private String image;
 
+    @Column(name = "contract_date")
+    private LocalDateTime contractDate;
+
     @Builder
     public Contract(long contractId, String address, String sd, String sgg, String emd,
                     String latitude, String longitude, String exclusive, String floor, String ho,
@@ -59,5 +65,6 @@ public class Contract extends BaseTimeEntity {
         this.monthly = monthly;
         this.license = license;
         this.image = image;
+        this.contractDate = LocalDateTime.now();
     }
 }

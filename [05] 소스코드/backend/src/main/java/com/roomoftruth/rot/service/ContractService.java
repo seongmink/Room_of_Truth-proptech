@@ -118,7 +118,7 @@ public class ContractService {
 
     /**
      *  8. 해당 주소(도로명, floor, ho) 해당하는 모든 계약, 유지보수 찾기
-     *  List<Building> getDetailList(Building tempBuilding);
+     *  List<ContractResponseDto> findAllDetails(String latitude, String longitude);
      *
      *      <select id="getDetailLis" parameterType="building"
      *         resultType="building">
@@ -131,5 +131,14 @@ public class ContractService {
      *         order by dong asc, ho asc
      *     </select>
      */
+//    public List<ContractResponseDto> findAllDetails(String latitude, String longitude){
+//        List<ContractResponseDto> result = new ArrayList<>();
+//        List<Contract> data = contractRepository.findAllDetails(latitude, longitude);
+//        for (Contract contract : data) {
+//            result.add(new ContractResponseDto(contract));
+//        }
+//        return result;
+//    }
+
 
 }

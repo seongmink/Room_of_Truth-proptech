@@ -1,147 +1,96 @@
 package com.roomoftruth.rot.controller;
 
+import com.roomoftruth.rot.domain.Contract;
+import com.roomoftruth.rot.domain.Status;
+import com.roomoftruth.rot.dto.ContractSaveRequestDto;
 import com.roomoftruth.rot.service.ContractService;
+import com.roomoftruth.rot.service.StatusService;
+import io.swagger.annotations.ApiOperation;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
 @RequiredArgsConstructor
+@RestController
 public class ContractController {
 
     private final ContractService contractService;
+    private final StatusService statusService;
 
+    @PostMapping("/api/v1/buildings")
+    @ApiOperation("계약 이력 등록하기")
+    public ResponseEntity<Object> save(@RequestBody ContractSaveRequestDto requestDto){
+        System.out.println("=== POST : /api/building ====");
+        long result = contractService.saveContract(requestDto);
 
+        return new ResponseEntity<Object>(String.valueOf(result), HttpStatus.OK);
+    }
 
+    @GetMapping("/api/v1/building")
+    @ApiOperation("조회하기에 모든 이력 뿌려주기")
+    public List<FindAllContract> getAllContracts(){
+        System.out.println("=== GET : /api/building ====");
 
-//    @PostMapping("/building")
-//    @ApiOperation("패브릭과 DB에 건물 정보 저장")
-//    public ResponseEntity<Object> registBuildFabric(@RequestBody Building building) throws IOException {
-//        logger.info("POST : /api/building");
-//
-//        if(building.getAddress().equals("string")) {
-//            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-//        }
-//
-//        // PK로 사용할 num 값 DB로부터 받아오기
-//        int num = buildingService.getLastCount();
-//        String fbNum = "BB" + num;
-//
-//        // 이미지 이름 변경
-//        if (building.getImage() == null || building.getImage().equals("")) {
-//            building.setImage("default.png");
-//        } else {
-//            building.setImage(FileUploadDownloadService.newFileName(building.getImage()));
-//        }
-//
-//        FabricRecord fb = new FabricRecord();
-//        logger.info("Request Building Data : " + building.toString());
-//
-//        fb.setNum(fbNum);
-//        fb.setAddress(building.getAddress());
-//        fb.setDong(building.getDong());
-//        fb.setHo(building.getHo());
-//        fb.setLatitude(building.getLatitude());
-//        fb.setLongitude(building.getLongitude());
-//        fb.setSupply(building.getSupply());
-//        fb.setExclusive(building.getExclusive());
-//        fb.setDetails(building.getDetails());
-//        fb.setCost(building.getCost());
-//        fb.setStartDate(building.getStartDate());
-//        fb.setEndDate(building.getEndDate());
-//        fb.setName(building.getName());
-//        fb.setLicense(building.getLicense());
-//        fb.setImage(building.getImage());
-//        fb.setCreatedAt("0");
-//        fb.setExpiredAt("0");
-//
-//        // 빈 데이터에 대한 에러처리
-//        if (fb.getEndDate() == null || fb.getEndDate().equals("")) {
-//            fb.setEndDate("-");
-//        }
-//
-//        if (fb.getDong() == null || fb.getDong().equals("")) {
-//            fb.setDong("-");
-//        }
-//
-//        if (fb.getHo() == null || fb.getHo().equals("")) {
-//            fb.setHo("-");
-//        }
-//
-//        logger.info("원장 저장 시작");
-//        logger.info("원장에 저장할 데이터 : " + fb.toString());
-//        boolean result = fabricService.registerBuildingInfo(fb);
-//        if (result == true) {
-//            // 디비저장해주자
-//            logger.info("원장 저장 성공");
-//            if (building.getDong() == null) {
-//                building.setDong("");
-//            }
-//            // <createBuilding> Test 성공했음 !, 04-27
-//            if (buildingService.createBuilding(building) == 0) {
-//                logger.debug("createBuilding failed");
-//                return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-//            }
-//
-//            // <countUp> xml 확인했음 !, 04-27
-//            if (agentService.countUp(building.getLicense()) == 0) {
-//                logger.debug("countUp failed");
-//                return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-//            }
-//
-//            // <pointUp> xml 확인했음 !, 04-27
-//            if (agentService.pointUp(building.getLicense()) == 0) {
-//                logger.debug("pointUp failed");
-//                return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-//            }
-//            logger.info("DB 저장 성공");
-//            return new ResponseEntity<Object>(String.valueOf(building.getNum()), HttpStatus.OK);
-//        } else {
-//            logger.info("원장 저장 실패!!");
-//            logger.info("실패한 등록 빌딩 데이터 : " + fb.toString());
-//
-//            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
+        List<FindAllContract> result = new ArrayList<>();
+        HashSet<FindAllContract> set = new HashSet<>();
 
-//    @GetMapping("/building")
-//    @ApiOperation("프론트에서 건물 이력 정보 받기")
-//    public List<Building> getAllBuilding() throws IOException {
-//        logger.info("GET : /api/building");
-//
-//        List<Building> result = new ArrayList<>();
-//        HashSet<Building> set = new HashSet<>();
-//
-//        List<Building> bTemp = buildingService.getAllBuilding();
-//        List<Maintenance> mTemp = maintenanceService.getAllMaintenance();
-//
-//        for (int i = 0; i < bTemp.size(); i++) {
-//            Building b = new Building();
-//            b.setAddress(bTemp.get(i).getAddress());
-//            b.setDong(bTemp.get(i).getDong());
-//            b.setHo(bTemp.get(i).getHo());
-//            b.setLatitude(bTemp.get(i).getLatitude());
-//            b.setLongitude(bTemp.get(i).getLongitude());
-//            set.add(b);
-//        }
-//
-//        for (int i = 0; i < mTemp.size(); i++) {
-//            Building b = new Building();
-//            b.setAddress(mTemp.get(i).getAddress());
-//            b.setDong(mTemp.get(i).getDong());
-//            b.setHo(mTemp.get(i).getHo());
-//            b.setLatitude(mTemp.get(i).getLatitude());
-//            b.setLongitude(mTemp.get(i).getLongitude());
-//            set.add(b);
-//        }
-//
-//        Iterator<Building> it = set.iterator();
-//
-//        while(it.hasNext()) {
-//            result.add(it.next());
-//        }
-//
-//        return result;
-//    }
+        List<Contract> contractTemp = contractService.findAll();
+        List<Status> statusTemp = statusService.findAll();
+
+        for(int i = 0; i < contractTemp.size(); i++){
+            FindAllContract findAllContract = new FindAllContract();
+            Contract temp = contractTemp.get(i);
+            findAllContract.setAddress(temp.getAddress());
+            findAllContract.setFloor(temp.getFloor());
+            findAllContract.setHo(temp.getHo());
+            findAllContract.setLatitude(temp.getLatitude());
+            findAllContract.setLongitude(temp.getLongitude());
+            set.add(findAllContract);
+        }
+
+        for(int i = 0; i < statusTemp.size(); i++){
+            FindAllContract findAllContract = new FindAllContract();
+            Status temp = statusTemp.get(i);
+            findAllContract.setAddress(temp.getAddress());
+            findAllContract.setFloor(temp.getFloor());
+            findAllContract.setHo(temp.getHo());
+            findAllContract.setLatitude(temp.getLatitude());
+            findAllContract.setLongitude(temp.getLongitude());
+            set.add(findAllContract);
+        }
+
+        Iterator<FindAllContract> it = set.iterator();
+
+        while(it.hasNext()){
+            result.add(it.next());
+        }
+        return result;
+    }
+
+    @Data
+    static class FindAllContract {
+        private String address;
+        private String floor;
+        private String ho;
+        private String latitude;
+        private String longitude;
+    }
+
+//    @PostMapping("/building/detail")
+//    @ApiOperation("건물 상세 정보 뿌려주기")
+/**
+ * 구 현 해 야 됨 !
+ */
 
 //    @PostMapping("/building/detail") // 모달에서는 이미지가 필요함 ^^
 //    @ApiOperation("건물 상세 정보 뿌려주기")
@@ -298,3 +247,4 @@ public class ContractController {
 //        return result;
 //    }
 }
+
