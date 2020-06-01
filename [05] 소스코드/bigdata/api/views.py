@@ -12,7 +12,8 @@ from api import models, serializers
 # import urllib.request
 # import json
 from django.db.models import Avg
-from collections import OrderedDict
+from datetime import datetime
+from django.db.models import Q
 
 class SmallPagination(PageNumberPagination):
     page_size = 10
@@ -116,3 +117,98 @@ class BuildingChart(APIView, PaginationHandlerMixin):
             else:
                 return Response("mm(매매),js(전세),ws(월세) 중 하나를 입력해주세요",status=status.HTTP_400_BAD_REQUEST)
 
+
+# 빌딩 아이디를 이용해서 around받아오기
+class BuildingAround(APIView, PaginationHandlerMixin):
+
+    def get(self, request, pk):
+        building = get_object_or_404(models.Building, pk=pk)
+        # print(building.address)
+        instance = models.Around.objects.get(address=building.address)
+        serializer = serializers.AroundSerializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# 나이대에 따른 age
+class rankByAge(APIView, PaginationHandlerMixin):
+
+    def get(self, request, pk):
+        user = get_object_or_404(models.User, pk=pk)
+        curr_year = datetime.today().year
+        gen = ((curr_year - user.birth+1)//10)*10 # 사용자의 연령대
+        start = curr_year+1-gen
+        end = start-9
+        print(str(start) +" ~ "+str(end))
+        users = models.User.objects.filter(birth__gte=end).filter(birth__lte=start)
+        q = Q()
+        
+        for u in users:
+            q.add(Q(user=u.num), q.OR)
+        instance = models.Favorite.objects.filter(q).order_by('building')
+        # print(str(instance.query))
+        # TODO : 관심지역 한정 필터링
+        for ins in instance:
+            print(ins.fav_building.all())
+        print("-----------")
+        queryset = instance.values_list('building').annotate(sc = Avg('score')).order_by('-sc')
+        # TODO : 조회수 합쳐서 정렬해야함
+        result = []
+        if len(queryset) <3:
+            pass
+        else:
+            for q in  queryset[:3]:
+                b = models.Building.objects.get(pk=q[0])
+                result.append({
+                    "num" : q[0],
+                    "name" : b.address,
+                    "floor":b.floor,
+                    "ho": b.ho,
+                    "image": b.image
+                })
+
+        return Response(result, status=status.HTTP_200_OK)
+
+
+# 관심지역, 카테고리에 따른 리스트 보여주기(sort)
+class Prefer(APIView):
+
+    def get(self, request, format=None, *args, **kwargs):
+
+        sgg = request.query_params.get("sgg", None)
+        sd = request.query_params.get("sd",None)
+        cate = request.query_params.get("cate",None)
+
+        cate_name = {"gt":"trans","mt":"comforts","ed":"education","md":"medical","fc":"eatery","ct":"culture"}
+        if sgg is None or sd is None or cate is None or cate not in cate_name:
+            return Response("값 입력 필요", status=  status.HTTP_400_BAD_REQUEST)
+        addr = sd+" "+sgg
+        cat = cate_name[cate]
+        instance = models.Around.objects.filter(address__contains=addr).order_by('-'+cat)
+        # serializer = serializers.AroundSerializer(instance, many=True)
+        # print(serializer.data)
+        results = []
+        for inst in instance[:6]:
+            addr = inst.address
+            building = models.Building.objects.filter(address=addr)
+            # TODO : building 중에서 하나 뽑기(평점, 조회수 기반)
+            # 지금 building들이 있어
+            # favorite에서 building에 해당하는 평균평점을 구해
+            # 가장 높은 building을 구해 -> 리턴대상
+            b = building[:1].get()
+            print(b.address)
+            data = {
+                "num":b.num,
+                "name":b.address,
+                "floor":b.floor,
+                "ho":b.ho,
+                "image":b.image,
+                "trans":inst.trans,
+                "comforts":inst.comforts,
+                "education":inst.education,
+                "medical":inst.medical,
+                "eatery":inst.eatery,
+                "culture":inst.culture
+            }
+            results.append(data)
+            
+        return Response(results, status=status.HTTP_200_OK)

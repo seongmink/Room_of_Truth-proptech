@@ -29,5 +29,11 @@ urlpatterns = [
 
    path('buildings/', views.Building.as_view()),
    path('buildings/<int:pk>', views.BuildingChart.as_view()),
+   
+   path('arounds/<int:pk>/', views.BuildingAround.as_view()),
+   # 나이대에 따른 평점 순위(user id)
+   path('rank/age/<int:pk>/', views.rankByAge.as_view()),
+   
+   path('prefer/', views.Prefer.as_view()),
     
 ]

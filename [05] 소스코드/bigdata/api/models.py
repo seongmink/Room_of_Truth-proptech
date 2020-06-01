@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+
 class Address(models.Model):
     num = models.AutoField(primary_key=True)
     roadaddress = models.CharField(db_column='roadAddress', unique=True, max_length=100, blank=True, null=True)  # Field name made lowercase.
@@ -17,7 +18,7 @@ class Address(models.Model):
 
 
 class Agent(models.Model):
-    num = models.OneToOneField('User', models.DO_NOTHING, db_column='num', primary_key=True)
+    num = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=45, blank=True, null=True)
     representative = models.CharField(max_length=45, blank=True, null=True)
     license = models.CharField(max_length=45, blank=True, null=True)
@@ -35,7 +36,7 @@ class Agent(models.Model):
 
 
 class Around(models.Model):
-    num = models.AutoField(primary_key=True)
+    around_id = models.BigAutoField(primary_key=True)
     address = models.CharField(unique=True, max_length=100, blank=True, null=True)
     trans = models.IntegerField(blank=True, null=True)
     comforts = models.IntegerField(blank=True, null=True)
@@ -74,15 +75,41 @@ class Building(models.Model):
         db_table = 'building'
 
 
+class Favorite(models.Model):
+    num = models.AutoField(primary_key=True)
+    score = models.IntegerField()
+    building = models.ForeignKey(Building, models.DO_NOTHING, db_column='building', related_name="fav_building")
+    user = models.ForeignKey('User', models.DO_NOTHING, db_column='user', related_name="fav_user")
+
+    class Meta:
+        managed = False
+        db_table = 'favorite'
+
+
+class Interest(models.Model):
+    interest_id = models.BigAutoField(primary_key=True)
+    user_num = models.ForeignKey('User', models.DO_NOTHING, db_column='user_num')
+    first = models.CharField(max_length=45, blank=True, null=True)
+    second = models.CharField(max_length=45, blank=True, null=True)
+    third = models.CharField(max_length=45, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'interest'
+
+
 class Search(models.Model):
-    num = models.OneToOneField('User', models.DO_NOTHING, db_column='num', primary_key=True)
-    keyword = models.CharField(max_length=100)
+    search_id = models.BigAutoField(primary_key=True)
+    user_num = models.BigIntegerField()
+    keyword = models.CharField(max_length=100, blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+    updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
+    user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'search'
-        unique_together = (('num', 'keyword'),)
 
 
 class User(models.Model):
@@ -90,12 +117,12 @@ class User(models.Model):
     nickname = models.CharField(max_length=45, blank=True, null=True)
     auth = models.CharField(max_length=10, blank=True, null=True)
     phonenum = models.CharField(db_column='phoneNum', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    age = models.IntegerField(blank=True, null=True)
+    birth = models.IntegerField(blank=True, null=True)
     gender = models.CharField(max_length=4, blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
     picture = models.CharField(max_length=200, blank=True, null=True)
     createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
-    enteredat = models.DateTimeField(db_column='enteredAt', blank=True, null=True)  # Field name made lowercase.
+    updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
