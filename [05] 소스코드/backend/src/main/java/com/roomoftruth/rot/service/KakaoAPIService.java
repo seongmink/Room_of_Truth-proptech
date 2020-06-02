@@ -2,10 +2,9 @@ package com.roomoftruth.rot.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.roomoftruth.rot.domain.Auth;
+import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.UserResponseDto;
-import com.roomoftruth.rot.dto.UserSaveRequestDto;
-import com.roomoftruth.rot.jwt.IJwtService;
+import com.roomoftruth.rot.jwt.JwtService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -15,11 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
 @Service
-public class KakaoAPIService implements IKaKaoAPIService {
+public class KakaoAPIService {
 
 	private static final Logger logger = LoggerFactory.getLogger(KakaoAPIService.class);
 
@@ -29,7 +29,7 @@ public class KakaoAPIService implements IKaKaoAPIService {
 	private UserService userService;
 
 	@Autowired
-	private IJwtService IJwtService;
+	private JwtService jwtService;
 
 	public JsonNode getKaKaoUserInfo(String access_Token) {
 		logger.info("KakaoAPIService : getKaKaoUserInfo");
@@ -53,6 +53,7 @@ public class KakaoAPIService implements IKaKaoAPIService {
 		return returnNode;
 	}
 
+	@Transactional
 	public String redirectToken(JsonNode json) {
 		logger.info("KakaoAPISerice : redirectToken");
 
@@ -68,30 +69,13 @@ public class KakaoAPIService implements IKaKaoAPIService {
 			picture = temp + "s" + temp2; // https 작업
 		}
 
-		UserResponseDto user = userService.findByNum(num);
-		UserSaveRequestDto requestDto = null;
+		User user = userService.findByNum(num);
+		user.update(nickname, picture);
 
-		if (user == null) { // 없는 사용자면?
-			logger.info("New Account : " + num);
-			requestDto = UserSaveRequestDto.builder()
-					.num(num)
-					.nickname(nickname)
-					.picture(picture)
-					.auth(Auth.GENERAL).build();
-		} else {
-			logger.info("UPDATE enteredAt : " + num);
-			requestDto = UserSaveRequestDto.builder()
-					.num(num)
-					.nickname(nickname)
-					.picture(picture)
-					.auth(user.getAuth()).build();
-		}
+		UserResponseDto userResponseDto = new UserResponseDto(user);
 
-		userService.save(requestDto); // 갱신(저장)하고
+		String jwt = jwtService.create("user", userResponseDto, "user");
 
-		user = userService.findByNum(num); // 그 번호의 정보를 찾아서 JWT 발행
-
-		String jwt = IJwtService.create("user", user, "user");
 		logger.info("JWT : " + jwt);
 
 		return jwt;

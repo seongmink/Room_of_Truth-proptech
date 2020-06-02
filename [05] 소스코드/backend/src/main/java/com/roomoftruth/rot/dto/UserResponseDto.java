@@ -1,30 +1,28 @@
 package com.roomoftruth.rot.dto;
 
-import com.roomoftruth.rot.domain.Auth;
-import com.roomoftruth.rot.domain.Gender;
+import com.roomoftruth.rot.domain.Interest;
+import com.roomoftruth.rot.domain.Search;
 import com.roomoftruth.rot.domain.User;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 public class UserResponseDto {
 
     private long num;
     private String nickname;
-    private Auth auth;
-    private String phoneNum;
-    private String birth;
-    private Gender gender;
-    private String address;
+    private String auth;
     private String picture;
+    private List<Search> searches;
+    private Interest interest;
 
     public UserResponseDto(User entity){
         this.num = entity.getNum();
         this.nickname = entity.getNickname();
         this.auth = entity.getAuth();
-        this.phoneNum = entity.getPhoneNum();
-        this.birth = entity.getBirth();
-        this.gender = entity.getGender();
-        this.address = entity.getAddress();
         this.picture = entity.getPicture();
+        this.searches = entity.getSearches();
+        this.interest = entity.getInterest();
     }
 }

@@ -1,37 +1,40 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.User;
-import com.roomoftruth.rot.dto.UserResponseDto;
-import com.roomoftruth.rot.dto.UserSaveRequestDto;
-import com.roomoftruth.rot.dto.UserUpdateRequestDto;
+import com.roomoftruth.rot.dto.UserFirstSaveRequestDto;
+import com.roomoftruth.rot.repository.InterestRepository;
 import com.roomoftruth.rot.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService implements IUserService {
+@RequiredArgsConstructor
+public class UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
+	private final InterestRepository interestRepository;
 
-	@Override
-	public UserResponseDto findByNum(long num) {
+	public User findByNum(long num) {
 
-		User entity = userRepository.findByNum(num)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않은 회원입니다."));
+		User user = userRepository.findByNum(num);
 
-		return new UserResponseDto(entity);
+		return user;
 	}
 
-	public Long save(UserSaveRequestDto saveRequestDto) {
-		return userRepository.save(saveRequestDto);
+	public Long save(UserFirstSaveRequestDto requestDto) {
+
+		User newUser = User.builder().num(requestDto.getNum()).build();
+
+		userRepository.save(newUser);
+
+		User user = findByNum(requestDto.getNum());
+		if(requestDto.getSd().equals("세종특별자치시"))
+			requestDto.changeSgg();
+
+		return interestRepository.save(requestDto.toEntity(user)).getUser().getNum();
 	}
 
-	public Long save(UserUpdateRequestDto updateRequestDto) {
-		return userRepository.save(updateRequestDto);
-	}
 
-	
 //	@Autowired
 //	private IUserDao userDao;
 //
