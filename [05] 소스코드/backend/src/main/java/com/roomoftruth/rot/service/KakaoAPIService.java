@@ -3,6 +3,7 @@ package com.roomoftruth.rot.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.dto.UserResponseDto;
 import com.roomoftruth.rot.jwt.JwtService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
@@ -51,6 +53,7 @@ public class KakaoAPIService {
 		return returnNode;
 	}
 
+	@Transactional
 	public String redirectToken(JsonNode json) {
 		logger.info("KakaoAPISerice : redirectToken");
 
@@ -67,10 +70,11 @@ public class KakaoAPIService {
 		}
 
 		User user = userService.findByNum(num);
-
 		user.update(nickname, picture);
 
-		String jwt = jwtService.create("user", user, "user");
+		UserResponseDto userResponseDto = new UserResponseDto(user);
+
+		String jwt = jwtService.create("user", userResponseDto, "user");
 
 		logger.info("JWT : " + jwt);
 

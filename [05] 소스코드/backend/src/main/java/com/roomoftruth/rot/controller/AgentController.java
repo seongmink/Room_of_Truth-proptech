@@ -1,12 +1,15 @@
 package com.roomoftruth.rot.controller;
 
+import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.dto.AgentSaveRequestDto;
+import com.roomoftruth.rot.dto.UserResponseDto;
 import com.roomoftruth.rot.jwt.JwtService;
+import com.roomoftruth.rot.service.AgentService;
 import com.roomoftruth.rot.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -16,31 +19,37 @@ import org.springframework.web.bind.annotation.RestController;
 public class AgentController {
 
 	private final UserService userService;
-//	private final AgentService agentService;
+	private final AgentService agentService;
 	private final JwtService jwtService;
 
+	@PostMapping("/agent/check")
+	@ApiOperation("공인중개사 존재 여부 확인")
+	public String checkAgentLicense(@RequestParam String license) {
+		log.info("AgentController : checkAgentLicense / {}", license);
 
-//	@PostMapping("/agent")
-//	@ApiOperation("공인중개사 등록")
-//	public String createAgent(@RequestBody AgentSaveRequestDto requestDto) {
-//		log.info("AgentController : createAgent / {}", requestDto.getNum());
-//
-//		if (agentService.getAgent(agent) == null) {
-//			logger.info("New Agent : " + agent.getNum());
-//			agentService.createAgent(agent);
-//		} else {
-//			logger.info("Existing Agent : " + agent.getNum());
-//			agentService.updateAgent(agent);
-//		}
-//
-//		userService.obtainAuth(agent.getNum());
-//
-//		User user = userService.getUserByNum(agent.getNum());
-//
-//		String jwt = jwtService.create("user", user, "user");
-//
-//		return jwt;
-//	}
+		if(!(license.equals("대전-SSAFY-001") || license.equals("대전-SSAFY-002") ||
+				license.equals("대전-SSAFY-003") || license.equals("대전-SSAFY-004") ||
+				license.equals("대전-SSAFY-005"))) {
+			return "failed";
+		}
+
+		return "success";
+	}
+
+	@PostMapping("/agent")
+	@ApiOperation("공인중개사 등록")
+	public String createAgent(@RequestBody AgentSaveRequestDto requestDto) {
+		log.info("AgentController : createAgent / {}", requestDto.getUserNum());
+
+		agentService.save(requestDto);
+
+		User user = userService.findByNum(requestDto.getUserNum());
+		UserResponseDto userResponseDto = new UserResponseDto(user);
+
+		String jwt = jwtService.create("user", userResponseDto, "user");
+
+		return jwt;
+	}
 
 //	@GetMapping("/agent/detail/{num}")
 //	@ApiOperation("공인중개사 상세 조회")

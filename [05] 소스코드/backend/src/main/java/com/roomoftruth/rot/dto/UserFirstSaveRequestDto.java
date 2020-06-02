@@ -1,5 +1,7 @@
 package com.roomoftruth.rot.dto;
 
+import com.roomoftruth.rot.domain.Interest;
+import com.roomoftruth.rot.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +16,11 @@ public class UserFirstSaveRequestDto {
     private String first;
     private String second;
     private String third;
-    private String birth;
+    private int birth;
     private String gender;
 
     @Builder
-    public UserFirstSaveRequestDto(long num, String sd, String sgg, String first, String second, String third, String birth, String gender) {
+    public UserFirstSaveRequestDto(long num, String sd, String sgg, String first, String second, String third, int birth, String gender) {
         this.num = num;
         this.sd = sd;
         this.sgg = sgg;
@@ -27,6 +29,20 @@ public class UserFirstSaveRequestDto {
         this.third = third;
         this.birth = birth;
         this.gender = gender;
+    }
+
+    public Interest toEntity(User user) {
+        if(this.sd.equals("세종특별자치시"))
+            this.sgg = null;
+        return Interest.builder()
+                .user(user)
+                .sd(sd)
+                .sgg(sgg)
+                .first(first)
+                .second(second)
+                .third(third)
+                .birth(birth)
+                .gender(gender).build();
     }
 
 }

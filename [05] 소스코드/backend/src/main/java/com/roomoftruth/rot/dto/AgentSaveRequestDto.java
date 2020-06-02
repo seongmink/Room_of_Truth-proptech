@@ -33,7 +33,6 @@ public class AgentSaveRequestDto {
                 .name(name)
                 .representative(representative)
                 .license(license)
-                .address(address)
-                .phoneNum(phoneNum).build();
+                .address(address).build();
     }
 }

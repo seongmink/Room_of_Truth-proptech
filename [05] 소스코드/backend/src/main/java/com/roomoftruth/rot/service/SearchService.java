@@ -8,6 +8,7 @@ import com.roomoftruth.rot.repository.SearchRepository;
 import com.roomoftruth.rot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ public class SearchService {
 	public List<SearchResponseDto> findByNum(Long num) {
 
 		User user = userRepository.findByNum(num);
-
 		List<Search> temp = searchRepository.findByUser(user);
 
 		List<SearchResponseDto> searches =  new ArrayList<>();
@@ -44,6 +44,19 @@ public class SearchService {
 		return searches;
 	}
 
+//	public List<String> getAddress(String keyword) {
+//
+//		List<Search> temp = searchRepository.findAddress(keyword);
+//		List<String> result = new ArrayList<>();
+//
+//		for (int i = 0; i < temp.size(); i++) {
+//			result.add(temp.get(i).getKeyword());
+//		}
+//
+//		return result;
+//	}
+
+	@Transactional
 	public Long search(SearchSaveRequestDto requestDto) {
 
 		User user = userRepository.findByNum(requestDto.getUserNum());
@@ -57,6 +70,14 @@ public class SearchService {
 		}
 
 		return search.getSearchId();
+	}
+
+	@Transactional
+	public Long deleteSearch(long id) throws Exception {
+
+		searchRepository.deleteById(id);
+
+		return id;
 	}
 
 }

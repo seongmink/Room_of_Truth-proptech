@@ -1,7 +1,9 @@
 package com.roomoftruth.rot.controller;
 
+import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.InterestResponseDto;
 import com.roomoftruth.rot.dto.InterestSaveRequestDto;
+import com.roomoftruth.rot.dto.UserResponseDto;
 import com.roomoftruth.rot.jwt.JwtService;
 import com.roomoftruth.rot.service.InterestService;
 import com.roomoftruth.rot.service.UserService;
@@ -35,11 +37,14 @@ public class InterestController {
 	public String updateInterest(@RequestBody InterestSaveRequestDto requestDto) {
 		log.info("InterestController : updateInterest / {}", requestDto.getUserNum());
 
-		if(interestService.save(requestDto) == 0) {
-			return "failed";
-		} else {
-			return "success";
-		}
+		interestService.save(requestDto);
+
+		User user = userService.findByNum(requestDto.getUserNum());
+		UserResponseDto userResponseDto = new UserResponseDto(user);
+
+		String jwt = jwtService.create("user", userResponseDto, "user");
+
+		return jwt;
 	}
 
 }

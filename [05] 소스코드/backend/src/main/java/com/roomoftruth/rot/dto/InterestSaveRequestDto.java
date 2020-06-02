@@ -16,11 +16,11 @@ public class InterestSaveRequestDto {
     private String first;
     private String second;
     private String third;
-    private String birth;
+    private int birth;
     private String gender;
 
     @Builder
-    public InterestSaveRequestDto(long userNum, String sd, String sgg, String first, String second, String third, String gender, String birth) {
+    public InterestSaveRequestDto(long userNum, String sd, String sgg, String first, String second, String third, String gender, int birth) {
         this.userNum = userNum;
         this.sd = sd;
         this.sgg = sgg;
@@ -32,6 +32,8 @@ public class InterestSaveRequestDto {
     }
 
     public Interest toEntity(User user) {
+        if(this.sd.equals("세종특별자치시"))
+            this.sgg = null;
         return Interest.builder()
                 .user(user)
                 .sd(sd)

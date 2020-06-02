@@ -33,13 +33,13 @@ public class User extends BaseTimeEntity {
 	@JsonBackReference
 	private Agent agent;
 
-	@OneToMany(mappedBy = "user")
-	@JsonBackReference
-	private List<Attract> attracts = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user")
-	@JsonBackReference
-	private List<Look> looks = new ArrayList<>();
+//	@OneToMany(mappedBy = "user")
+//	@JsonBackReference
+//	private List<Attract> attracts = new ArrayList<>();
+//
+//	@OneToMany(mappedBy = "user")
+//	@JsonBackReference
+//	private List<Look> looks = new ArrayList<>();
 
 	@Builder
 	public User(long num, String nickname, String auth, String picture, Interest interest) {
@@ -53,6 +53,10 @@ public class User extends BaseTimeEntity {
 	public void update(String nickname, String picture) {
 		this.nickname = nickname;
 		this.picture = picture;
+	}
+
+	public void updateAuth() {
+		this.auth = "AGENT";
 	}
 	
 }

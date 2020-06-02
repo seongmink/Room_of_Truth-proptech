@@ -1,6 +1,7 @@
 package com.roomoftruth.rot.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.roomoftruth.rot.dto.InterestSaveRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class Interest {
 	private String first;
 	private String second;
 	private String third;
-	private String birth;
+	private int birth;
 	private String gender;
 
 	@OneToOne(cascade = CascadeType.ALL)
@@ -29,7 +30,7 @@ public class Interest {
 	private User user;
 
 	@Builder
-	public Interest(User user, String sd, String sgg, String first, String second, String third, String gender, String birth) {
+	public Interest(User user, String sd, String sgg, String first, String second, String third, String gender, int birth) {
 		this.user = user;
 		this.sd = sd;
 		this.sgg = sgg;
@@ -38,6 +39,19 @@ public class Interest {
 		this.third = third;
 		this.birth = birth;
 		this.gender = gender;
+	}
+
+	public void update(InterestSaveRequestDto requestDto) {
+		this.sd = requestDto.getSd();
+		if(!this.sd.equals("세종특별자치시"))
+			this.sgg = requestDto.getSgg();
+		this.first = requestDto.getFirst();
+		this.second = requestDto.getSecond();
+		this.third = requestDto.getThird();
+		this.birth = requestDto.getBirth();
+		this.gender = requestDto.getGender();
+
+
 	}
 
 }
