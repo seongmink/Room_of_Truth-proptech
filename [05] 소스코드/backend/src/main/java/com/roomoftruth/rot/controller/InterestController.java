@@ -27,8 +27,6 @@ public class InterestController {
 		log.info("InterestController : getInterestByNum / {}", num);
 		InterestResponseDto interest = interestService.findByNum(num);
 
-		System.out.println("interest = " + interest);
-
 		return interest;
 	}
 

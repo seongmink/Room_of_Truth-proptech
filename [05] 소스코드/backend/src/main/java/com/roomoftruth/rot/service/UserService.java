@@ -24,9 +24,11 @@ public class UserService {
 
 	public Long save(UserFirstSaveRequestDto requestDto) {
 
-		User user = User.builder().num(requestDto.getNum()).build();
+		User newUser = User.builder().num(requestDto.getNum()).build();
 
-		userRepository.save(user);
+		userRepository.save(newUser);
+
+		User user = findByNum(requestDto.getNum());
 
 		Interest interest = Interest.builder().user(user).sd(requestDto.getSd()).sgg(requestDto.getSgg())
 				.first(requestDto.getFirst()).second(requestDto.getSecond()).third(requestDto.getThird())
