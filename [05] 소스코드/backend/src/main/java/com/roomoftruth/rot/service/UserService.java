@@ -28,6 +28,8 @@ public class UserService {
 		userRepository.save(newUser);
 
 		User user = findByNum(requestDto.getNum());
+		if(requestDto.getSd().equals("세종특별자치시"))
+			requestDto.changeSgg();
 
 		return interestRepository.save(requestDto.toEntity(user)).getUser().getNum();
 	}

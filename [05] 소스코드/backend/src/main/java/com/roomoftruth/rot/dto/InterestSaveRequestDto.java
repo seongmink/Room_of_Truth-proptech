@@ -31,9 +31,11 @@ public class InterestSaveRequestDto {
         this.gender = gender;
     }
 
+    public void changeSgg() {
+        this.sgg = null;
+    }
+
     public Interest toEntity(User user) {
-        if(this.sd.equals("세종특별자치시"))
-            this.sgg = null;
         return Interest.builder()
                 .user(user)
                 .sd(sd)

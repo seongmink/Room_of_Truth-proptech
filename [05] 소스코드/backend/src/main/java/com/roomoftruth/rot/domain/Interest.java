@@ -43,8 +43,7 @@ public class Interest {
 
 	public void update(InterestSaveRequestDto requestDto) {
 		this.sd = requestDto.getSd();
-		if(!this.sd.equals("세종특별자치시"))
-			this.sgg = requestDto.getSgg();
+		this.sgg = requestDto.getSgg();
 		this.first = requestDto.getFirst();
 		this.second = requestDto.getSecond();
 		this.third = requestDto.getThird();

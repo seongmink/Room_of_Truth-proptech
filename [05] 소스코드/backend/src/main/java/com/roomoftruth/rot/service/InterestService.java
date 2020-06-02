@@ -29,6 +29,9 @@ public class InterestService {
 	@Transactional
 	public Long save(InterestSaveRequestDto requestDto) {
 
+		if(requestDto.getSd().equals("세종특별자치시"))
+			requestDto.changeSgg();
+
 		User user = userRepository.findByNum(requestDto.getUserNum());
 		Interest interest = interestRepository.findByUser(user);
 
