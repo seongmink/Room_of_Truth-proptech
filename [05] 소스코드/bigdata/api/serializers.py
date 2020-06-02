@@ -1,12 +1,12 @@
-from .models import Building,Favorite,Around,User
+from .models import Contract,Favorite,Around,User,Interest
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
-class BuildingSerializer(serializers.ModelSerializer):
+class ContractSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Building
+        model = Contract
         fields = [
-            "num",
+            "contract_id",
             "address",
             "sd",
             "sgg",
@@ -16,13 +16,13 @@ class BuildingSerializer(serializers.ModelSerializer):
             "exclusive",
             "floor",
             "ho",
+            "kind",
             "detail",
             "cost",
             "monthly",
             "license",
             "image",
-            "contractedat",
-            "createdat",
+            "contract_date",
         ]
 class AroundSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,10 +43,9 @@ class FavoriteSerializer(serializers.ModelSerializer):
         fields=[
             "num",
             "score",
-            "building",
+            "contract",
             "user"
         ]
-
         
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -54,8 +53,23 @@ class UserSerializer(serializers.ModelSerializer):
         fields=[
             "num",
             "nickname",
-            "gender",
-            "address"
         ]
+
+class InterestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Interest
+        fields=[
+            "interest_id",
+            "user_num",
+            "birth",
+            "gender",
+            "first",
+            "second",
+            "third",
+            "sd",
+            "sgg",
+        ]
+
+
 
 

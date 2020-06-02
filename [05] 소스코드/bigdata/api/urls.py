@@ -27,13 +27,18 @@ urlpatterns = [
    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-   path('buildings/', views.Building.as_view()),
-   path('buildings/<int:pk>', views.BuildingChart.as_view()),
+   path('contracts/', views.Contract.as_view()),
+   path('contracts/<int:pk>', views.ContractChart.as_view()),
    
-   path('arounds/<int:pk>/', views.BuildingAround.as_view()),
-   # 나이대에 따른 평점 순위(user id)
-   path('rank/age/<int:pk>/', views.rankByAge.as_view()),
+   path('arounds/<int:pk>/', views.ContractAround.as_view()),
+   # 나이대, 성별에 따른 평점 순위(user id)
+   path('rank/<int:pk>/', views.Rank.as_view()),
+
+   path('rank/', views.TotalRank.as_view()),
+
    
    path('prefer/', views.Prefer.as_view()),
+
+   path('recommend/<int:pk>/', views.Recommend.as_view()),
     
 ]
