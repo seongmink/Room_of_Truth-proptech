@@ -44,18 +44,6 @@ public class SearchService {
 		return searches;
 	}
 
-//	public List<String> getAddress(String keyword) {
-//
-//		List<Search> temp = searchRepository.findAddress(keyword);
-//		List<String> result = new ArrayList<>();
-//
-//		for (int i = 0; i < temp.size(); i++) {
-//			result.add(temp.get(i).getKeyword());
-//		}
-//
-//		return result;
-//	}
-
 	@Transactional
 	public Long search(SearchSaveRequestDto requestDto) {
 

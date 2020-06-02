@@ -28,15 +28,7 @@ public class SearchController {
 	}
 
 
-//	@GetMapping("/search/{keyword}")
-//	@ApiOperation("주소 검색")
-//	public List<String> getAddress(@PathVariable String keyword) {
-//		log.info("SearchController : getAddress / {}", num);
-//
-//		List<String> list = searchService.getAddress(keyword);
-//
-//		return list;
-//	}
+
 
 	@PostMapping("/search")
 	@ApiOperation("검색 기록 추가")
