@@ -7,6 +7,9 @@
 			<li>
 				<router-link to="/search" class="current">조회하기</router-link>
 			</li>
+			<li>
+				<router-link to="/recommendation" class="current">추천서비스</router-link>
+			</li>
 			<li v-if="$store.state.userInfo==null||$store.state.userInfo.auth==null">
 				<router-link to="/auth" class="current">공인중개사 등록</router-link>
 			</li>

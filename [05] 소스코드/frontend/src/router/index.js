@@ -77,7 +77,7 @@ const routes = [{
             path: "resister",
             component: () =>
                 import ("../components/common/Resister.vue"),
-            beforeEnter : onlyAuthUser
+            //beforeEnter : onlyAuthUser
             
             },
             {
@@ -127,6 +127,20 @@ const routes = [{
                     import ("../components/common/AddInfo.vue")
                 
             },
+            {
+                name: "Detail",
+                path: "detail",
+                component: () =>
+                    import ("../components/structure/Detail.vue")
+                
+            },
+            {
+                name: "Recommendation",
+                path: "recommendation",
+                component: () =>
+                    import ("../components/common/Recommendation.vue")
+                
+            },
 
             //테스트 페이지
             {
@@ -142,21 +156,21 @@ const routes = [{
             return "/main";
         }
     },
-    {
-        path: "/detailbuilding",
-        name: "detailbuilding",
-        component: DetailBuilding,
-        children: [{
+    // {
+    //     path: "/detailbuilding",
+    //     name: "detailbuilding",
+    //     component: DetailBuilding,
+    //     children: [{
             
-            path: "detail",
-            component: () =>
-                import ("../components/structure/Detail.vue")
-            },
-        ],
-        redirect: () => {
-            return "/detailbuilding/Detail";
-        }
-    },
+    //         path: "detail",
+    //         component: () =>
+    //             import ("../components/structure/Detail.vue")
+    //         },
+    //     ],
+    //     redirect: () => {
+    //         return "/detailbuilding/Detail";
+    //     }
+    // },
     {
         path:'*',
         redirect:'/404',
