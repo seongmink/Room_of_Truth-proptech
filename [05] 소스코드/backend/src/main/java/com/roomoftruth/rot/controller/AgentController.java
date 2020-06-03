@@ -59,6 +59,8 @@ public class AgentController {
 	public List<AgentRankingResponseDto> getRanking() {
 		log.info("RankingController : getRanking");
 
+		agentService.updateRanking();
+
 		return agentService.getRanking();
 	}
 

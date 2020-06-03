@@ -29,40 +29,34 @@ public class AgentService {
 		return agentRepository.save(requestDto.toEntity(user)).getUser().getNum();
 	}
 
-
 	@Transactional
+	public void updateRanking() {
+
+		List<Agent> agents = agentRepository.getRanking();
+
+		int rnk = 1;
+		for (Agent a : agents) {
+
+			a.updateRanking(rnk);
+			rnk++;
+		}
+	}
+
+
 	public List<AgentRankingResponseDto> getRanking() {
 
-//		List<Agent> agents = agentRepository.findAll();
-//
-//		for (Agent a : agents) {
-//			// Agent rnk 찾아서 a.setRnk() 해주기
-//
-//			a.setRnk(a);
-//		}
-
 		List<Agent> ranking = agentRepository.getRankingTop9();
-
 		List<AgentRankingResponseDto> result = new ArrayList<>();
-		int rankIndex = 1;
+
 		for (int i = 0; i < ranking.size(); i++) {
-			System.out.println(ranking.get(i).getName() + " 랭킹을 " + rankIndex + "로 설정");
-
-			// update
-			agentRepository.updateRank(rankIndex, ranking.get(i).getAgentId());
-			System.out.println("죽었니??");
-
-//			result.add(new AgentRankingResponseDto(ranking.get(i)));
-
+			result.add(new AgentRankingResponseDto(ranking.get(i)));
 			if(result.get(i).getAgentPicture() == null || result.get(i).getAgentPicture().equals("null")) { // 기본 이미지 처리
 				result.get(i).updateDefaultImage();
 			}
-			rankIndex++;
+
 		}
 
 		return result;
 	}
-
-
 
 }
