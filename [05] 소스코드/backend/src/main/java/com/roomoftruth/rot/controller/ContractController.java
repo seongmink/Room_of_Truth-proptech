@@ -2,14 +2,10 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.domain.Status;
-import com.roomoftruth.rot.dto.ContractFindRequestDto;
-import com.roomoftruth.rot.dto.ContractFindResponseDto;
-import com.roomoftruth.rot.dto.ContractResultDto;
-import com.roomoftruth.rot.dto.ContractSaveRequestDto;
+import com.roomoftruth.rot.dto.*;
 import com.roomoftruth.rot.service.ContractService;
 import com.roomoftruth.rot.service.StatusService;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +26,10 @@ public class ContractController {
 
     @PostMapping("/buildings")
     @ApiOperation("계약 이력 등록하기")
-    public ResponseEntity<Object> save(@RequestBody @Valid ContractSaveRequestDto requestDto){
+    public ResponseEntity<Object> save(@RequestBody @Valid ContractSaveRequestDto contractSaveRequestDto){
         System.out.println("=== POST : /api/building ====");
-        long result = contractService.saveContract(requestDto);
-
+        long result = contractService.saveContract(contractSaveRequestDto);
+        System.out.println("등록 ID : " + result);
         return new ResponseEntity<Object>(String.valueOf(result), HttpStatus.OK);
     }
 
@@ -49,25 +45,13 @@ public class ContractController {
         List<Status> statusTemp = statusService.findAll();
 
         for(int i = 0; i < contractTemp.size(); i++){
-            FindAllContract findAllContract = new FindAllContract();
-            Contract temp = contractTemp.get(i);
-            findAllContract.setAddress(temp.getAddress());
-            findAllContract.setFloor(temp.getFloor());
-            findAllContract.setHo(temp.getHo());
-            findAllContract.setLatitude(temp.getLatitude());
-            findAllContract.setLongitude(temp.getLongitude());
+            FindAllContract findAllContract = new FindAllContract(contractTemp.get(i));
             set.add(findAllContract);
         }
 
         for(int i = 0; i < statusTemp.size(); i++){
-            FindAllContract findAllContract = new FindAllContract();
-            Status temp = statusTemp.get(i);
-            findAllContract.setAddress(temp.getAddress());
-            findAllContract.setFloor(temp.getFloor());
-            findAllContract.setHo(temp.getHo());
-            findAllContract.setLatitude(temp.getLatitude());
-            findAllContract.setLongitude(temp.getLongitude());
-            set.add(findAllContract);
+            FindAllContract findAllStatus = new FindAllContract(statusTemp.get(i));
+            set.add(findAllStatus);
         }
 
         Iterator<FindAllContract> it = set.iterator();
@@ -78,21 +62,11 @@ public class ContractController {
         return result;
     }
 
-    @Data
-    static class FindAllContract {
-        private String address;
-        private String floor;
-        private String ho;
-        private String latitude;
-        private String longitude;
-    }
-
     @PostMapping("details")
     @ApiOperation("건물 상세 정보 뿌려주기")
     public List<ContractResultDto> getAllDetails(@RequestBody Contract[] contracts){
         System.out.println("====== POST : api/v1/details");
         List<ContractResultDto> data = contractService.findAllDetails(contracts);
-
 
         System.out.println("------------실행 성공??-----------");
         for (ContractResultDto contractResultDto : data) {

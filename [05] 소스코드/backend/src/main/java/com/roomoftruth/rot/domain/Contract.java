@@ -1,5 +1,6 @@
 package com.roomoftruth.rot.domain;
 
+import com.roomoftruth.rot.dto.ContractSaveRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,26 +57,33 @@ public class Contract {
         this.ho = ho;
     }
 
+    /**
+     * ContractController    @PostMapping("/buildings")
+     * ContractService
+     */
+
+    public void setContractDate() {
+        this.contractDate = LocalDate.now();
+    }
+
     @Builder
-    public Contract(long contractId, String address, String sd, String sgg, String emd,
-                    String latitude, String longitude, String exclusive, String floor, String ho,
-                    String kind, String detail, String cost, String monthly, String license, String image){
-        this.contractId = contractId;
-        this.address = address;
-        this.sd = sd;
-        this.sgg = sgg;
-        this.emd = emd;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.exclusive = exclusive;
-        this.floor = floor;
-        this.ho = ho;
-        this.kind = kind;
-        this.detail = detail;
-        this.cost = cost;
-        this.monthly = monthly;
-        this.license = license;
-        this.image = image;
+    public Contract(ContractSaveRequestDto contractSaveRequestDto){
+        this.contractId = contractSaveRequestDto.getContractId();
+        this.address = contractSaveRequestDto.getAddress();
+        this.sd = contractSaveRequestDto.getSd();
+        this.sgg = contractSaveRequestDto.getSgg();
+        this.emd = contractSaveRequestDto.getEmd();
+        this.latitude = contractSaveRequestDto.getLatitude();
+        this.longitude = contractSaveRequestDto.getLongitude();
+        this.exclusive = contractSaveRequestDto.getExclusive();
+        this.floor = contractSaveRequestDto.getFloor();
+        this.ho = contractSaveRequestDto.getHo();
+        this.kind = contractSaveRequestDto.getKind();
+        this.detail = contractSaveRequestDto.getDetail();
+        this.cost = contractSaveRequestDto.getCost();
+        this.monthly = contractSaveRequestDto.getMonthly();
+        this.license = contractSaveRequestDto.getLicense();
+        this.image = contractSaveRequestDto.getImage();
         this.contractDate = LocalDate.now();
     }
 

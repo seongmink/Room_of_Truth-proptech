@@ -3,8 +3,10 @@ package com.roomoftruth.rot.dto;
 import com.roomoftruth.rot.domain.Contract;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.tomcat.jni.Local;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -30,24 +32,4 @@ public class ContractSaveRequestDto {
     private String license;
     private String image;
 
-    public Contract toEntity(){
-        return Contract.builder()
-                .contractId(contractId)
-                .address(address)
-                .sd(sd)
-                .sgg(sgg)
-                .emd(emd)
-                .latitude(latitude)
-                .longitude(longitude)
-                .exclusive(exclusive)
-                .floor(floor)
-                .ho(ho)
-                .kind(kind)
-                .detail(detail)
-                .cost(cost)
-                .monthly(monthly)
-                .license(license)
-                .image(image)
-                .build();
-    }
 }

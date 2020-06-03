@@ -31,33 +31,32 @@ public class AgentService {
 
 
 	@Transactional
+	public void updateRanking(int rnk, long id){
+		System.out.println(id + " 랭킹을 " + rnk + "로 설정");
+		agentRepository.updateRank(rnk, id);
+		System.out.println(rnk + "번 업데이트 완료");
+		return;
+	}
+
+	@Transactional
 	public List<AgentRankingResponseDto> getRanking() {
-
-//		List<Agent> agents = agentRepository.findAll();
-//
-//		for (Agent a : agents) {
-//			// Agent rnk 찾아서 a.setRnk() 해주기
-//
-//			a.setRnk(a);
-//		}
-
 		List<Agent> ranking = agentRepository.getRankingTop9();
 
 		List<AgentRankingResponseDto> result = new ArrayList<>();
 		int rankIndex = 1;
 		for (int i = 0; i < ranking.size(); i++) {
-			System.out.println(ranking.get(i).getName() + " 랭킹을 " + rankIndex + "로 설정");
 
 			// update
-			agentRepository.updateRank(rankIndex, ranking.get(i).getAgentId());
-			System.out.println("죽었니??");
-
-//			result.add(new AgentRankingResponseDto(ranking.get(i)));
+			updateRanking(rankIndex, ranking.get(i).getAgentId());
 
 			if(result.get(i).getAgentPicture() == null || result.get(i).getAgentPicture().equals("null")) { // 기본 이미지 처리
 				result.get(i).updateDefaultImage();
 			}
 			rankIndex++;
+			Agent temp = ranking.get(i);
+			temp.setRnk(rankIndex);
+			AgentRankingResponseDto data =  new AgentRankingResponseDto(temp);
+			result.add(data);
 		}
 
 		return result;

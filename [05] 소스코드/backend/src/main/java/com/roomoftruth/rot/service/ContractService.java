@@ -30,15 +30,16 @@ public class ContractService {
      */
     @Transactional
     public long saveContract(ContractSaveRequestDto contractSaveRequestDto){
-        Contract response = contractSaveRequestDto.toEntity();
+        System.out.println("서비스 왔다");
 
         // fabric 처리후
         System.out.println("===== FABRIC에서 등록 해야 함 =====");
         //
 
-        contractRepository.save(response);
-
-        return response.getContractId();
+        Contract contract = new Contract(contractSaveRequestDto);
+        contractRepository.save(contract);
+        System.out.println("DB 등록 성공");
+        return contract.getContractId();
     }
 
     /**
