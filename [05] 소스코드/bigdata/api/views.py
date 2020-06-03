@@ -21,6 +21,7 @@ class SmallPagination(PageNumberPagination):
     page_size_query_param = "page_size"
     max_page_size = 50
 
+
 class Contract(APIView, PaginationHandlerMixin):
     pagination_class = SmallPagination
     serializer_class = serializers.ContractSerializer
@@ -43,8 +44,8 @@ class Contract(APIView, PaginationHandlerMixin):
             
         return Response(serializer.data, status=status.HTTP_200_OK)
         
-class ContractChart(APIView, PaginationHandlerMixin):
-    pagination_class = SmallPagination
+
+class ContractChart(APIView):
 
     def get_object(self, id):
             bd = get_object_or_404(models.Contract, pk=id)
@@ -53,9 +54,9 @@ class ContractChart(APIView, PaginationHandlerMixin):
         label = {'2019-04':0,'2019-05':1,'2019-06':2,'2019-07':3,'2019-08':4,'2019-09':5,'2019-10':6,'2019-11':7,'2019-12':8,'2020-01':9,'2020-02':10,'2020-03':11,'2020-04':12}
         # --
         result_addr = (instance_addr.filter(detail=key)
-        .values_list('contractedat__year', 'contractedat__month','detail')
+        .values_list('contract_date__year', 'contract_date__month','detail')
         .annotate(Avg(target))
-        .order_by('contractedat__year', 'contractedat__month'))
+        .order_by('contract_date__year', 'contract_date__month'))
         addrs = [None]*13
         for r in result_addr:
             m=str(r[1])
@@ -65,9 +66,9 @@ class ContractChart(APIView, PaginationHandlerMixin):
             addrs[label[m]]=round(r[-1],2)
         # --
         result_emd = (instance_emd.filter(detail=key)
-        .values_list('contractedat__year', 'contractedat__month','detail')
+        .values_list('contract_date__year', 'contract_date__month','detail')
         .annotate(Avg(target))
-        .order_by('contractedat__year', 'contractedat__month'))
+        .order_by('contract_date__year', 'contract_date__month'))
         emds = [None] * 13
         for r in result_emd:
             m=str(r[1])
@@ -119,8 +120,8 @@ class ContractChart(APIView, PaginationHandlerMixin):
                 return Response("mm(매매),js(전세),ws(월세) 중 하나를 입력해주세요",status=status.HTTP_400_BAD_REQUEST)
 
 
-# 빌딩 아이디를 이용해서 around받아오기
-class ContractAround(APIView, PaginationHandlerMixin):
+# 거래이력 아이디를 이용해서 around받아오기
+class ContractAround(APIView):
 
     def get(self, request, pk):
         contract = get_object_or_404(models.Contract, pk=pk)
@@ -129,29 +130,28 @@ class ContractAround(APIView, PaginationHandlerMixin):
         serializer = serializers.AroundSerializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 # 로그인 하지않은 유저에게 보여줄 전체 상위 9개의 이력
 class TotalRank(APIView):
     
     def get(self, request, format=None, *args, **kwargs):
         results = []
-        favs = models.Favorite.objects.all().values_list('contract').annotate(sc = Avg('score')).order_by('-sc')
-        print(favs[:9])
+        favs = models.Favorite.objects.all().values_list('around').annotate(sc = Avg('score')).order_by('-sc')
+        # print(favs[:9])
         for idx, f in enumerate(favs[:9]):
-            b = models.Contract.objects.get(pk=f[0])
+            arnd = models.Around.objects.get(pk=f[0])
+            b = models.Contract.objects.filter(address=arnd.address).first()
             results.append({
                 "rank":idx+1,
-                "num" : b.contract_id,
-                "name" : b.address,
-                "floor":b.floor,
-                "ho": b.ho,
+                "num" : arnd.around_id,
+                "name" : arnd.address,
                 "image": b.image,
+                "latitude":b.latitude,
+                "longitude":b.longitude
             })
         return Response(results, status=status.HTTP_200_OK)
 
-# 나이대에 따른 첫 화면 3개 선정
+# 나이대,성별, 카테고리에 따른 첫 화면 3개 선정
 class Rank(APIView):
-
     def get(self, request, pk):
         by = request.query_params.get("by",None)
         if by is None:
@@ -169,33 +169,41 @@ class Rank(APIView):
         if by=='cate':
             d = {'교통':'trans','마트/편의점':'comforts','교육시설':'education','의료시설':'medical','음식점/카페':'eatery','문화시설':'culture'}
             cate_user = d[interest.first]
-            print(cate_user)
-            arounds = models.Around.objects.filter(address__contains=addr).order_by('-'+cate_user)
-            selected_around = arounds[:3]
-
-            for sa in selected_around:
-                contract = models.Contract.objects.filter(address=sa.address)
-                favs = models.Favorite.objects.filter(contract__in=contract)
-                selected_contract =  favs.values_list('contract').annotate(sc = Avg('score')).order_by('-sc')
-                result = []
-                if len(selected_contract)==0:
-                    b = contract[:1].get()
-                else:
-                    b = models.Contract.objects.get(pk=selected_contract[0][0])
-                fav = len(models.Favorite.objects.filter(contract =b).filter(user=user))
+            arounds = models.Around.objects.filter(address__contains=addr).order_by('-'+cate_user)[:9]
+            result = []
+            favs = models.Favorite.objects.filter(around__address__contains=addr)
+            # print(favs) # 사용자 선호도에 따른 순위
+            tmp = {}
+            for c in arounds:
+                tmp[c.around_id]=getattr(c,cate_user)*0.5 + getattr(c,d[interest.second])*0.3 + getattr(c,d[interest.third])*0.2
+            calc_around = favs.values_list('around').annotate(sc = Avg('score')).order_by('-sc') # 평점순위
+            for c in calc_around:
+                if c[0] in tmp:
+                    tmp[c[0]]+=c[1]/5
+            calc_scores = {k: v for k, v in sorted(tmp.items(), key=lambda item: item[1], reverse=True)}
+            idx=0
+            for item in calc_scores:
+                if idx==3:
+                    break
+                arnd = models.Around.objects.get(pk=item)
+                b = models.Contract.objects.filter(address=arnd.address).first()
+                print(models.Favorite.objects.filter(around=arnd).filter(user=user))
+                fav = len(models.Favorite.objects.filter(around=arnd).filter(user=user))
                 result.append({
-                "num" : b.contract_id,
-                "name" : b.address,
-                "floor":b.floor,
-                "ho": b.ho,
+                "num" : arnd.around_id,
+                "name" : arnd.address,
                 "image": b.image,
+                "latitude":b.latitude,
+                "longitude":b.longitude,
                 "isLike": True if fav >=1 else False
-            })
+                })
+                idx+=1
 
             return Response(result, status = status.HTTP_200_OK)
 
+        # --------------------------------------------------------
+        # 연령대, 성별 분류
         elif by=='age':
-            # print(interest)
             curr_year = datetime.today().year
             gen = ((curr_year - interest.birth+1)//10)*10 # 사용자의 연령대
             start = curr_year+1-gen
@@ -210,23 +218,24 @@ class Rank(APIView):
         q = Q()
         for u in users:
             q.add(Q(user=u.user_num), q.OR)
-        instance = models.Favorite.objects.filter(q).order_by('contract').filter(contract__address__contains=addr)
+        instance = models.Favorite.objects.filter(q).order_by('around').filter(around__address__contains=addr)
         # print(instance)
         # print(str(instance.query))
-        queryset = instance.values_list('contract').annotate(sc = Avg('score')).order_by('-sc')
+        queryset = instance.values_list('around').annotate(sc = Avg('score')).order_by('-sc')
         result = []
         if len(queryset) <3:
             # TODO : 각 지역별로 관심해논게 3개 이상씩은 되어야함 T-T
-            instance = models.Favorite.objects.all().order_by('contract').filter(contract__address__contains=addr)
-            queryset = instance.values_list('contract').annotate(sc = Avg('score')).order_by('-sc')
+            instance = models.Favorite.objects.all().order_by('around').filter(around__address__contains=addr)
+            queryset = instance.values_list('around').annotate(sc = Avg('score')).order_by('-sc')
         for q in  queryset[:3]:
-            b = models.Contract.objects.get(pk=q[0])
-            fav = len(models.Favorite.objects.filter(user=pk).filter(contract=b))
+            arnd = models.Around.objects.get(pk=q[0])
+            b = models.Contract.objects.filter(address=arnd.address).first()
+            fav = len(models.Favorite.objects.filter(user=pk).filter(around=arnd))
             result.append({
                 "num" : q[0],
                 "name" : b.address,
-                "floor":b.floor,
-                "ho": b.ho,
+                "latitude":b.latitude,
+                "longitude":b.longitude,
                 "image": b.image,
                 "isLike": True if fav ==1 else False
             })
@@ -245,39 +254,33 @@ class Prefer(APIView):
         cate = request.query_params.get("cate",None)
 
         cate_name = {"gt":"trans","mt":"comforts","ed":"education","md":"medical","fc":"eatery","ct":"culture"}
-        if sgg is None or sd is None or cate is None or cate not in cate_name:
+        if sd is None or cate is None or cate not in cate_name:
             return Response("값 입력 필요", status=  status.HTTP_400_BAD_REQUEST)
         if sd=="세종특별자치시":
             addr = sd
         else:
+            if sgg is None:
+                return Response("sgg 값 입력 필요", status=  status.HTTP_400_BAD_REQUEST)
             addr = sd+" "+sgg
         cat = cate_name[cate]
         instance = models.Around.objects.filter(address__contains=addr).order_by('-'+cat)
-        # serializer = serializers.AroundSerializer(instance, many=True)
-        # print(serializer.data)
         results = []
-        for inst in instance[:6]:
-            addr = inst.address
-            contract = models.Contract.objects.filter(address=addr)
-            favs = models.Favorite.objects.filter(contract__in=contract)
-            selected_contract =  favs.values_list('contract').annotate(sc = Avg('score')).order_by('-sc')
-            if len(selected_contract)==0:
-                b = contract[:1].get()
-            else:
-                # b = 
-                b = models.Contract.objects.get(pk=selected_contract[0][0])
+        # TODO : 위도경도 줘야할까???
+        for arnd in instance[:6]:
+            addr = arnd.address
+            b = models.Contract.objects.filter(address=addr).first()
             data = {
-                "num":b.contract_id,
-                "name":b.address,
-                "floor":b.floor,
-                "ho":b.ho,
+                "num":arnd.around_id,
+                "name":arnd.address,
                 "image":b.image,
-                "trans":inst.trans,
-                "comforts":inst.comforts,
-                "education":inst.education,
-                "medical":inst.medical,
-                "eatery":inst.eatery,
-                "culture":inst.culture
+                "longitude":b.longitude,
+                "latitude":b.latitude,
+                "trans":arnd.trans,
+                "comforts":arnd.comforts,
+                "education":arnd.education,
+                "medical":arnd.medical,
+                "eatery":arnd.eatery,
+                "culture":arnd.culture
             }
             results.append(data)
             

@@ -67,10 +67,10 @@ class Contract(models.Model):
 
 
 class Favorite(models.Model):
-    num = models.AutoField(primary_key=True)
+    favorite_id = models.AutoField(primary_key=True)
     score = models.IntegerField()
-    contract = models.ForeignKey(Contract, models.DO_NOTHING, db_column='contract', blank=True, null=True, related_name="fav_contract")
-    user = models.ForeignKey('User', models.DO_NOTHING, db_column='user', blank=True, null=True, related_name="fav_user")
+    around = models.ForeignKey('Around', on_delete=models.CASCADE, db_column='around', blank=True, null=True, related_name="fav_around")
+    user = models.ForeignKey('User', on_delete=models.CASCADE, db_column='user', blank=True, null=True, related_name="fav_user")
 
     class Meta:
         managed = False
@@ -79,7 +79,7 @@ class Favorite(models.Model):
 
 class Interest(models.Model):
     interest_id = models.BigAutoField(primary_key=True)
-    birth = models.IntegerField(max_length=255, blank=True, null=True)
+    birth = models.IntegerField(blank=True, null=True)
     first = models.CharField(max_length=255, blank=True, null=True)
     gender = models.CharField(max_length=255, blank=True, null=True)
     sd = models.CharField(max_length=255, blank=True, null=True)
