@@ -1,6 +1,5 @@
 package com.roomoftruth.rot.dto;
 
-import com.roomoftruth.rot.domain.Contract;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,15 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContractFindRequestDto {
-    private String address;
-    private String floor;
-    private String ho;
+    private String latitude;
+    private String longitude;
 
-    public Contract toEntity(){
-        return Contract.builder()
-                .address(address)
-                .floor(floor)
-                .ho(ho)
-                .build();
-    }
 }

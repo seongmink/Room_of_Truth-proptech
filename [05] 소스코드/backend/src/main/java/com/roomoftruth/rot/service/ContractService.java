@@ -100,8 +100,8 @@ public class ContractService {
      *  String getContractImage(ContractRequestDto);
      *
      */
-    public String getContractImage(ContractFindRequestDto contractFindRequestDto){
-        return contractRepository.getContractImage(contractFindRequestDto.getAddress(), contractFindRequestDto.getFloor(), contractFindRequestDto.getHo());
+    public String getContractImage(ContractFindResponseDto contractFindResponseDto){
+        return contractRepository.getContractImage(contractFindResponseDto.getAddress(), contractFindResponseDto.getFloor(), contractFindResponseDto.getHo());
     }
 
     /**
@@ -120,23 +120,23 @@ public class ContractService {
     }
 
     /**
-     *  8. 해당 주소(도로명, floor, ho) 해당하는 모든 계약, 유지보수 찾기
+     *  8. 해당 주소(도로명, floor, ho, image) 해당하는 모든 계약, 유지보수 찾기
      *  List<ContractResponseDto> findAllDetails(String latitude, String longitude);
      *
      */
-    public List<ContractResultDto> findAllDetails(Contract[] request) {
+    public List<ContractResultDto> findAllDetails(ContractFindRequestDto[] request) {
 
         List<ContractResultDto> result = new ArrayList<>();
-        HashSet<Contract> set = new HashSet<>();
+        HashSet<ContractFindRequestDto> set = new HashSet<>();
 
         for (int i = 0; i < request.length; i++) {
             set.add(request[i]);
         }
 
-        Iterator<Contract> it = set.iterator();
+        Iterator<ContractFindRequestDto> it = set.iterator();
 
         while (it.hasNext()) {
-            Contract contractTemp = it.next();
+            ContractFindRequestDto contractTemp = it.next();
             System.out.println("findAllDetails 시작");
             System.out.println("latitude : " + contractTemp.getLatitude());
             System.out.println("longitude : " + contractTemp.getLongitude());
@@ -147,26 +147,23 @@ public class ContractService {
                 System.out.println("for start");
                 System.out.println(save.get(i));
 
-                Contract contract = save.get(i).toEntity();
-                System.out.println(contract.getAddress());
-
-                ContractFindRequestDto contractFindRequestDto = new ContractFindRequestDto(
-                        contract.getAddress(), contract.getFloor(), contract.getHo()
-                );
-
-                System.out.println(contractFindRequestDto);
-                String image = getContractImage(contractFindRequestDto);
-                ContractResultDto contractResultDto = new ContractResultDto(contract.getAddress(), contract.getFloor(),
-                        contract.getHo(), image);
+                String image = getContractImage(save.get(i));
 
                 if (image == null) {
-                    StatusFindRequestDto statusFindRequestDto = new StatusFindRequestDto(contract.getAddress(),
-                            contract.getFloor(), contract.getHo());
-                    String statusImage = statusService.getStatusImage(statusFindRequestDto);
-                    contractResultDto.setImage("images/"+statusImage);
-                } else {
-                    contractResultDto.setImage("images/"+image);
+                    image = statusService.getStatusImage(save.get(i));
                 }
+
+                if(image == null)
+                    image = "default.png";
+
+                //address, floor, ho,latitude, longitude 있는 상태 -> save.get(i)
+                ContractResultDto contractResultDto = ContractResultDto.builder()
+                        .address(save.get(i).getAddress())
+                        .floor(save.get(i).getFloor())
+                        .ho(save.get(i).getHo())
+                        .image(image)
+                        .build();
+
                 result.add(contractResultDto);
             }
         }

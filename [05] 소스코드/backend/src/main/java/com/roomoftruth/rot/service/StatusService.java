@@ -1,7 +1,7 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Status;
-import com.roomoftruth.rot.dto.StatusFindRequestDto;
+import com.roomoftruth.rot.dto.ContractFindResponseDto;
 import com.roomoftruth.rot.dto.StatusResponseDto;
 import com.roomoftruth.rot.dto.StatusSaveRequestDto;
 import com.roomoftruth.rot.repository.StatusRepository;
@@ -96,8 +96,8 @@ public class StatusService {
      *  String getStatusImage(long statusId);
      *
      */
-    public String getStatusImage(StatusFindRequestDto statusFindRequestDto){
-        return statusRespository.getStatusImage(statusFindRequestDto.getAddress(), statusFindRequestDto.getFloor(), statusFindRequestDto.getHo());
+    public String getStatusImage(ContractFindResponseDto contractFindResponseDto){
+        return statusRespository.getStatusImage(contractFindResponseDto.getAddress(), contractFindResponseDto.getFloor(), contractFindResponseDto.getHo());
     }
 
     /**

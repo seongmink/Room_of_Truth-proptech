@@ -30,16 +30,6 @@ public class ContractFindResponseDto {
         this.longitude = longitude;
     }
 
-    public Contract toEntity(){
-        return Contract.builder()
-                .address(address)
-                .floor(floor)
-                .ho(ho)
-                .latitude(latitude)
-                .longitude(longitude)
-                .build();
-    }
-
     @Override
     public String toString() {
         return "ContractFindResponseDto{" +

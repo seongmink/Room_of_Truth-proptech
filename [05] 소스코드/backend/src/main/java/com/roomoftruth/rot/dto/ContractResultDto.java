@@ -1,6 +1,6 @@
 package com.roomoftruth.rot.dto;
 
-import com.roomoftruth.rot.domain.Contract;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +16,7 @@ public class ContractResultDto {
         this.image = image;
     }
 
+    @Builder
     public ContractResultDto(String address, String floor, String ho, String image){
         this.address = address;
         this.floor = floor;
@@ -23,12 +24,4 @@ public class ContractResultDto {
         this.image = image;
     }
 
-    public Contract toEntity(){
-        return Contract.builder()
-                .address(address)
-                .floor(floor)
-                .ho(ho)
-                .image(image)
-                .build();
-    }
 }

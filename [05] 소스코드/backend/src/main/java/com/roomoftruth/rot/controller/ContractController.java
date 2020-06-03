@@ -64,9 +64,9 @@ public class ContractController {
 
     @PostMapping("details")
     @ApiOperation("건물 상세 정보 뿌려주기")
-    public List<ContractResultDto> getAllDetails(@RequestBody Contract[] contracts){
+    public List<ContractResultDto> getAllDetails(@RequestBody ContractFindRequestDto[] contractFindRequestDto){
         System.out.println("====== POST : api/v1/details");
-        List<ContractResultDto> data = contractService.findAllDetails(contracts);
+        List<ContractResultDto> data = contractService.findAllDetails(contractFindRequestDto);
 
         System.out.println("------------실행 성공??-----------");
         for (ContractResultDto contractResultDto : data) {
@@ -80,12 +80,12 @@ public class ContractController {
      * @param contractFindRequestDto
      * @return contract.Image
      */
-    @PostMapping("findImage")
-    public String findImage(@RequestBody ContractFindRequestDto contractFindRequestDto){
-        String result = contractService.getContractImage(contractFindRequestDto);
-        System.out.println("image : " + result);
-        return result;
-    }
+//    @PostMapping("findImage")
+//    public String findImage(@RequestBody ContractFindRequestDto contractFindRequestDto){
+//        String result = contractService.getContractImage(contractFindRequestDto);
+//        System.out.println("image : " + result);
+//        return result;
+//    }
 
 /**
  * 구 현 해 야 됨 !
