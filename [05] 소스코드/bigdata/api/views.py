@@ -265,7 +265,6 @@ class Prefer(APIView):
         cat = cate_name[cate]
         instance = models.Around.objects.filter(address__contains=addr).order_by('-'+cat)
         results = []
-        # TODO : 위도경도 줘야할까???
         for arnd in instance[:6]:
             addr = arnd.address
             b = models.Contract.objects.filter(address=addr).first()
