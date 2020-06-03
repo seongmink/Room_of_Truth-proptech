@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
@@ -22,7 +24,7 @@ public class StatusController {
 
     @PostMapping("/api/v1/status")
     @ApiOperation("패브릭과 DB에 상태 이력 저장")
-    public ResponseEntity<Object> save(@RequestBody StatusSaveRequestDto statusSaveRequestDto) {
+    public ResponseEntity<Object> save(@RequestBody @Valid StatusSaveRequestDto statusSaveRequestDto) {
         System.out.println("=== POST : /api/v1/status ====");
 
         // FABRIC에 상태 이력 정보 저장

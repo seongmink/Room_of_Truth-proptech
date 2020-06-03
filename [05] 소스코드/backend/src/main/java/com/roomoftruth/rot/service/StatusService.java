@@ -1,9 +1,10 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Status;
+import com.roomoftruth.rot.dto.StatusFindRequestDto;
 import com.roomoftruth.rot.dto.StatusResponseDto;
 import com.roomoftruth.rot.dto.StatusSaveRequestDto;
-import com.roomoftruth.rot.repository.StatusRespository;
+import com.roomoftruth.rot.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatusService {
 
-    private final StatusRespository statusRespository;
+    private final StatusRepository statusRespository;
 
     /**
      *  1. 상태 이력 등록하기
@@ -95,10 +96,8 @@ public class StatusService {
      *  String getStatusImage(long statusId);
      *
      */
-    public String findImageById(long statusId){
-        return statusRespository.findById(statusId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 이력이 존재하지 않습니다. id = " + statusId))
-                .getImage();
+    public String getStatusImage(StatusFindRequestDto statusFindRequestDto){
+        return statusRespository.getStatusImage(statusFindRequestDto.getAddress(), statusFindRequestDto.getFloor(), statusFindRequestDto.getHo());
     }
 
     /**

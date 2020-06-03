@@ -2,6 +2,9 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.domain.Status;
+import com.roomoftruth.rot.dto.ContractFindRequestDto;
+import com.roomoftruth.rot.dto.ContractFindResponseDto;
+import com.roomoftruth.rot.dto.ContractResultDto;
 import com.roomoftruth.rot.dto.ContractSaveRequestDto;
 import com.roomoftruth.rot.service.ContractService;
 import com.roomoftruth.rot.service.StatusService;
@@ -10,11 +13,9 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,16 +28,16 @@ public class ContractController {
     private final ContractService contractService;
     private final StatusService statusService;
 
-    @PostMapping("/api/v1/buildings")
+    @PostMapping("/buildings")
     @ApiOperation("계약 이력 등록하기")
-    public ResponseEntity<Object> save(@RequestBody ContractSaveRequestDto requestDto){
+    public ResponseEntity<Object> save(@RequestBody @Valid ContractSaveRequestDto requestDto){
         System.out.println("=== POST : /api/building ====");
         long result = contractService.saveContract(requestDto);
 
         return new ResponseEntity<Object>(String.valueOf(result), HttpStatus.OK);
     }
 
-    @GetMapping("/api/v1/building")
+    @GetMapping("/building")
     @ApiOperation("조회하기에 모든 이력 뿌려주기")
     public List<FindAllContract> getAllContracts(){
         System.out.println("=== GET : /api/building ====");
@@ -86,8 +87,32 @@ public class ContractController {
         private String longitude;
     }
 
-//    @PostMapping("/building/detail")
-//    @ApiOperation("건물 상세 정보 뿌려주기")
+    @PostMapping("details")
+    @ApiOperation("건물 상세 정보 뿌려주기")
+    public List<ContractResultDto> getAllDetails(@RequestBody Contract[] contracts){
+        System.out.println("====== POST : api/v1/details");
+        List<ContractResultDto> data = contractService.findAllDetails(contracts);
+
+
+        System.out.println("------------실행 성공??-----------");
+        for (ContractResultDto contractResultDto : data) {
+            System.out.println((contractResultDto.getAddress()));
+        }
+        return data;
+    }
+
+    /**
+     * param -> return Passed
+     * @param contractFindRequestDto
+     * @return contract.Image
+     */
+    @PostMapping("findImage")
+    public String findImage(@RequestBody ContractFindRequestDto contractFindRequestDto){
+        String result = contractService.getContractImage(contractFindRequestDto);
+        System.out.println("image : " + result);
+        return result;
+    }
+
 /**
  * 구 현 해 야 됨 !
  */

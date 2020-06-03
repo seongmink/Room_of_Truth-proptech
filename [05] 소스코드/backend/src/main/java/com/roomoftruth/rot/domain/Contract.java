@@ -4,11 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -43,7 +44,17 @@ public class Contract {
     private String image;
 
     @Column(name = "contract_date")
-    private LocalDateTime contractDate;
+    private LocalDate contractDate;
+
+    @Builder
+    public Contract(Long id, String address, String latitude, String longitude, String floor, String ho){
+        this.contractId = id;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.floor = floor;
+        this.ho = ho;
+    }
 
     @Builder
     public Contract(long contractId, String address, String sd, String sgg, String emd,
@@ -65,6 +76,11 @@ public class Contract {
         this.monthly = monthly;
         this.license = license;
         this.image = image;
-        this.contractDate = LocalDateTime.now();
+        this.contractDate = LocalDate.now();
     }
+
+    public void setImage(String image){
+        this.image = image;
+    }
+
 }
