@@ -24,4 +24,35 @@ public class AgentService {
 		return agentRepository.save(requestDto.toEntity(user)).getUser().getNum();
 	}
 
+
+//	public List<AgentRankingResponseDto> getRanking() {
+//
+//		List<Agent> = agentRepository.
+//
+//
+//		for (int i = 0; i < result.size(); i++) {
+//			if(result.get(i).getAPicture() == null || result.get(i).getAPicture().equals("null")) {
+//				result.get(i).setAPicture("images/agent_default.png");
+//				continue;
+//			}
+//			result.get(i).setAPicture("images/" + result.get(i).getAPicture());
+//		}
+//
+//		Collections.sort(result, new Comparator<Ranking>() {
+//
+//			@Override
+//			public int compare(Ranking o1, Ranking o2) {
+//
+//				if(o1.getPoint() == o2.getPoint()) {
+//					return o1.getName().compareTo(o2.getName());
+//				}
+//
+//				return o2.getPoint() - o1.getPoint();
+//			}
+//		});
+//
+//		return result;
+//	}
+
+
 }

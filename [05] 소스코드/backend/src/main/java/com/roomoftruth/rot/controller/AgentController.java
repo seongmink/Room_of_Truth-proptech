@@ -51,6 +51,17 @@ public class AgentController {
 		return jwt;
 	}
 
+//	@GetMapping("/ranking")
+//	@ApiOperation("랭킹 가져오기")
+//	public List<AgentRankingResponseDto> getRanking() {
+//		log.info("AgentController : getRanking");
+//
+//		return agentService.getRanking();
+//	}
+
+
+
+
 //	@GetMapping("/agent/detail/{num}")
 //	@ApiOperation("공인중개사 상세 조회")
 //	public Agent getAgentDetail(@PathVariable long num) {

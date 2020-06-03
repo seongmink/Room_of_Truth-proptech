@@ -30,7 +30,7 @@ public class Search extends BaseTimeEntity {
 	}
 
 	public void updateTime(LocalDateTime now){
-		this.updateTime(now);
+		this.updateTimeNow(now);
 	}
 
 }

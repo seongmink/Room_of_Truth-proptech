@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,20 +24,13 @@ public class SearchService {
 	public List<SearchResponseDto> findByNum(Long num) {
 
 		User user = userRepository.findByNum(num);
-		List<Search> temp = searchRepository.findByUser(user);
+		List<Search> temp = searchRepository.findTop5ByUserOrderByUpdatedAtDesc(user);
 
 		List<SearchResponseDto> searches =  new ArrayList<>();
 
 		for (Search search : temp) {
 			searches.add(new SearchResponseDto(search));
 		}
-
-		Collections.sort(searches, new Comparator<SearchResponseDto>() {
-			@Override
-			public int compare(SearchResponseDto o1, SearchResponseDto o2) {
-				return o2.getUpdatedAt().compareTo(o1.getUpdatedAt());
-			}
-		});
 
 		return searches;
 	}
@@ -48,6 +39,9 @@ public class SearchService {
 	public Long search(SearchSaveRequestDto requestDto) {
 
 		User user = userRepository.findByNum(requestDto.getUserNum());
+
+		if(user == null)
+			return 0L;
 
 		Search search = searchRepository.findByUserAndKeyword(user, requestDto.getKeyword());
 
@@ -61,7 +55,7 @@ public class SearchService {
 	}
 
 	@Transactional
-	public Long deleteSearch(long id) throws Exception {
+	public Long deleteSearch(long id) {
 
 		searchRepository.deleteById(id);
 

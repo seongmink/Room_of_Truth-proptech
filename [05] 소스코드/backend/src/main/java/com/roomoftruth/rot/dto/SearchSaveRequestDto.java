@@ -25,4 +25,11 @@ public class SearchSaveRequestDto {
                 .keyword(keyword).build();
     }
 
+    @Override
+    public String toString() {
+        return "SearchSaveRequestDto{" +
+                "userNum=" + userNum +
+                ", keyword='" + keyword + '\'' +
+                '}';
+    }
 }
