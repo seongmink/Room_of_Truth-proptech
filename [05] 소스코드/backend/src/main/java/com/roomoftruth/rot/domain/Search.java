@@ -1,29 +1,36 @@
 package com.roomoftruth.rot.domain;
 
-import javax.persistence.*;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "search")
 @Getter
 @NoArgsConstructor
 public class Search extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "search_id")
-	private long id;
-
-//	@Column(updatable = false, insertable = false, name = "user_id")
-//	private long userId;
+	private long searchId;
 
 	private String keyword;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private User user;
+
+	@Builder
+	public Search(User user, String keyword) {
+		this.user = user;
+		this.keyword = keyword;
+	}
+
+	public void updateTime(LocalDateTime now){
+		this.updateTimeNow(now);
+	}
+
 }

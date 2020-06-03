@@ -1,25 +1,25 @@
 package com.roomoftruth.rot.jwt;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-@Component
-public class JwtInterceptor implements HandlerInterceptor {
-	private static final String HEADER_AUTH = "Authorization";
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-	@Autowired
-	private IJwtService IJwtService;
+@Component
+@RequiredArgsConstructor
+public class JwtInterceptor implements HandlerInterceptor {
+
+	private static final String HEADER_AUTH = "Authorization";
+	private final JwtService jwtService;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		final String token = request.getHeader(HEADER_AUTH);
 
-		if (token != null && IJwtService.isUsable(token)) {
+		if (token != null && jwtService.isUsable(token)) {
 			return true;
 		} else {
 			throw new UnauthorizedException();
