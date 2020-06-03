@@ -27,23 +27,24 @@ public class SearchController {
 		return searchService.findByNum(num);
 	}
 
-
-
-
 	@PostMapping("/search")
 	@ApiOperation("검색 기록 추가")
 	public Long updateSearch(@RequestBody SearchSaveRequestDto requestDto) {
 		log.info("SearchController : updateSearch / {}", requestDto.getUserNum());
+
+		System.out.println("requestDto = " + requestDto);
 
 		return searchService.search(requestDto);
 	}
 
 	@DeleteMapping("/search/{id}")
 	@ApiOperation(value = "검색 기록 삭제")
-	public Long deleteSearch(@PathVariable(required = true) long id) throws Exception {
+	public String deleteSearch(@PathVariable(required = true) long id) throws Exception {
 		log.info("SearchController : deleteSearch / {}", id);
 
-		return searchService.deleteSearch(id);
+		searchService.deleteSearch(id);
+
+		return "success";
 	}
 
 }

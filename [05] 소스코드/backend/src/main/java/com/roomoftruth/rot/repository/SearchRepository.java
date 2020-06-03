@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface SearchRepository extends JpaRepository<Search, Long>{
 
-	List<Search> findByUser(User user);
+	List<Search> findTop5ByUserOrderByUpdatedAtDesc(User user);
 
 	Search findByUserAndKeyword(User user, String keyword);
 

@@ -49,8 +49,6 @@ public class Interest {
 		this.third = requestDto.getThird();
 		this.birth = requestDto.getBirth();
 		this.gender = requestDto.getGender();
-
-
 	}
 
 }
