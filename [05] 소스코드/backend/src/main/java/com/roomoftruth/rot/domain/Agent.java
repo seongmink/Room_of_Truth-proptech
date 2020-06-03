@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 
@@ -33,11 +34,6 @@ public class Agent extends BaseTimeEntity {
 //	@JsonBackReference
 //	private List<Building> buildings = new ArrayList<>();
 
-
-	public void setRnk(int rnk) {
-		this.rnk = rnk;
-	}
-
 	@Builder
 	public Agent(String name, String representative, String license, String address,
 				 String picture, int count, int point, int rnk, User user) {
@@ -52,4 +48,23 @@ public class Agent extends BaseTimeEntity {
 		this.rnk = rnk;
 	}
 
+	@Transactional
+	public void updateRanking(int rnk) {
+		this.rnk = rnk;
+	}
+
+	@Override
+	public String toString() {
+		return "Agent{" +
+				"agentId=" + agentId +
+				", name='" + name + '\'' +
+				", representative='" + representative + '\'' +
+				", license='" + license + '\'' +
+				", address='" + address + '\'' +
+				", picture='" + picture + '\'' +
+				", count=" + count +
+				", point=" + point +
+				", rnk=" + rnk +
+				'}';
+	}
 }
