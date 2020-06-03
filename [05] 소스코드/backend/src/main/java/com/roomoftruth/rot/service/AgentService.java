@@ -1,12 +1,17 @@
 package com.roomoftruth.rot.service;
 
+import com.roomoftruth.rot.domain.Agent;
 import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.dto.AgentRankingResponseDto;
 import com.roomoftruth.rot.dto.AgentSaveRequestDto;
 import com.roomoftruth.rot.repository.AgentRepository;
 import com.roomoftruth.rot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -25,34 +30,39 @@ public class AgentService {
 	}
 
 
-//	public List<AgentRankingResponseDto> getRanking() {
+	@Transactional
+	public List<AgentRankingResponseDto> getRanking() {
+
+//		List<Agent> agents = agentRepository.findAll();
 //
-//		List<Agent> = agentRepository.
+//		for (Agent a : agents) {
+//			// Agent rnk 찾아서 a.setRnk() 해주기
 //
-//
-//		for (int i = 0; i < result.size(); i++) {
-//			if(result.get(i).getAPicture() == null || result.get(i).getAPicture().equals("null")) {
-//				result.get(i).setAPicture("images/agent_default.png");
-//				continue;
-//			}
-//			result.get(i).setAPicture("images/" + result.get(i).getAPicture());
+//			a.setRnk(a);
 //		}
-//
-//		Collections.sort(result, new Comparator<Ranking>() {
-//
-//			@Override
-//			public int compare(Ranking o1, Ranking o2) {
-//
-//				if(o1.getPoint() == o2.getPoint()) {
-//					return o1.getName().compareTo(o2.getName());
-//				}
-//
-//				return o2.getPoint() - o1.getPoint();
-//			}
-//		});
-//
-//		return result;
-//	}
+
+		List<Agent> ranking = agentRepository.getRankingTop9();
+
+		List<AgentRankingResponseDto> result = new ArrayList<>();
+		int rankIndex = 1;
+		for (int i = 0; i < ranking.size(); i++) {
+			System.out.println(ranking.get(i).getName() + " 랭킹을 " + rankIndex + "로 설정");
+
+			// update
+			agentRepository.updateRank(rankIndex, ranking.get(i).getAgentId());
+			System.out.println("죽었니??");
+
+//			result.add(new AgentRankingResponseDto(ranking.get(i)));
+
+			if(result.get(i).getAgentPicture() == null || result.get(i).getAgentPicture().equals("null")) { // 기본 이미지 처리
+				result.get(i).updateDefaultImage();
+			}
+			rankIndex++;
+		}
+
+		return result;
+	}
+
 
 
 }

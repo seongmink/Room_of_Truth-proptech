@@ -1,6 +1,7 @@
 package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.dto.AgentRankingResponseDto;
 import com.roomoftruth.rot.dto.AgentSaveRequestDto;
 import com.roomoftruth.rot.dto.UserResponseDto;
 import com.roomoftruth.rot.jwt.JwtService;
@@ -10,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -51,16 +54,13 @@ public class AgentController {
 		return jwt;
 	}
 
-//	@GetMapping("/ranking")
-//	@ApiOperation("랭킹 가져오기")
-//	public List<AgentRankingResponseDto> getRanking() {
-//		log.info("AgentController : getRanking");
-//
-//		return agentService.getRanking();
-//	}
+	@GetMapping("/ranking")
+	@ApiOperation("랭킹 가져오기")
+	public List<AgentRankingResponseDto> getRanking() {
+		log.info("RankingController : getRanking");
 
-
-
+		return agentService.getRanking();
+	}
 
 //	@GetMapping("/agent/detail/{num}")
 //	@ApiOperation("공인중개사 상세 조회")

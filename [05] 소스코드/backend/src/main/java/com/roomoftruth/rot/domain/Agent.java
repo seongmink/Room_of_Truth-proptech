@@ -23,6 +23,7 @@ public class Agent extends BaseTimeEntity {
 	private String picture;
 	private int count;
 	private int point;
+	private int rnk;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JsonManagedReference
@@ -32,9 +33,14 @@ public class Agent extends BaseTimeEntity {
 //	@JsonBackReference
 //	private List<Building> buildings = new ArrayList<>();
 
+
+	public void setRnk(int rnk) {
+		this.rnk = rnk;
+	}
+
 	@Builder
 	public Agent(String name, String representative, String license, String address,
-				 String picture, int count, int point, User user) {
+				 String picture, int count, int point, int rnk, User user) {
 		this.name = name;
 		this.representative = representative;
 		this.license = license;
@@ -43,6 +49,7 @@ public class Agent extends BaseTimeEntity {
 		this.count = count;
 		this.point = point;
 		this.user = user;
+		this.rnk = rnk;
 	}
 
 }
