@@ -53,18 +53,4 @@ public class Agent extends BaseTimeEntity {
 		this.rnk = rnk;
 	}
 
-	@Override
-	public String toString() {
-		return "Agent{" +
-				"agentId=" + agentId +
-				", name='" + name + '\'' +
-				", representative='" + representative + '\'' +
-				", license='" + license + '\'' +
-				", address='" + address + '\'' +
-				", picture='" + picture + '\'' +
-				", count=" + count +
-				", point=" + point +
-				", rnk=" + rnk +
-				'}';
-	}
 }
