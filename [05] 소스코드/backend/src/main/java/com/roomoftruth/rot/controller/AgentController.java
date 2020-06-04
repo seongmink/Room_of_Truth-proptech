@@ -55,7 +55,7 @@ public class AgentController {
 		return jwt;
 	}
 
-	@GetMapping("/ranking")
+	@GetMapping("/agent/ranking")
 	@ApiOperation("랭킹 가져오기")
 	public List<AgentRankingResponseDto> getRanking() {
 		log.info("AgentController : getRanking");
