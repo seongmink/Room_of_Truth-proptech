@@ -1,6 +1,7 @@
 package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.dto.AgentDetailResponseDto;
 import com.roomoftruth.rot.dto.AgentRankingResponseDto;
 import com.roomoftruth.rot.dto.AgentSaveRequestDto;
 import com.roomoftruth.rot.dto.UserResponseDto;
@@ -57,29 +58,21 @@ public class AgentController {
 	@GetMapping("/ranking")
 	@ApiOperation("랭킹 가져오기")
 	public List<AgentRankingResponseDto> getRanking() {
-		log.info("RankingController : getRanking");
+		log.info("AgentController : getRanking");
 
 		agentService.updateRanking();
 
 		return agentService.getRanking();
 	}
 
-//	@GetMapping("/agent/detail/{num}")
-//	@ApiOperation("공인중개사 상세 조회")
-//	public Agent getAgentDetail(@PathVariable long num) {
-//		logger.info("GET : /api/agent/detail");
-//
-//		Agent agent = agentService.getAgentByNum(num);
-//		if(agent.getPicture() != null) {
-//			agent.setPicture("images/" + agent.getPicture());
-//		} else {
-//			agent.setPicture("images/agent_default.png");
-//		}
-////		agent.setUPicture(userService.getUserByNum(num).getPicture());
-////		agent.setPhoneNum(userService.getUserByNum(num).getPhoneNum());
-//
-//		return agent;
-//	}
+	@GetMapping("/agent/detail/{num}")
+	@ApiOperation("공인중개사 상세 조회")
+	public AgentDetailResponseDto getAgentDetail(@PathVariable long num) {
+		log.info("AgentController : getAgentDetail");
+
+		return agentService.getAgentDetail(num);
+	}
+
 //
 //	@GetMapping("/agent/contribution/{num}")
 //	@ApiOperation("공인중개사가 등록한 건물 조회")

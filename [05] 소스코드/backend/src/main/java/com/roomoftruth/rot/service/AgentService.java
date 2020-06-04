@@ -2,6 +2,7 @@ package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Agent;
 import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.dto.AgentDetailResponseDto;
 import com.roomoftruth.rot.dto.AgentRankingResponseDto;
 import com.roomoftruth.rot.dto.AgentSaveRequestDto;
 import com.roomoftruth.rot.repository.AgentRepository;
@@ -42,7 +43,6 @@ public class AgentService {
 		}
 	}
 
-
 	public List<AgentRankingResponseDto> getRanking() {
 
 		List<Agent> ranking = agentRepository.getRankingTop9();
@@ -58,5 +58,15 @@ public class AgentService {
 
 		return result;
 	}
+
+	public AgentDetailResponseDto getAgentDetail(long num) {
+
+		Agent agent = agentRepository.getAgentByUserNum(num);
+
+		AgentDetailResponseDto result = new AgentDetailResponseDto(agent);
+
+		return result;
+	}
+
 
 }
