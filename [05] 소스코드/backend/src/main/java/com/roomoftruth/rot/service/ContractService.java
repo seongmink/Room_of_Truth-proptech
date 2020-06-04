@@ -2,6 +2,7 @@ package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.dto.*;
+import com.roomoftruth.rot.repository.ContractFindLocationDtoRepository;
 import com.roomoftruth.rot.repository.ContractFindResponseRepository;
 import com.roomoftruth.rot.repository.ContractRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class ContractService {
 
     private final ContractRepository contractRepository;
     private final ContractFindResponseRepository contractFindResponseRepository;
+    private final ContractFindLocationDtoRepository contractFindLocationDtoRepository;
     private final StatusService statusService;
 
     /**
@@ -169,4 +171,19 @@ public class ContractService {
         }
         return result;
     }
+
+    /**
+     * 모든 Contract주소와 위도, 경도
+     * @return all address, latitude, longitude
+     */
+
+//    2번 방식. 이게 더 빠름
+    public ContractFindLocationDto findContractLocation(String address){
+        return contractFindLocationDtoRepository.findContractLocation(address);
+    }
+
+//    느린 1번 방식
+//    public Contract findContractLocation(String address) {
+//        return contractRepository.findContractLocation(address);
+//    }
 }

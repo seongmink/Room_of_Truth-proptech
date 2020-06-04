@@ -1,8 +1,9 @@
 package com.roomoftruth.rot.controller;
 
+import com.roomoftruth.rot.domain.Around;
 import com.roomoftruth.rot.domain.Contract;
-import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.dto.*;
+import com.roomoftruth.rot.service.AroundService;
 import com.roomoftruth.rot.service.ContractService;
 import com.roomoftruth.rot.service.StatusService;
 import io.swagger.annotations.ApiOperation;
@@ -23,6 +24,7 @@ public class ContractController {
 
     private final ContractService contractService;
     private final StatusService statusService;
+    private final AroundService aroundService;
 
     @PostMapping("/buildings")
     @ApiOperation("계약 이력 등록하기")
@@ -35,31 +37,41 @@ public class ContractController {
 
     @GetMapping("/building")
     @ApiOperation("조회하기에 모든 이력 뿌려주기")
-    public List<FindAllContract> getAllContracts(){
+    public List<ContractFindLocationDto> getAllContracts(@RequestParam String city, String local){
         System.out.println("=== GET : /api/building ====");
+        long startTime = System.currentTimeMillis();
+        /**
+         * 1. Around에 모든 주소가져오기
+         * 2. 해당하는 주소를 들고 contract에 가서 latitude, longitude 찾아와서
+         *    return (addressm latitude, longitude)
+         */
+        //1. Around로 모든 주소가져오기
+        String key = city + " " + local;
+        List<Around> allAddress = aroundService.findAllAddress(key);
 
-        List<FindAllContract> result = new ArrayList<>();
-        HashSet<FindAllContract> set = new HashSet<>();
+        long stopTime = System.currentTimeMillis();
 
-        List<Contract> contractTemp = contractService.findAll();
-        List<Status> statusTemp = statusService.findAll();
+        long elapsedTime = stopTime - startTime;
+        System.out.println(elapsedTime);
 
-        for(int i = 0; i < contractTemp.size(); i++){
-            FindAllContract findAllContract = new FindAllContract(contractTemp.get(i));
-            set.add(findAllContract);
+//  24초 걸림! <1번 방식>
+        List<ContractFindLocationDto> result = new ArrayList<>();
+        for (Around address : allAddress) {
+            // contract 가서 latitude, longitude 가져오자
+            ContractFindLocationDto data = contractService.findContractLocation(address.getAddress());
+
+            result.add(data);
         }
 
-        for(int i = 0; i < statusTemp.size(); i++){
-            FindAllContract findAllStatus = new FindAllContract(statusTemp.get(i));
-            set.add(findAllStatus);
-        }
+//        <2번 방식> 37초 걸림;
+//        List<Contract> result = new ArrayList<>();
+//        for (Around around : allAddress) {
+//            Contract contract = contractService.findContractLocation(around.getAddress());
+//            result.add(contract);
+//        }
 
-        Iterator<FindAllContract> it = set.iterator();
-
-        while(it.hasNext()){
-            result.add(it.next());
-        }
         return result;
+
     }
 
     @PostMapping("details")
