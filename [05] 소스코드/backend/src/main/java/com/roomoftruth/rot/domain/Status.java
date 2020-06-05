@@ -8,7 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -41,13 +41,15 @@ public class Status {
     @Column(nullable = false)
     private String license;
     private String image;
-    @Column(name = "report_date")
-    private LocalDateTime reportDate;
+
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @Builder
     public Status(long statusId, String address, String sd, String sgg, String emd,
                   String latitude, String longitude, String exclusive, String floor, String ho,
-                  String category, String detail, String cost, String license, String image){
+                  String category, String detail, String cost, String license, String image,
+                  LocalDate startDate, LocalDate endDate){
         this.statusId = statusId;
         this.address = address;
         this.sd = sd;
@@ -63,6 +65,7 @@ public class Status {
         this.cost = cost;
         this.license = license;
         this.image = image;
-        this.reportDate = LocalDateTime.now();
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }

@@ -11,12 +11,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private String urlPath;
 
     public WebMvcConfig() {
-        this.urlPath = "file:///home/ubuntu/image/";
+        this.urlPath = "file:///home/ubuntu/images/";
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/image/**").addResourceLocations(urlPath).setCachePeriod(20);
+        registry.addResourceHandler("/images/**").addResourceLocations(urlPath).setCachePeriod(20);
     }
 
     @Override
@@ -25,4 +25,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins("*")
                 .allowedMethods("*");
     }
+
 }

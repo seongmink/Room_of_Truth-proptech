@@ -10,6 +10,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     List<Contract> findDistinctByLatitudeAndLongitude(String latitude, String longitude);
     List<Contract> findAllByAddressAndFloorAndHo(String address, String floor, String ho);
     List<Contract> findAllByLicense(String license);
+    List<Contract> findTop1000AllByLicenseOrderByContractDate(String license);
 
     @Query(value = "select image " +
             "from contract " +

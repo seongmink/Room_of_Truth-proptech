@@ -4,25 +4,25 @@ import com.roomoftruth.rot.dto.StatusSaveRequestDto;
 import com.roomoftruth.rot.service.StatusService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*")
-@RequiredArgsConstructor
 @RestController
+@RequestMapping("/api")
+@RequiredArgsConstructor
+@Slf4j
 public class StatusController {
 
     private final StatusService statusService;
 
 
 
-    @PostMapping("/api/v1/status")
+    @PostMapping("/status")
     @ApiOperation("패브릭과 DB에 상태 이력 저장")
     public ResponseEntity<Object> save(@RequestBody @Valid StatusSaveRequestDto statusSaveRequestDto) {
         System.out.println("=== POST : /api/v1/status ====");

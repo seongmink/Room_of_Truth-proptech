@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 
@@ -48,9 +47,12 @@ public class Agent extends BaseTimeEntity {
 		this.rnk = rnk;
 	}
 
-	@Transactional
 	public void updateRanking(int rnk) {
 		this.rnk = rnk;
+	}
+
+	public void updatePicture(String url) {
+		this.picture = url;
 	}
 
 }
