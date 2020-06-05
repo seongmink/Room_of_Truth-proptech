@@ -35,40 +35,19 @@ public class ContractController {
         return new ResponseEntity<Object>(String.valueOf(result), HttpStatus.OK);
     }
 
+    /**
+     *    Around 주소에 대한 모든 위도, 경도와 함께 출력
+     *    return (addressm latitude, longitude)
+     */
     @GetMapping("/building")
     @ApiOperation("조회하기에 모든 이력 뿌려주기")
     public List<ContractFindLocationDto> getAllContracts(@RequestParam String city, String local){
         System.out.println("=== GET : /api/building ====");
-        long startTime = System.currentTimeMillis();
-        /**
-         * 1. Around에 모든 주소가져오기
-         * 2. 해당하는 주소를 들고 contract에 가서 latitude, longitude 찾아와서
-         *    return (addressm latitude, longitude)
-         */
-        //1. Around로 모든 주소가져오기
+
         String key = city + " " + local;
         List<Around> allAddress = aroundService.findAllAddress(key);
 
-        long stopTime = System.currentTimeMillis();
-
-        long elapsedTime = stopTime - startTime;
-        System.out.println(elapsedTime);
-
-//  24초 걸림! <1번 방식>
-        List<ContractFindLocationDto> result = new ArrayList<>();
-        for (Around address : allAddress) {
-            // contract 가서 latitude, longitude 가져오자
-            ContractFindLocationDto data = contractService.findContractLocation(address.getAddress());
-
-            result.add(data);
-        }
-
-//        <2번 방식> 37초 걸림;
-//        List<Contract> result = new ArrayList<>();
-//        for (Around around : allAddress) {
-//            Contract contract = contractService.findContractLocation(around.getAddress());
-//            result.add(contract);
-//        }
+        List<ContractFindLocationDto> result = contractService.findContractLocations(key);
 
         return result;
 

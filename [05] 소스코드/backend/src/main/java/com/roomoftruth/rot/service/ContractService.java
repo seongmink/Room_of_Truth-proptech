@@ -177,13 +177,8 @@ public class ContractService {
      * @return all address, latitude, longitude
      */
 
-//    2번 방식. 이게 더 빠름
-    public ContractFindLocationDto findContractLocation(String address){
-        return contractFindLocationDtoRepository.findContractLocation(address);
+    public List<ContractFindLocationDto> findContractLocations(String key){
+        return contractFindLocationDtoRepository.findContractLocations(key);
     }
 
-//    느린 1번 방식
-//    public Contract findContractLocation(String address) {
-//        return contractRepository.findContractLocation(address);
-//    }
 }
