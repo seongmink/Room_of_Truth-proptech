@@ -16,7 +16,7 @@
 								</div>
 								<div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center">
 									<div class="card-profile-actions py-4 mt-lg-0">
-										<a href="#" @click="deleteAuth"  v-if="$store.state.userInfo!=null&&$store.state.userInfo.auth!=null"  style=" background-color:#CC3D3D; border-color:#CC3D3D;" class="btn btn-sm btn-info ">공인인증 해제</a>
+										<!-- <a href="#" @click="deleteAuth"  v-if="$store.state.userInfo!=null&&$store.state.userInfo.auth!=null"  style=" background-color:#CC3D3D; border-color:#CC3D3D;" class="btn btn-sm btn-info ">공인인증 해제</a> -->
 									</div>
 								</div>
 								<div class="col-lg-4 order-lg-1">
@@ -24,7 +24,7 @@
 							</div>
 							
 							<div class="text-center mt-5">
-								<h3 v-if="$store.state.userInfo!=null" style="margin-bottom:-10px;">{{userInfo.nickname}}</h3>
+								<h3 v-if="$store.state.userInfo!=null" style="margin-bottom:-10px; margin-top:-30px;">{{userInfo.nickname}}</h3>
                         		<h4><span v-if="$store.state.userInfo!=null&&$store.state.userInfo.auth!=null" style="background-color:#59DA50; color:#fff;" class="badge badge-pill badge-danger text-uppercase">공인중개사</span></h4>
                         		<h4><span v-if="$store.state.userInfo!=null&&$store.state.userInfo.auth==null" style="background-color:#1428A0; color:#fff;" class="badge badge-pill badge-danger text-uppercase">일반사용자</span></h4>
 				  				<br/> 	
@@ -201,13 +201,17 @@ import {mapState} from 'vuex';
 import DaumPostcode from 'vuejs-daum-postcode'
 import { mypage } from "../../api/user.js";
 import { deleteAuth } from "../../api/user.js";
+import { updateInfo } from "../../api/user.js";
+
+
 export default {
 	data(){
 		return{	
+				userinfo:null,
 				selected: 'radio1',
         		options: [
-          			{ text: '남자', value: 'radio1' },
-          			{ text: '여자', value: 'radio2' },
+          			{ text: '남자', value: '남자' },
+          			{ text: '여자', value: '여자' },
 					],
 				locationSelect:'시/도를 선택하세요.',
 				locationSelect2:'시/군/구를 선택하세요.',
@@ -235,7 +239,7 @@ export default {
 				ranking_2:'2순위',
 				ranking_3:'3순위',
 				date:'',
-				ranklist:['교통','마트/편의점','교육시설','의료시설','음식점/카페','문화공간'],
+				ranklist:['교통','마트/편의점','교육시설','의료시설','음식점/카페','문화시설'],
 				sranklist:[],
 				tranklist:[],
 				list:[
@@ -261,10 +265,36 @@ export default {
 	},
 	created(){
 
+		if(this.$store.state.userInfo!=null){
+			
+			this.selected = this.$store.state.userInfo.interest.gender;
+			this.date = this.$store.state.userInfo.interest.birth+"";
+			this.locationSelect = this.$store.state.userInfo.interest.sd;
+			setTimeout(() => {
+				if(this.$store.state.userInfo.interest.sgg==null){
+			
+				this.locationSelect2 = "통합";
+			}else{
+		
+				this.locationSelect2 = this.$store.state.userInfo.interest.sgg;
+				
+				}
+			}, 100)
+			
+					
+			this.ranking_1 = this.$store.state.userInfo.interest.first;
+			setTimeout(() => {
+				this.ranking_2 = this.$store.state.userInfo.interest.second;
+			}, 100);
+			setTimeout(() => {
+				this.ranking_3 = this.$store.state.userInfo.interest.third;
+			}, 100)	
+      	}
+
 	},
 	watch:{
 		locationSelect:function(hook){
-	
+			
 				if(hook=='서울특별시'){
 					this.location = this.locations[0];
 					
@@ -314,9 +344,13 @@ export default {
 					this.location = this.locations[15];
 			
 				}else if(hook=='세종특별자치시'){
-					this.location = this.locations[16];
+					this.location = ['통합'];
 			
 				}
+			
+				this.locationSelect2 = "시/군/구를 선택하세요."
+	
+
 			},
 
 			date:function(hook){
@@ -369,7 +403,30 @@ export default {
 					alert("2순위 선호도부터 설정해주세요!")
 					this.ranking_3='3순위'
 				}
+			},
+			userInfo:function(hook){
+				if(hook!=null){
+					this.selected = this.$store.state.userInfo.interest.gender;
+					this.date = this.$store.state.userInfo.interest.birth+"";
+					this.locationSelect = this.$store.state.userInfo.interest.sd;
+					setTimeout(() => {
+						if(this.$store.state.userInfo.interest.sgg==null){
+							this.locationSelect2 = "통합";
+						}else{
+							this.locationSelect2 = this.$store.state.userInfo.interest.sgg;	
+						}
+					}, 100)
+					
+					this.ranking_1 = this.$store.state.userInfo.interest.first;
+					setTimeout(() => {
+						this.ranking_2 = this.$store.state.userInfo.interest.second;
+					}, 100);
+					setTimeout(() => {
+						this.ranking_3 = this.$store.state.userInfo.interest.third;
+					}, 100)	
+				}
 			}
+
 
 	},
    computed: {
@@ -394,13 +451,36 @@ export default {
           this.$bvModal.hide('modal-3')	
 		},
 		submit(){
-			if(this.address!='' && this.phone!='' && this.phone2!='' && this.phone3!=''){
-
-				mypage(this.$store.state.userInfo, this.address, this.phone+"-"+this.phone2+"-"+this.phone3);
-				this.$bvModal.hide('modal-2')	
-			}else{
-				alert("정보를 모두 입력해주세요!")
-			}
+			console.log(this.locationSelect2)
+			if(this.date.length!=4){
+					alert('출생년도를 모두 입력해주세요!')
+				}else if(this.locationSelect=='시/도를 선택하세요.'||this.locationSelect==''){
+					alert('시/도를 선택하세요!')
+				}else if(this.locationSelect2=='시/군/구를 선택하세요.'||this.locationSelect2==''){
+					alert('시/군/구를 선택하세요!')
+				}else if(this.ranking_1=='1순위'){
+					alert('선호도에서 1순위를 선택해주세요!')
+				}else if(this.ranking_2=='2순위'){
+					alert('선호도에서 2순위를 선택해주세요!')
+				}else if(this.ranking_3=='3순위'){
+					alert('선호도에서 3순위를 선택해주세요!')
+				}else{
+					var info = {
+						userNum : this.$store.state.userInfo.num,
+						gender : this.selected,
+						birth : this.date,
+						sd : this.locationSelect,
+						sgg : this.locationSelect2,
+						first : this.ranking_1,
+						second : this.ranking_2,
+						third : this.ranking_3
+					}
+					console.log(info)
+					updateInfo(info,response => {
+						console.log("수정성공")
+						this.$router.push('/')
+					});
+				}
 		},
 		deleteAuth(){
 			

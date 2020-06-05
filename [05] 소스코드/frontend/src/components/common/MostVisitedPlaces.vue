@@ -11,25 +11,25 @@
 				<div class="col-md-12">
 					<slick :options="slickOptions" v-if="data" class="simple-slick-carousel dots-nav">
 						<template v-for="(place) in data" >
-							<div class="carousel-item" :key="place.title" @click="detail(place.num)">
+							<div class="carousel-item" :key="place.title" @click="detail(place.userNum)">
 								<div class="category-box-container text-center">
 									<div class="listing-item-container">
 										<div class="listing-item text-center">
 					
                                             <!-- <div class="mostviewed-bg" :style="{'background': 'url(' + url+place.apicture + ')','background-size': '100% 200px','background-repeat': 'no-repeat'}" >  -->
-                                            <div class="mostviewed-bg" :style="{'background': 'url(' + place.apicture + ')','background-size': '100% 200px','background-repeat': 'no-repeat'}" > 
+                                            <div class="mostviewed-bg" :style="{'background': 'url(' + url+place.agentPicture + ')','background-size': '100% 200px','background-repeat': 'no-repeat'}" > 
                                             
 												<div class="listing-item-content">
 													<div class="list-logo">
-														<a> <img v-if="place.upicture!=null" :src="place.upicture" width="80" height="80" alt=""></a>
-														<a> <img v-if="place.upicture==null" src=../../../public/images/kakaoimage.jpg width="80" height="80" alt=""></a>
+														<a> <img v-if="place.userPicture!=null" :src="place.userPicture" width="80" height="80" alt=""></a>
+														<a> <img v-if="place.userPicture==null" src=../../../public/images/kakaoimage.jpg width="80" height="80" alt=""></a>
 													</div>
                                                     <img v-if="place.rnk==1" src=static/1rnk.png style="width:20px; float:left; margin-top:-40px; margin-left:-20px">
                                                     <img v-if="place.rnk==2" src=static/2rnk.png style="width:20px; float:left; margin-top:-40px; margin-left:-20px">
                                                     <img v-if="place.rnk==3" src=static/3rnk.png style="width:20px; float:left; margin-top:-40px; margin-left:-20px">
 													<span v-if="place.rnk>3" class="badge badge-pill badge-primary text-uppercase badge-cat category-banner">{{place.rnk}} 등</span>
 													<a><h5 class="mb-0">{{place.agentName}} </h5></a>
-													<p class="mb-0"> <small> {{place.name}}</small></p>
+													<p class="mb-0"> <small> {{place.nickname}}</small></p>
 													<span class="badge badge-pill badge-success text-uppercase open-close-banner">{{place.point}} Point</span>
 												</div>
                                             	

@@ -33,7 +33,7 @@
                                 </div>
                             </div>
                             <div style="text-align:right;">
-                            <a href="#" v-b-toggle.sidebar-backdrop style=" background-color:#1428A0; border-color:#1428A0; margin-top:-160px" class="btn btn-sm btn-info ">이미지 변경하기</a>
+                            <a href="#" v-b-toggle.sidebar-backdrop style=" background-color:#00c03f; border-color:#00c03f; margin-top:-160px" class="btn btn-sm btn-info ">이미지 변경하기</a>
                             </div>
                             <div v-if="this.info!=null" class="text-center mt-5">
                                 <h3>{{info.name}}</h3>
@@ -87,8 +87,8 @@
                                         <div class="listing-item">
                                         <div style="text-align:right;">
                                         <img :src="url+list.image" alt="" style="width:100%; height:220px">
-                                          <a v-if="list.category==null" href="#" style=" background-color:rgb(20, 40, 160); border-color:rgb(20, 40, 160); margin-top:-420px; margin-right:17px " class="btn btn-sm btn-info ">계약이력</a>
-                                                 <a v-else href="#" style=" background-color:#86E57F; border-color:#86E57F;margin-top:-420px; margin-right:17px" class="btn btn-sm btn-info ">상태이력</a>  
+                                          <a v-if="list.type=='계약'" href="#" style=" background-color:#00c03f; border-color:#00c03f; margin-top:-420px; margin-right:17px " class="btn btn-sm btn-info ">계약이력</a>
+                                        <a v-else href="#" style=" background-color:rgb(20, 40, 160); border-color:rgb(20, 40, 160);margin-top:-420px; margin-right:17px" class="btn btn-sm btn-info ">상태이력</a>   
                                         </div>
                                         <div class="listing-item-content" style="height:100px;">
                                       
@@ -105,10 +105,10 @@
                                 </div>
                         </div>
                         <div v-if="!check">
-                            <a href="javascript:" @click="add()" v-b-modal.modal-4 class="btn btn-danger" style="background-color:#1428A0; border-color:#1428A0; width:100%">더보기</a>
+                            <a href="javascript:" @click="add()" v-b-modal.modal-4 class="btn btn-danger" style="background-color:#00c03f ; border-color:#00c03f ; width:100%">더보기</a>
                         </div>
                         <div v-else>
-                            <a href="javascript:" v-b-modal.modal-4 class="btn btn-danger" style="background-color:#1428A0; border-color:#1428A0; width:100%;">정보가 존재하지 않습니다.</a>
+                            <a href="javascript:" v-b-modal.modal-4 class="btn btn-danger" style="background-color:#00c03f ; border-color:#00c03f ; width:100%;">정보가 존재하지 않습니다.</a>
                         </div>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
                   <br/>
              
         <b-img v-if="this.info!=null&&this.info.picture!=null" :src="url+this.info.picture" fluid thumbnail></b-img>
-        <b-img v-else-if="this.info!=null&&this.info.picture==null" src="static/agent_default.png" fluid thumbnail></b-img>
+        <b-img v-else-if="this.info!=null&&this.info.picture==null" src="static/default.png" fluid thumbnail></b-img>
          <a href="javascript:" @click="register()" style="background-color:#1428A0; border-color:#1428A0; width:100%;" class="btn btn-danger">등록하기 <i class="fa fa-arrow-circle-right"></i></a>
       </div>
     </b-sidebar>
@@ -325,7 +325,7 @@ export default {
             })
             getUserBlock(this.$store.state.userInfo.num, responses=>{
                 //console.log("내가등록한 블록 결과")
-              
+                console.log(responses.data)
                 this.data = responses.data
                 if(this.data.length==0){
                     this.check = true;
@@ -339,7 +339,7 @@ export default {
                    
                     }
 
-                //console.log(this.list)
+                
                 }
                 
             })

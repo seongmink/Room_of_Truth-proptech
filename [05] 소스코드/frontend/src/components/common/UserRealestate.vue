@@ -55,15 +55,6 @@
                                             </div>
                                             <p v-if="this.info!=null" class="m-0 text-small text-muted">{{info.address}}</p>
                                         </div>
-										<br>
-                                        <div class="detail-list mb-2">
-                                            <div class="detail-list-label mb-1">
-                                                <i class="fa fa-phone mr-2" aria-hidden="true"></i>
-                                                <small class="text-uppercase font-weight-bold">Contact No.</small>
-                                            </div>
-                                            <p v-if="this.info!=null && this.info.phone!=null" class="m-0 text-small text-muted">{{info.phone}}</p>
-                                            <p v-if="this.info!=null  && this.info.phone==null" class="m-0 text-small text-muted">등록된 전화번호가 없습니다.</p>
-                                        </div>
                                         <br>
                                         <div class="detail-list mb-2">
                                             <div class="detail-list-label mb-1">
@@ -86,8 +77,8 @@
                                         <div class="listing-item">
                                         <div style="text-align:right;">
                                         <img :src="url+lists.image" alt="" style="width:100%; height:220px; ">
-                                         <a v-if="lists.category==null" href="#" style=" background-color:rgb(20, 40, 160); border-color:rgb(20, 40, 160); margin-top:-420px; margin-right:17px " class="btn btn-sm btn-info ">계약이력</a>
-                                                 <a v-else href="#" style=" background-color:#86E57F; border-color:#86E57F;margin-top:-420px; margin-right:17px" class="btn btn-sm btn-info ">상태이력</a>  
+                                            <a v-if="lists.type=='계약'" href="#" style=" background-color:#00c03f; border-color:#00c03f; margin-top:-420px; margin-right:17px " class="btn btn-sm btn-info ">계약이력</a>
+                                            <a v-else href="#" style=" background-color:rgb(20, 40, 160); border-color:rgb(20, 40, 160);margin-top:-420px; margin-right:17px" class="btn btn-sm btn-info ">상태이력</a>  
                                         </div>
                                         
                                         <div class="listing-item-content" style="height:100px;">
@@ -96,17 +87,15 @@
                                                 <h6>{{lists.address}}</h6>
                                                 <span v-if="lists.dong!=''" ><small style="font-weight: bold;">{{lists.dong}}동</small></span>
                                                 <span><small style="font-weight: bold;"> {{lists.ho}}호</small></span>
-                                                
-                                                    
+                                                  
                                         </div>
-
                                         </div>
                                         </div>
                                     </div>
                                 </div>
                         </div>
                         <div v-if="!check">
-                            <a href="javascript:" @click="add()" v-b-modal.modal-4 class="btn btn-danger" style="background-color:#1428A0; border-color:#1428A0; width:100%">더보기</a>
+                            <a href="javascript:" @click="add()" v-b-modal.modal-4 class="btn btn-danger" style="background-color:#00c03f; border-color:#00c03f; width:100%">더보기</a>
                         </div>
                         <div v-else>
                             <a href="javascript:" v-b-modal.modal-4 class="btn btn-danger" style="background-color:#1428A0; border-color:#1428A0; width:100%;">정보가 존재하지 않습니다.</a>
@@ -287,7 +276,7 @@ export default {
     created() {
             this.url = getUrl();
             getRealestateInfo(this.$route.query.num, responses => {
-                (responses.data)
+              
                 this.info = {
                     name: responses.data.name,
                     representative: responses.data.representative,
@@ -297,12 +286,12 @@ export default {
                     rnk: responses.data.rnk,
                     point: responses.data.point,
                     block: responses.data.count,
-                    picture: responses.data.upicture
+                    picture: responses.data.user.picture
                 }
             }),
 
             getUserBlock(this.$route.query.num, responses=>{
-             
+                console.log(responses.data)
                 this.data = responses.data
                
                 if(this.data.length==0){

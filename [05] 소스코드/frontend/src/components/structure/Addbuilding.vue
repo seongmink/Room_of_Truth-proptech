@@ -99,7 +99,7 @@
 
                            <div style="display: inline-block;">
                               <b-input-group prepend="공인중개사 번호"  class="mt-3" style="width:670px; ">
-   			                     <b-form-input readonly style="text-align:center" v-model="agentnum" ></b-form-input>
+   			                     <b-form-input  style="text-align:center" v-model="agentnum" ></b-form-input>
   		                        </b-input-group>
                            </div>
                         </div>
@@ -171,7 +171,7 @@
   		                        </b-input-group>
                               <div style="margin-top:25px; margin-bottom:20px;">
                                  <b-input-group prepend="공인중개사 번호"  class="mt-3" style="width:670px; ">
-   			                        <b-form-input readonly style="text-align: center;" v-model="agentnum" ></b-form-input>
+   			                        <b-form-input style="text-align: center;" v-model="agentnum" ></b-form-input>
   		                           </b-input-group>
                               </div>
                            </div>
@@ -318,7 +318,7 @@ export default {
       if(this.$store.state.userInfo!=null){
 
          getLicense(this.$store.state.userInfo.num, response => {
-                (response.data)
+               
                 this.agentnum = response.data;
          })
       }
@@ -415,11 +415,11 @@ export default {
                   "floor" : this.address2,
                   "ho" : this.address3,
                   "exclusive" : this.size_m,
-                  "selecteds" : this.selecteds,
-                  "bselecteds" : this.bselecteds,
+                  "detail" : this.selecteds,
+                  "kind" : this.bselecteds,
                   "cost" : this.cost,
-                  "monthcost" : this.monthcost,
-                  "date" : this.date,
+                  "monthly" : this.monthcost,
+                  "contract_date" : this.date,
                   "file" :  this.file,
                   "image" :  this.file,
                   "latitude" : this.la,   
@@ -431,19 +431,20 @@ export default {
                      info.image = this.file.name;
                   }
                   var n = '';
-                  // addBuliding(info,responses => {
-                  //     n = responses.data
-                  // });
-                  console.log(info)
+                  addBuliding(info,responses => {
+                     n = responses.data
+                     console.log(responses.data)
+                  });
+                  // console.log(info)
                   
-                  // this.show = true;
-                  //  setTimeout(() => {
-                  //     alert("등록이 완료되었습니다.")
-                  //       this.$router.push({name : 'ConfirmBuilding', query:{
-                  //          num: n,
-                  //          type:0
-			         //       }});
-                  // }, 2000);  
+                  this.show = true;
+                   setTimeout(() => {
+                      alert("등록이 완료되었습니다.")
+                        this.$router.push({name : 'ConfirmBuilding', query:{
+                           num: n,
+                           type:0
+			               }});
+                  }, 2000);  
                },
 
                statesubmit(){
@@ -455,9 +456,9 @@ export default {
                   "ho" : this.address3,
                   "category" : this.stateselecteds,
                   "cost" : this.cost,
-                  "startDate" : this.date,
-                  "endDate" : this.statedate,
-                  "details" : this.detail,
+                  "report_date" : this.date,
+                  "end_date" : this.statedate,
+                  "detail" : this.detail,
                   "file" :  this.file,
                   "image" :  this.file,
                   "latitude" : this.la,   
@@ -467,21 +468,23 @@ export default {
                   if(this.file!=null){
                      info.image = this.file.name;
                   }
+                  console.log(info)
                    var n = '';
-                   console.log(info)
-                  // addStateBuliding(info,responses => {
+                  
+                   addStateBuliding(info,responses => {
                       
-                  //     n = responses.data
-                  //  });
+                       n = responses.data
+                       console.log(responses.data)
+                  });
                 
-                  // this.show = true;
-                  //  setTimeout(() => {
-                  //     alert("등록이 완료되었습니다.")
-                  //       this.$router.push({name : 'ConfirmBuilding', query:{
-                  //          num: n,
-                  //          type:1
-			         //       }});
-                  //  }, 2000);
+                  this.show = true;
+                   setTimeout(() => {
+                      alert("등록이 완료되었습니다.")
+                        this.$router.push({name : 'ConfirmBuilding', query:{
+                           num: n,
+                           type:1
+			               }});
+                   }, 2000);
                },
                togle(){
                   this.address = '';
