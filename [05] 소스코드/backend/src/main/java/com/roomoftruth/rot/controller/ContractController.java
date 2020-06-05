@@ -38,7 +38,7 @@ public class ContractController {
      */
     @GetMapping("/building")
     @ApiOperation("조회하기에 모든 이력 뿌려주기")
-    public List<ContractFindLocationDto> getAllContracts(@RequestParam String city, String local){
+    public List<ContractFindLocationDto> getAllContracts(@RequestParam String city, @RequestParam String local){
         System.out.println("=== GET : /api/building ====");
 
         String key = city + " " + local;
@@ -57,8 +57,8 @@ public class ContractController {
      */
     @PostMapping("details")
     @ApiOperation("건물 상세 정보 뿌려주기")
-    public List<ContractDetailsResponseDto> getAllDetails(@RequestParam String latitude, String longitude){
-        System.out.println("====== POST : api/v1/details");
+    public List<ContractDetailsResponseDto> getAllDetails(@RequestParam String latitude, @RequestParam String longitude){
+        System.out.println("====== POST : api/details");
 
         List<ContractDetailsResponseDto> result = contractService.findAllDetail(latitude, longitude);
         System.out.println("result Size : " + result.size());

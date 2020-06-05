@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Entity
 public class ContractDetailsResponseDto {
     @Id
+    @Column(name = "contract_id")
     private Long contractId;
     private String address;
     private String latitude;
@@ -20,7 +22,8 @@ public class ContractDetailsResponseDto {
     private String floor;
     private String ho;
     private String image;
-    private LocalDate contract_date;
+    @Column(name = "contract_date")
+    private LocalDate contractDate;
 
     @Builder
     public ContractDetailsResponseDto(Long contractId, String address, String latitude, String longitude, String floor,
@@ -32,6 +35,7 @@ public class ContractDetailsResponseDto {
         this.floor = floor;
         this.ho = ho;
         this.image = image;
-        this.contract_date = contract_date;
+        this.contractDate = contract_date
+        ;
     }
 }
