@@ -26,19 +26,29 @@
                 <p style="margin-left:690px; margin-top:30px;">( 단위 : 만원 )</p>
                 <div style="">
                     <b-tabs content-class="mt-3" fill>
-                        <b-tab title="월세" active>
+                        <b-tab title="월세" active @click="analysis('ws')">
                             <canvas id="planet-chart1"></canvas>
                         </b-tab>
-                        <b-tab title="전세">
+                        <b-tab title="전세" @click="analysis('js')">
                             <canvas id="planet-chart2"></canvas>
                         </b-tab>
-                        <b-tab title="매매">
+                        <b-tab title="매매" @click="analysis('mm')">
                             <canvas id="planet-chart3"></canvas>
                         </b-tab>
                     </b-tabs>
                 </div>
                 <hr/>
-                
+                <div style="margin-top:50px;">
+                <b-button-group>
+                    <b-button style="width:128px" @click="changeKeyword(3)">의료시설</b-button>
+                    <b-button style="width:128px" @click="changeKeyword(1)">마트/편의점</b-button>
+                    <b-button style="width:128px" @click="changeKeyword(0)">교통</b-button>
+                    <b-button style="width:128px" @click="changeKeyword(2)">교육시설</b-button>
+                    <b-button style="width:128px" @click="changeKeyword(4)">음식점/카페</b-button>
+                    <b-button style="width:128px" @click="changeKeyword(5)">문화시설</b-button>
+                </b-button-group>
+                </div>
+            
                 <div style="margin-top:20px; display: inline-block;">
                      <vue-daum-map
                      :appKey="appKey"
@@ -48,6 +58,7 @@
                      :libraries="libraries"
                      @load="onLoad"
                      style="width:770px; height:400px;"/>
+                     
                </div>  
 
                <div class="mb-4">
@@ -177,20 +188,24 @@ import MyList from '../../data/listing2.json';
 import InfiniteLoading from 'vue-infinite-loading';
 import { getblockDetail } from "../../api/item.js";
 import { getUrl } from "../../api/index.js";
+import { analysis } from "../../api/item.js";
+
 import Chart from 'chart.js'
 import TitleBar from '../common/TitleBar';
+import axios from "axios";
 export default {
   created(){
         this.url = getUrl();
-        getblockDetail(this.$route.query.address, this.$route.query.dong, this.$route.query.ho, response => {       
-            this.blist = response.data;
-            this.center = {lat:this.blist[0].latitude, lng:this.blist[0].longitude}                   
-        })
+        // getblockDetail(this.$route.query.address, this.$route.query.dong, this.$route.query.ho, response => {       
+        //     this.blist = response.data;
+        //     this.center = {lat:this.blist[0].latitude, lng:this.blist[0].longitude}                   
+        // })
 
         //test
         this.blist = this.data;
 
-        //chart
+        //지도
+        this.center = {lat:36.4521628823,lng:127.4295349045}
         
   },
   components:{
@@ -201,6 +216,7 @@ export default {
   },
    data() {
       return {
+        keyword : [ ["SW8"], ["MT1","CS2"],["PS3","SC4","AC5"],["HP8","PM9"],["FD6","CE7"],["CT1","PO3"] ],
         like : 0,
         state : 'null',
         appKey: '4ad8ff4da9eb8b9507c5afaee2b238b4', // 테스트용 appkey
@@ -209,6 +225,7 @@ export default {
         mapTypeId: VueDaumMap.MapTypeId.NORMAL, // 맵 타입
         libraries:['services', 'clusterer', 'drawing'], // 추가로 불러올 라이브러리
         map: null, // 지도 객체. 지도가 로드되면 할당됨.
+        markers:[],
         list:[],
         blist:[],
         url:'',
@@ -275,26 +292,9 @@ export default {
                 type:'line',
                 data:{
                  
-                    labels:['1월','2월','3월','4월','5월','6월'],
+                    labels:[],
                     datasets:[
-                        {
-                            label:'군산시 서수면 동군산로 1142',
-                            data:[30,35,35,39,40,40],
-                            borderColor: "#ef562d",
-                            pointBackgroundColor: "white",
-                            borderWidth:3,
-                            fill: false,
-                           
-                        },
-                        {
-                            label:'군산시 서수면 마룡리',
-                            data:[40,25,45,45,50,50],
-                            borderColor: "#88b14b",
-                            pointBackgroundColor: "white",
-                            borderWidth:3,
-                            fill: false,
-                           
-                        },
+                       
                     ]
                 },
                 options:{
@@ -308,29 +308,80 @@ export default {
                                 padding:25,
                             }
                         }]
-                    }
+                    },
+                    animation: {
+                        duration: 0
+                    },
                 }
-        }
+        },
+        chart1:null,
 
       };
     },
     mounted() {
        this.createChart('planet-chart1', this.planetChartData)
-       this.createChart('planet-chart2', this.planetChartData)
-       this.createChart('planet-chart3', this.planetChartData)
+        this.createChart('planet-chart2', this.planetChartData)
+        this.createChart('planet-chart3', this.planetChartData)
     },
     watch:{
               
     },
     methods: {  
+                changeKeyword(keyword){
+
+                    //마커 초기화
+                    for ( var i = 0; i < this.markers.length; i++ ) {
+                            this.markers[i].setMap(null);
+                    }   
+                    this.markers=[];
+
+                    var ps = new kakao.maps.services.Places(this.map); 
+
+                     for (let i=0; i<this.keyword[keyword].length; i++){
+                  
+                        ps.categorySearch(this.keyword[keyword][i], (data, status)=>{
+                    
+                            if (status === kakao.maps.services.Status.OK) {
+                                
+                                for (let i=0; i<data.length; i++) {
+                                    this.marker = new kakao.maps.Marker({
+                                        position: new kakao.maps.LatLng(data[i].y, data[i].x)
+                                    });
+
+                                    kakao.maps.event.addListener(this.marker, 'click', (markers)=> {
+
+                                        
+                                        var content = '<div class="placeinfo">' +
+                                        '   <a class="title" href="' + data[i].place_url + '" target="_blank" title="' + data[i].place_name + '">' + data[i].place_name + '</a><br>';
+                                            content += '    <p style="font-size:13px;margin-bottom:30px;" title="' + data[i].address_name + '">' + data[i].address_name + '</p>';  
+
+                                        var infowindow = new kakao.maps.InfoWindow({
+                                            content : content,
+                                            removable : true
+                                        });
+                                        infowindow.open(this.map, new kakao.maps.Marker({
+                                            position: new kakao.maps.LatLng(data[i].y, data[i].x)
+                                        }));  
+                                    });
+
+                                    this.marker.setMap(this.map);
+                                    this.markers.push(this.marker);
+                                }       
+                            }
+                    
+                        }, {useMapBounds:true}); 
+
+                    }
+
+                },
                 onLoad (map) {  
+                     
                     new kakao.maps.Marker({   
                     position: map.getCenter(), 
                     map: map
                   });
-
                     var marker = new kakao.maps.Marker({
-                    position: map.getCenter(),
+                        position: map.getCenter(),
                     });
                     marker.setMap(map);
                     this.map = map;
@@ -369,6 +420,97 @@ export default {
                         type: chartData.type,
                      data: chartData.data,
                     options: chartData.options,
+                    })
+                },
+                analysis(type){
+              
+          
+                    analysis(type,"대전광역시 서구 둔산동 대덕대로 223" ,response => {       
+                        
+                        console.log(response);
+                        this.planetChartData.data.labels = [];
+                        this.planetChartData.data.datasets = [];
+                        if(response.datatype=='월세'){
+                        
+                            this.planetChartData.data.labels = response.label;
+                 
+                            this.planetChartData.data.datasets.push({
+                                label:response.dong_address+'(보증금)',
+                                data:response.dong_data,
+                                borderColor: "#ef562d",
+                                pointBackgroundColor: "white",
+                                borderWidth:3,
+                                fill: false,
+                            })
+                            this.planetChartData.data.datasets.push({
+                                label:response.dong_address+'(월세)',
+                                data:response.ws_dong_data,
+                                borderColor: "#f6d258",
+                                pointBackgroundColor: "white",
+                                borderWidth:3,
+                                fill: false,
+                            })
+                            this.planetChartData.data.datasets.push({
+                                label:response.road_address+'(보증금)',
+                                data:response.addr_data,
+                                borderColor: "#88b14b",
+                                pointBackgroundColor: "white",
+                                borderWidth:3,
+                                fill: false,
+                            })
+                            this.planetChartData.data.datasets.push({
+                                label:response.road_address+'(월세)',
+                                data:response.ws_addr_data,
+                                borderColor: "#0c4c8a",
+                                pointBackgroundColor: "white",
+                                borderWidth:3,
+                                fill: false,
+                            })
+                            
+                           this.createChart('planet-chart1', this.planetChartData)
+                           
+                        }else if(response.datatype=='전세'){
+                             this.planetChartData.data.labels = response.label;
+                 
+                            this.planetChartData.data.datasets.push({
+                                label:response.dong_address,
+                                data:response.dong_data,
+                                borderColor: "#ef562d",
+                                pointBackgroundColor: "white",
+                                borderWidth:3,
+                                fill: false,
+                            })
+                            this.planetChartData.data.datasets.push({
+                                label:response.road_address,
+                                data:response.addr_data,
+                                borderColor: "#f6d258",
+                                pointBackgroundColor: "white",
+                                borderWidth:3,
+                                fill: false,
+                            })
+                            this.createChart('planet-chart2', this.planetChartData)
+                        }else{
+                            this.planetChartData.data.labels = response.label;
+                 
+                            this.planetChartData.data.datasets.push({
+                                label:response.dong_address,
+                                data:response.dong_data,
+                                borderColor: "#ef562d",
+                                pointBackgroundColor: "white",
+                                borderWidth:3,
+                                fill: false,
+                            })
+                            this.planetChartData.data.datasets.push({
+                                label:response.road_address,
+                                data:response.addr_data,
+                                borderColor: "#f6d258",
+                                pointBackgroundColor: "white",
+                                borderWidth:3,
+                                fill: false,
+                            })
+                            this.createChart('planet-chart3', this.planetChartData)
+                        }
+                        
                     })
                 }
               

@@ -106,14 +106,15 @@
 
 <script>
 import TitleBar from '../common/TitleBar';
+import { addInfo } from "../../api/user.js";
     export default {
         data() {
             return {
 				
 				selected: 'radio1',
         		options: [
-          			{ text: '남자', value: 'radio1' },
-          			{ text: '여자', value: 'radio2' },
+          			{ text: '남자', value: '남자' },
+          			{ text: '여자', value: '여자' },
 					],
 				locationSelect:'시/도를 선택하세요.',
 				locationSelect2:'시/군/구를 선택하세요.',
@@ -124,7 +125,7 @@ import TitleBar from '../common/TitleBar';
         		['남구','달서구','동구','북구','서구','수성구','중구','달성군'],
         		['계양구','남구','남동구','동구','부평구','서구','연수구','중구','강화군','옹진군'],
         		['광산구','남구','동구','북구','서구'],
-        		['대덕구','동구','서구','유구','중구'],
+        		['대덕구','동구','서구','유성구','중구'],
         		['남구','동구','북구','중구','울주군'],
         		['강릉시','동해시','삼척시','속초시','원주시','춘천시','태백시','고성군','양구군','양양군','영월군','인제군','정선군','철원군','평창군','홍천군','화천군','횡성군'],
         		['고양시 덕양구','고양시 일산구','과천시','광명시','광주시','구리시','군포시','김포시','남양주시','동두천시','부천시 소사구','부천시 오정구','부천시 원미구','성남시 분당구','성남시 수정구','성남시 중원구','수원시 권선구','수원시 장안구','수원시 팔달구','시흥시','안산시 단원구','안산시 상록구','안성시','안양시 동안구','안양시 만안구','오산시','용인시','의왕시','의정부시','이천시','파주시','평택시','하남시','화성시','가평군','양주군','양평군','여주군','연천군','포천군'],
@@ -141,7 +142,7 @@ import TitleBar from '../common/TitleBar';
 				ranking_2:'2순위',
 				ranking_3:'3순위',
 				date:'',
-				ranklist:['교통','마트/편의점','교육시설','의료시설','음식점/카페','문화공간'],
+				ranklist:['교통','마트/편의점','교육시설','의료시설','음식점/카페','문화시설'],
 				sranklist:[],
 				tranklist:[],
 			}
@@ -202,7 +203,7 @@ import TitleBar from '../common/TitleBar';
 					this.location = this.locations[15];
 			
 				}else if(hook=='세종특별자치시'){
-					this.location = this.locations[16];
+					this.location = ["통합"];
 			
 				}
 			},
@@ -279,7 +280,20 @@ import TitleBar from '../common/TitleBar';
 				}else if(this.ranking_3=='3순위'){
 					alert('선호도에서 3순위를 선택해주세요!')
 				}else{
-					console.log('제출 완료')
+					var info = {
+						num : this.$route.query.num,
+						gender : this.selected,
+						birth : this.date,
+						sd : this.locationSelect,
+						sgg : this.locationSelect2,
+						first : this.ranking_1,
+						second : this.ranking_2,
+						third : this.ranking_3
+					}
+					addInfo(info,response => {
+						alert("회원가입이 완료되었습니다!")
+						this.$router.push('/')
+					});
 				}
 			}
 		},

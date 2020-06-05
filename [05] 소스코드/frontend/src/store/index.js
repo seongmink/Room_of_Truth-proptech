@@ -6,11 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    userInfo : {
-      auth:null,
-      nickname:"우동이",
-      address:'전라북도 군산시 나운동'
-    },
+    userInfo : null,
     isSigned : false
   },
   mutations: {
