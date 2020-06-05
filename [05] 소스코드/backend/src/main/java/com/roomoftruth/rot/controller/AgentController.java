@@ -31,13 +31,14 @@ public class AgentController {
 	public String checkAgentLicense(@RequestParam String license) {
 		log.info("AgentController : checkAgentLicense / {}", license);
 
-		if(!(license.equals("대전-SSAFY-001") || license.equals("대전-SSAFY-002") ||
-				license.equals("대전-SSAFY-003") || license.equals("대전-SSAFY-004") ||
-				license.equals("대전-SSAFY-005"))) {
-			return "failed";
-		}
+//		if(!(license.equals("대전-SSAFY-001") || license.equals("대전-SSAFY-002") ||
+//				license.equals("대전-SSAFY-003") || license.equals("대전-SSAFY-004") ||
+//				license.equals("대전-SSAFY-005"))) {
+//			return "failed";
+//		}
 
-		return "success";
+//		return "success";
+		return "failed";
 	}
 
 	@PostMapping("/agent")

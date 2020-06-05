@@ -53,7 +53,6 @@ public class AgentService {
 			if(result.get(i).getAgentPicture() == null || result.get(i).getAgentPicture().equals("null")) { // 기본 이미지 처리
 				result.get(i).updateDefaultImage();
 			}
-
 		}
 
 		return result;

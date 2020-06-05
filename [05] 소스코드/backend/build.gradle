@@ -37,4 +37,6 @@ dependencies {
 	compile('org.web3j:web3j-spring-boot-starter:1.6.0')
 	compile('org.hyperledger.fabric-sdk-java:fabric-sdk-java:1.4.0')
 
+	compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+
 }
