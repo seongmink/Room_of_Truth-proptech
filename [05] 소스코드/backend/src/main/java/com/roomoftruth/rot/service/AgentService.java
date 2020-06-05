@@ -2,6 +2,7 @@ package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Agent;
 import com.roomoftruth.rot.domain.User;
+import com.roomoftruth.rot.dto.AgentDetailResponseDto;
 import com.roomoftruth.rot.dto.AgentRankingResponseDto;
 import com.roomoftruth.rot.dto.AgentSaveRequestDto;
 import com.roomoftruth.rot.repository.AgentRepository;
@@ -29,39 +30,42 @@ public class AgentService {
 		return agentRepository.save(requestDto.toEntity(user)).getUser().getNum();
 	}
 
-
 	@Transactional
-	public void updateRanking(int rnk, long id){
-		System.out.println(id + " 랭킹을 " + rnk + "로 설정");
-		agentRepository.updateRank(rnk, id);
-		System.out.println(rnk + "번 업데이트 완료");
-		return;
+	public void updateRanking() {
+
+		List<Agent> agents = agentRepository.getRanking();
+
+		int rnk = 1;
+		for (Agent a : agents) {
+
+			a.updateRanking(rnk);
+			rnk++;
+		}
 	}
 
-	@Transactional
 	public List<AgentRankingResponseDto> getRanking() {
+
 		List<Agent> ranking = agentRepository.getRankingTop9();
-
 		List<AgentRankingResponseDto> result = new ArrayList<>();
-		int rankIndex = 1;
+
 		for (int i = 0; i < ranking.size(); i++) {
-
-			// update
-			updateRanking(rankIndex, ranking.get(i).getAgentId());
-
+			result.add(new AgentRankingResponseDto(ranking.get(i)));
 			if(result.get(i).getAgentPicture() == null || result.get(i).getAgentPicture().equals("null")) { // 기본 이미지 처리
 				result.get(i).updateDefaultImage();
 			}
-			rankIndex++;
-			Agent temp = ranking.get(i);
-			temp.setRnk(rankIndex);
-			AgentRankingResponseDto data =  new AgentRankingResponseDto(temp);
-			result.add(data);
 		}
 
 		return result;
 	}
 
+	public AgentDetailResponseDto getAgentDetail(long num) {
+
+		Agent agent = agentRepository.getAgentByUserNum(num);
+
+		AgentDetailResponseDto result = new AgentDetailResponseDto(agent);
+
+		return result;
+	}
 
 
 }
