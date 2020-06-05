@@ -18,10 +18,10 @@ import java.util.Date;
 @Service
 public class FileUploadService {
 
-    public static final String SAVE_FOLDER = "/home/ubuntu/images/";
-    public static final String IMAGE_URL = "http://k02b2031.p.ssafy.io:8081/images/";
-//    public static final String SAVE_FOLDER = "C:/s02p31b203/[05] 소스코드/backend/src/main/resources/static/images/";
-//    public static final String IMAGE_URL = "localhost:8081/images/";
+//    public static final String SAVE_FOLDER = "/home/ubuntu/images/";
+    public static final String IMAGE_URL = "http://k02b2031.p.ssafy.io:8080/images/";
+    public static final String SAVE_FOLDER = "C:/s02p31b203/[05] 소스코드/backend/src/main/resources/static/images/";
+//    public static final String IMAGE_URL = "localhost:8080/images/";
 
     public final UserRepository userRepository;
 
@@ -46,9 +46,9 @@ public class FileUploadService {
             image.transferTo(destinationImage);
             saveUrl = IMAGE_URL + destinationImageName;
 
-            if(flag == 1) { // 거래 이력
+            if(flag == 0) { // 거래 이력
 
-            } else if(flag == 2) { // 상태 이력
+            } else if(flag == 1) { // 상태 이력
 
             } else { // 공인중개사 사진 등록
                 User user = userRepository.findByNum(num);

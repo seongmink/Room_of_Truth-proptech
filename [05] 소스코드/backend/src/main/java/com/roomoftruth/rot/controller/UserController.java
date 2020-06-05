@@ -59,7 +59,6 @@ public class UserController {
 		if (jwtService.isUsable(access_token)) {
 			result = jwtService.get("user");
 		}
-		log.info(result.toString());
 
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}

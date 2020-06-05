@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -85,9 +83,20 @@ public class AgentService {
 		List<Contract> contractList = contractRepository.findTop1000AllByLicenseOrderByContractDate(license);
 		List<Status> statusList = statusRepository.findTop1000AllByLicenseOrderByStartDate(license);
 
+		for (Contract c : contractList) {
+			result.add(new ContributionResponseDto(c));
+		}
 
+		for (Status s : statusList) {
+			result.add(new ContributionResponseDto(s));
+		}
 
-
+		Collections.sort(result, new Comparator<ContributionResponseDto>() {
+			@Override
+			public int compare(ContributionResponseDto o1, ContributionResponseDto o2) {
+				return o2.getDate().compareTo(o1.getDate());
+			}
+		});
 
 		return result;
 	}
