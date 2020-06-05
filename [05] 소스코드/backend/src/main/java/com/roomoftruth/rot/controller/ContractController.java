@@ -13,9 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -53,17 +50,19 @@ public class ContractController {
 
     }
 
+    /**
+     * 위도, 경도로 모든 이력 조회
+     * @param latitude, longitude
+     * @return contact_id, address, floor, ho, latitude, longitude, image
+     */
     @PostMapping("details")
     @ApiOperation("건물 상세 정보 뿌려주기")
-    public List<ContractResultDto> getAllDetails(@RequestBody ContractFindRequestDto[] contractFindRequestDto){
+    public List<ContractDetailsResponseDto> getAllDetails(@RequestParam String latitude, String longitude){
         System.out.println("====== POST : api/v1/details");
-        List<ContractResultDto> data = contractService.findAllDetails(contractFindRequestDto);
 
-        System.out.println("------------실행 성공??-----------");
-        for (ContractResultDto contractResultDto : data) {
-            System.out.println((contractResultDto.getAddress()));
-        }
-        return data;
+        List<ContractDetailsResponseDto> result = contractService.findAllDetail(latitude, longitude);
+        System.out.println("result Size : " + result.size());
+        return result;
     }
 
     /**

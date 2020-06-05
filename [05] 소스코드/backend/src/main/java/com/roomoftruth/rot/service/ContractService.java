@@ -2,6 +2,7 @@ package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.dto.*;
+import com.roomoftruth.rot.repository.ContractDetailsResponseDtoRepository;
 import com.roomoftruth.rot.repository.ContractFindLocationDtoRepository;
 import com.roomoftruth.rot.repository.ContractFindResponseRepository;
 import com.roomoftruth.rot.repository.ContractRepository;
@@ -21,6 +22,7 @@ import java.util.List;
 public class ContractService {
 
     private final ContractRepository contractRepository;
+    private final ContractDetailsResponseDtoRepository contractDetailsResponseDtoRepository;
     private final ContractFindResponseRepository contractFindResponseRepository;
     private final ContractFindLocationDtoRepository contractFindLocationDtoRepository;
     private final StatusService statusService;
@@ -122,53 +124,12 @@ public class ContractService {
     }
 
     /**
-     *  8. 해당 주소(도로명, floor, ho, image) 해당하는 모든 계약, 유지보수 찾기
-     *  List<ContractResponseDto> findAllDetails(String latitude, String longitude);
+     *  8. 해당 위치 (id, address, floor, ho, latitude, longitude, image)
+     *  List<ContractFind> findAllDetails(String latitude, String longitude);
      *
      */
-    public List<ContractResultDto> findAllDetails(ContractFindRequestDto[] request) {
-
-        List<ContractResultDto> result = new ArrayList<>();
-        HashSet<ContractFindRequestDto> set = new HashSet<>();
-
-        for (int i = 0; i < request.length; i++) {
-            set.add(request[i]);
-        }
-
-        Iterator<ContractFindRequestDto> it = set.iterator();
-
-        while (it.hasNext()) {
-            ContractFindRequestDto contractTemp = it.next();
-            System.out.println("findAllDetails 시작");
-            System.out.println("latitude : " + contractTemp.getLatitude());
-            System.out.println("longitude : " + contractTemp.getLongitude());
-            List<ContractFindResponseDto> save = contractFindResponseRepository.findAllDetails(contractTemp.getLatitude(), contractTemp.getLongitude());
-
-            System.out.println("=========== " + save.size() + " =======");
-            for (int i = 0; i < save.size(); i++) {
-                System.out.println("for start");
-                System.out.println(save.get(i));
-
-                String image = getContractImage(save.get(i));
-
-                if (image == null) {
-                    image = statusService.getStatusImage(save.get(i));
-                }
-
-                if(image == null)
-                    image = "default.png";
-
-                //address, floor, ho,latitude, longitude 있는 상태 -> save.get(i)
-                ContractResultDto contractResultDto = ContractResultDto.builder()
-                        .address(save.get(i).getAddress())
-                        .floor(save.get(i).getFloor())
-                        .ho(save.get(i).getHo())
-                        .image(image)
-                        .build();
-
-                result.add(contractResultDto);
-            }
-        }
+    public List<ContractDetailsResponseDto> findAllDetail(String latitude, String longitude) {
+        List<ContractDetailsResponseDto> result = contractDetailsResponseDtoRepository.findAllDetail(latitude, longitude);
         return result;
     }
 
