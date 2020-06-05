@@ -1,10 +1,7 @@
 package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.User;
-import com.roomoftruth.rot.dto.AgentDetailResponseDto;
-import com.roomoftruth.rot.dto.AgentRankingResponseDto;
-import com.roomoftruth.rot.dto.AgentSaveRequestDto;
-import com.roomoftruth.rot.dto.UserResponseDto;
+import com.roomoftruth.rot.dto.*;
 import com.roomoftruth.rot.jwt.JwtService;
 import com.roomoftruth.rot.service.AgentService;
 import com.roomoftruth.rot.service.UserService;
@@ -13,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -74,32 +73,14 @@ public class AgentController {
 		return agentService.getAgentDetail(num);
 	}
 
-//
-//	@GetMapping("/agent/contribution/{num}")
-//	@ApiOperation("공인중개사가 등록한 건물 조회")
-//	public List<Building> getAgentContribution(@PathVariable long num) {
-//		logger.info("GET : /api/agent/contribution/{num} : " + num);
-//
-//		String license = agentService.getLicnese(num);
-//
-//		List<Building> result = new ArrayList<>();
-//
-//		List<Building> bTemp = buildingService.getAgentContribution(license);
-//
-//		for (int i = 0; i < bTemp.size(); i++) {
-//			bTemp.get(i).setImage("images/"+bTemp.get(i).getImage());
-//			result.add(bTemp.get(i));
-//		}
-//
-//		Collections.sort(result, new Comparator<Building>() {
-//			@Override
-//			public int compare(Building o1, Building o2) {
-//				return o2.getCreatedAt().compareTo(o1.getCreatedAt());
-//			}
-//		});
-//
-//		return result;
-//	}
+
+	@GetMapping("/agent/contribution/{num}")
+	@ApiOperation("공인중개사가 등록한 건물 조회")
+	public List<ContributionResponseDto> getAgentContribution(@PathVariable long num) {
+		log.info("AgentController : getAgentContribution");
+
+		return agentService.getAgentContribution(num);
+	}
 //
 //	@GetMapping("/agent/contribution/detail/{type}/{num}")
 //	@ApiOperation("공인중개사가 등록한 건물 조회")

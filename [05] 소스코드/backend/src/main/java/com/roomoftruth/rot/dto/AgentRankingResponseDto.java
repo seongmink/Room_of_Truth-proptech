@@ -20,6 +20,7 @@ public class AgentRankingResponseDto {
         this.agentName = entity.getName();
         this.userPicture = entity.getUser().getPicture();
         this.agentPicture = entity.getPicture();
+        this.rnk = entity.getRnk();
         this.point = entity.getPoint();
     }
 
