@@ -56,7 +56,7 @@ export default {
     getData() {
       console.log(this.num + " " + this.type);
       axios
-        .get(`http://localhost:8000/buildings/${this.num}?detail=${this.type}`)
+        .get(`http://localhost:8000/contracts/${this.num}?detail=${this.type}`)
         .then(res => {
           console.log(res);
 
