@@ -69,18 +69,33 @@ export default {
 		return{
 			menuItems : menus,
 			open : false,
+			result : '',
 		}
 	},
 	methods: {
 		onFailure,	
 		formClose(data){
-			login(data.access_token);
-			this.$bvModal.hide('modal-1')	
 			
+			login(data.access_token, response => {
+				var a = response.data+""
+
+                if(a.length<20){
+						console.log("신규가입자");
+						this.$router.push({name : 'AddInfo', query:{
+							num: response.data
+						}});
+				}else{
+					console.log("기존가입자");
+
+					sessionStorage.setItem("access_token", response.data);
+            		this.$store.dispatch('getMemberInfo');
+				}
+                           
+            });
+			this.$bvModal.hide('modal-1');
 		},
 		close(){
 			Kakao.cleanup();
-
 		}
 	},
 	computed: {

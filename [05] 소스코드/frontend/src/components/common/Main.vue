@@ -39,7 +39,7 @@
 
                         <span style="float:left">{{item.keyword}}</span>
                         <p style="text-align:right; margin-bottom:-10px">
-                            <a @click="deletes(item.keyword)">X</a>
+                            <a @click="deletes(item.searchId)">X</a>
                         </p>
 
                     </b-list-group-item>
@@ -52,15 +52,15 @@
                 </b-list-group>
                 <button class="styled__SearchBtn-sc-10v4ocj-6 kvrxoz" @click="searches(search)">방 찾기</button>
             </div>
-            <MainRecommendation :data="rdata.categories"></MainRecommendation>
+            <MainRecommendation :data="rdata"></MainRecommendation>
             <!-- <MostVisitedPlaces  :data="data"></MostVisitedPlaces> -->
-            <MostVisitedPlaces  :data="rankdata.places"></MostVisitedPlaces>
+            <MostVisitedPlaces  :data="data"></MostVisitedPlaces>
             <hr/>
             <div class="context" style="margin:auto; ">
             <p style="text-align:center; font-size:40px; margin-bottom:20px;">About <span style="color:#00c03f;">진실의 방</span></p>
             </div>
             <img src="/static/chain.png" style="width:100%; margin-bottom:120px;">
-            <!-- <div class="block-space" style="margin-top:-100px">
+        <!-- <div class="block-space" style="margin-top:-100px">
                 <div class="container">
                     <div class="row justify-content-center text-center mb-5">
                         <div class="col-lg-8">
@@ -96,13 +96,15 @@ import { getAddress } from "../../api/item.js";
 import { deleteKeyword } from "../../api/item.js";
 import { getRankInfo } from "../../api/user.js";
 import VueDaumMap from 'vue-daum-map' 
+import { getData } from "../../api/item.js";
+import { getUserData } from "../../api/item.js";
 
 export default {
     props: ['layout'],
     data() {
         return {
             rankdata : MyData2.data,
-            rdata: MyData.data,
+            rdata: null,
             data: null,
             listopen: false,
             keywordopen: false,
@@ -133,14 +135,36 @@ export default {
                     image: '/static/men_3.jpg'
                 }
             ],
-            keyword: null
+            keyword: null,
+            rdata:null,
         }
     },
     created() {
+
+        //메인에서 랭킹데이터불러오기
         getRankInfo(response => {
-            //(response.data)
+            console.log(response.data)
             this.data = response.data;
         })
+
+        //메인에 추천할 데이터 불러오기
+		if(this.$store.state.userInfo==null){
+			getData(response => {
+				console.log("로그인을 안한상태의 메인추천데이터")
+				console.log(response)
+				this.rdata = response
+					
+			});
+        }
+
+        //로그인할때 추천데이터 불러오기(num값 넘기기)
+        getUserData(1, response => {
+				console.log("로그인완료하여 메인추천데이터 가져오기")
+				console.log(response)
+				//this.rdata = response
+					
+		});
+        
     },
     components: {
         MostVisitedPlaces,
@@ -157,7 +181,7 @@ export default {
                 this.listopen = true;
                 if (this.$store.state.userInfo != null) {
                     getAddress(this.$store.state.userInfo.num, response => {
-                        //console.log(response.data)
+                        console.log(response.data)
                         this.selected = response.data;
                     })
                 } else {
@@ -167,6 +191,8 @@ export default {
             } else {
                 this.keywordopen = true;
             }
+          
+           
         },
         closelist() {
             setTimeout(() => {
@@ -175,12 +201,15 @@ export default {
             }, 200);
         },
         select(index) {
+         
             this.search = this
                 .selected[index]
                 .keyword;
             this.listopen = false;
+             
         },
         select2(index) {
+            
             this.search = this
                 .keyword[index]
                 .roadAddress;
@@ -193,9 +222,9 @@ export default {
             if (e.target.value != '') {
 
                 getKeyword(e.target.value, response => {
-                    //console.log(response.data)
+              
                     this.keyword = response.data;
-                    this.listopen = false;
+                    this.listopen = false;  
                     this.keywordopen = true;
 
                 })
@@ -211,9 +240,12 @@ export default {
             
             var n = null;
             if (this.$store.state.userInfo == null) {
+              
                 n = 0
             } else {
+              
                 n = this.$store.state.userInfo.num;
+
             }
             searchAddress(keyword, n, response => {
                 //console.log(response)
@@ -226,9 +258,9 @@ export default {
             }
           
         },
-        deletes(keyword) {
+        deletes(id) {
             //console.log("지울거 : " + keyword)
-            deleteKeyword(this.$store.state.userInfo.num, keyword, response => {
+            deleteKeyword(id, response => {
                 //console.log(response)
                 if (response.data == "success") {
                     this.search = '';

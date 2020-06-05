@@ -2,8 +2,11 @@
 	<div class="block-space">
 		<div class="container" style="margin-bottom:80px;">
 			<div class="block-head text-center mb-5 context">
-				<p class="head-line display-3;" style="margin-top:30px; font-size:35px;">
+				<p v-if="this.$store.state.userInfo!=null" class="head-line display-3;" style="margin-top:30px; font-size:35px;">
 					우동님, 이런 방은 어떠신가요?
+				</p>
+				<p v-if="this.$store.state.userInfo==null" class="head-line display-3;" style="margin-top:30px; font-size:35px;">
+					혹시 이런 방은 어떠신가요?
 				</p>
 				<p class="lead mt-2 context" v-html="title" style="margin-bottom:-30px;font-size:25px;"></p>
 			</div>
@@ -12,20 +15,20 @@
 		<div class="fullwidth-carousel-container" >
 			<div class="fullwidth-slick-carousel category-carousel">
 				<!-- Item -->
-				<slick :options="slickOptions" @afterChange="handleAfterChange" v-if="data" class="fullwidth-slick-carousel category-carousel">
+				<div v-if="this.$store.state.userInfo!=null&& data">
+				<slick :options="slickOptions" @afterChange="handleAfterChange"  class="fullwidth-slick-carousel category-carousel">
 					<template v-for="(item, index) in data">
 						<div class="fw-carousel-item slide" :key="index" v-b-modal.modal-3>
 							<div class="category-box-container text-center">
 								<div  class="category-box">
 									<div class="category-box-content">
 										<div class="icon-title">
-											
 											<b-icon icon="house-door-fill" style="color: #ffffff;" font-scale="3"></b-icon>
 										</div>
-										<a><h3>{{item.title}}</h3></a>
-										<span> <small>{{item.subTitle}}</small> </span>
+										<a><h3>{{item.name}}</h3></a>
+										
 									</div>
-									<div class="category-box-background" :style="{'background-image': 'url(' + item.image + ')'}">
+									<div class="category-box-background" :style="{'background-image': 'url(' +  url+item.image+ ')'}">
 									</div>
 									<span class="like-banner d-block h4 mb-2" style="color: #dc3545; z-index:1000"><b-icon icon="heart-fill"></b-icon></span>
 								</div>
@@ -33,6 +36,30 @@
 						</div>
 					</template>
 				</slick>
+				</div>
+				<div v-if="this.$store.state.userInfo==null&& data">
+				<slick :options="slickOptions" class="fullwidth-slick-carousel category-carousel">
+					<template v-for="(item, index) in data">
+						<div class="fw-carousel-item slide" :key="index" v-b-modal.modal-3>
+							<div class="category-box-container text-center">
+								<div  class="category-box">
+									<div class="category-box-content">
+										<div class="icon-title">
+											<b-icon icon="house-door-fill" style="color: #ffffff;" font-scale="3"></b-icon>
+										</div>
+										<a><h3>{{item.name}}</h3></a>
+								
+									</div>
+								
+									<div class="category-box-background" :style="{'background-image': 'url(' +  url+item.image+ ')'}">
+									</div>
+									
+								</div>
+							</div>
+						</div>
+					</template>
+				</slick>
+				</div>
 			</div>
 		</div>
 		<!-- 모달 -->
@@ -119,7 +146,7 @@
 
 <script>
     import Slick from "vue-slick";
-
+	import { getUrl } from "../../api/index.js";
     export default {
 		data() {
         	return {
@@ -139,11 +166,16 @@
 					contractedAt : '2020-05-21'
 				},
 				like:0,
+				url : getUrl(),
+			
         	}
+		},
+		created(){
+
+			
+      		
     	},
-        props: [
-            'data'
-		],
+        props: ['data'],
 		watch:{
 		
 		},
