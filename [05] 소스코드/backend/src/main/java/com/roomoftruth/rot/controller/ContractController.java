@@ -1,23 +1,18 @@
 package com.roomoftruth.rot.controller;
 
+import com.roomoftruth.rot.domain.Around;
 import com.roomoftruth.rot.domain.Contract;
-import com.roomoftruth.rot.domain.Status;
-import com.roomoftruth.rot.dto.ContractSaveRequestDto;
+import com.roomoftruth.rot.dto.*;
+import com.roomoftruth.rot.service.AroundService;
 import com.roomoftruth.rot.service.ContractService;
 import com.roomoftruth.rot.service.StatusService;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,68 +21,62 @@ public class ContractController {
 
     private final ContractService contractService;
     private final StatusService statusService;
+    private final AroundService aroundService;
 
-    @PostMapping("/api/v1/buildings")
+    @PostMapping("/buildings")
     @ApiOperation("계약 이력 등록하기")
-    public ResponseEntity<Object> save(@RequestBody ContractSaveRequestDto requestDto){
+    public ResponseEntity<Object> save(@RequestBody @Valid ContractSaveRequestDto contractSaveRequestDto){
         System.out.println("=== POST : /api/building ====");
-        long result = contractService.saveContract(requestDto);
-
+        long result = contractService.saveContract(contractSaveRequestDto);
+        System.out.println("등록 ID : " + result);
         return new ResponseEntity<Object>(String.valueOf(result), HttpStatus.OK);
     }
 
-    @GetMapping("/api/v1/building")
+    /**
+     *    Around 주소에 대한 모든 위도, 경도와 함께 출력
+     *    return (addressm latitude, longitude)
+     */
+    @GetMapping("/building")
     @ApiOperation("조회하기에 모든 이력 뿌려주기")
-    public List<FindAllContract> getAllContracts(){
+    public List<ContractFindLocationDto> getAllContracts(@RequestParam String city, @RequestParam String local){
         System.out.println("=== GET : /api/building ====");
 
-        List<FindAllContract> result = new ArrayList<>();
-        HashSet<FindAllContract> set = new HashSet<>();
+        String key = city + " " + local;
+        List<Around> allAddress = aroundService.findAllAddress(key);
 
-        List<Contract> contractTemp = contractService.findAll();
-        List<Status> statusTemp = statusService.findAll();
+        List<ContractFindLocationDto> result = contractService.findContractLocations(key);
 
-        for(int i = 0; i < contractTemp.size(); i++){
-            FindAllContract findAllContract = new FindAllContract();
-            Contract temp = contractTemp.get(i);
-            findAllContract.setAddress(temp.getAddress());
-            findAllContract.setFloor(temp.getFloor());
-            findAllContract.setHo(temp.getHo());
-            findAllContract.setLatitude(temp.getLatitude());
-            findAllContract.setLongitude(temp.getLongitude());
-            set.add(findAllContract);
-        }
+        return result;
 
-        for(int i = 0; i < statusTemp.size(); i++){
-            FindAllContract findAllContract = new FindAllContract();
-            Status temp = statusTemp.get(i);
-            findAllContract.setAddress(temp.getAddress());
-            findAllContract.setFloor(temp.getFloor());
-            findAllContract.setHo(temp.getHo());
-            findAllContract.setLatitude(temp.getLatitude());
-            findAllContract.setLongitude(temp.getLongitude());
-            set.add(findAllContract);
-        }
+    }
 
-        Iterator<FindAllContract> it = set.iterator();
+    /**
+     * 위도, 경도로 모든 이력 조회
+     * @param latitude, longitude
+     * @return contact_id, address, floor, ho, latitude, longitude, image
+     */
+    @PostMapping("details")
+    @ApiOperation("건물 상세 정보 뿌려주기")
+    public List<ContractDetailsResponseDto> getAllDetails(@RequestParam String latitude, @RequestParam String longitude){
+        System.out.println("====== POST : api/details");
 
-        while(it.hasNext()){
-            result.add(it.next());
-        }
+        List<ContractDetailsResponseDto> result = contractService.findAllDetail(latitude, longitude);
+        System.out.println("result Size : " + result.size());
         return result;
     }
 
-    @Data
-    static class FindAllContract {
-        private String address;
-        private String floor;
-        private String ho;
-        private String latitude;
-        private String longitude;
-    }
+    /**
+     * param -> return Passed
+     * @param contractFindRequestDto
+     * @return contract.Image
+     */
+//    @PostMapping("findImage")
+//    public String findImage(@RequestBody ContractFindRequestDto contractFindRequestDto){
+//        String result = contractService.getContractImage(contractFindRequestDto);
+//        System.out.println("image : " + result);
+//        return result;
+//    }
 
-//    @PostMapping("/building/detail")
-//    @ApiOperation("건물 상세 정보 뿌려주기")
 /**
  * 구 현 해 야 됨 !
  */

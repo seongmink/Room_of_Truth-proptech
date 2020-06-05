@@ -1,14 +1,19 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Contract;
-import com.roomoftruth.rot.dto.ContractResponseDto;
-import com.roomoftruth.rot.dto.ContractSaveRequestDto;
-import com.roomoftruth.rot.repository.ContractRespository;
+import com.roomoftruth.rot.dto.*;
+import com.roomoftruth.rot.repository.ContractDetailsResponseDtoRepository;
+import com.roomoftruth.rot.repository.ContractFindLocationDtoRepository;
+import com.roomoftruth.rot.repository.ContractFindResponseRepository;
+import com.roomoftruth.rot.repository.ContractRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -16,7 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ContractService {
 
-    private final ContractRespository contractRepository;
+    private final ContractRepository contractRepository;
+    private final ContractDetailsResponseDtoRepository contractDetailsResponseDtoRepository;
+    private final ContractFindResponseRepository contractFindResponseRepository;
+    private final ContractFindLocationDtoRepository contractFindLocationDtoRepository;
+    private final StatusService statusService;
 
     /**
      *  1. 계약 이력 등록하기
@@ -25,16 +34,16 @@ public class ContractService {
      */
     @Transactional
     public long saveContract(ContractSaveRequestDto contractSaveRequestDto){
-        Contract response = contractSaveRequestDto.toEntity();
+        System.out.println("서비스 왔다");
 
-        //
         // fabric 처리후
         System.out.println("===== FABRIC에서 등록 해야 함 =====");
         //
 
-        contractRepository.save(response);
-
-        return response.getContractId();
+        Contract contract = new Contract(contractSaveRequestDto);
+        contractRepository.save(contract);
+        System.out.println("DB 등록 성공");
+        return contract.getContractId();
     }
 
     /**
@@ -91,14 +100,12 @@ public class ContractService {
     }
 
     /**
-     *  6. contract 테이블에서 ID로 이미지 가져오기
-     *  String getContractImage(long contractId);
+     *  6. contract 테이블에서 주소(address, floor, ho)로 이미지 1개 가져오기
+     *  String getContractImage(ContractRequestDto);
      *
      */
-    public String findImageById(long contractId){
-        return contractRepository.findById(contractId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 이력이 존재하지 않습니다. id = " + contractId))
-                .getImage();
+    public String getContractImage(ContractFindResponseDto contractFindResponseDto){
+        return contractRepository.getContractImage(contractFindResponseDto.getAddress(), contractFindResponseDto.getFloor(), contractFindResponseDto.getHo());
     }
 
     /**
@@ -117,28 +124,22 @@ public class ContractService {
     }
 
     /**
-     *  8. 해당 주소(도로명, floor, ho) 해당하는 모든 계약, 유지보수 찾기
-     *  List<ContractResponseDto> findAllDetails(String latitude, String longitude);
+     *  8. 해당 위치 (id, address, floor, ho, latitude, longitude, image)
+     *  List<ContractFind> findAllDetails(String latitude, String longitude);
      *
-     *      <select id="getDetailLis" parameterType="building"
-     *         resultType="building">
-     *
-     *         select distinct address, dong, ho ,longitude, latitude from (
-     *         select distinct address, dong, ho ,longitude, latitude from building
-     *         union
-     *         select distinct address,dong,ho,longitude, latitude  from maintenance
-     *         ) as main  where latitude=#{latitude} and longitude=#{longitude}
-     *         order by dong asc, ho asc
-     *     </select>
      */
-//    public List<ContractResponseDto> findAllDetails(String latitude, String longitude){
-//        List<ContractResponseDto> result = new ArrayList<>();
-//        List<Contract> data = contractRepository.findAllDetails(latitude, longitude);
-//        for (Contract contract : data) {
-//            result.add(new ContractResponseDto(contract));
-//        }
-//        return result;
-//    }
+    public List<ContractDetailsResponseDto> findAllDetail(String latitude, String longitude) {
+        List<ContractDetailsResponseDto> result = contractDetailsResponseDtoRepository.findAllDetail(latitude, longitude);
+        return result;
+    }
 
+    /**
+     * 모든 Contract주소와 위도, 경도
+     * @return all address, latitude, longitude
+     */
+
+    public List<ContractFindLocationDto> findContractLocations(String key){
+        return contractFindLocationDtoRepository.findContractLocations(key);
+    }
 
 }
