@@ -2,12 +2,15 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.Around;
 import com.roomoftruth.rot.domain.Contract;
+import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.dto.*;
+import com.roomoftruth.rot.fabric.FabricContractRecord;
+import com.roomoftruth.rot.fabric.FabricStatusRecord;
+import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.service.AroundService;
 import com.roomoftruth.rot.service.ContractService;
 import com.roomoftruth.rot.service.StatusService;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -28,6 +34,7 @@ public class ContractController {
     private final ContractService contractService;
     private final StatusService statusService;
     private final AroundService aroundService;
+    private final IFabricCCService iFabricCCService;
 
     @PostMapping("/buildings")
     @ApiOperation("계약 이력 등록하기")
@@ -96,159 +103,111 @@ public class ContractController {
  * 구 현 해 야 됨 !
  */
 
-//    @PostMapping("/building/detail") // 모달에서는 이미지가 필요함 ^^
-//    @ApiOperation("건물 상세 정보 뿌려주기")
-//    public List<Building> getBuildingDetail(@RequestBody Building[] building) throws IOException {
-//        logger.info("GET : /api/building/detail");
-//
-//        List<Building> result = new ArrayList<>();
-//        HashSet<Building> set = new HashSet<>();
-//
-//        for (int i = 0; i < building.length; i++) {
-//            set.add(building[i]);
-//        }
-//
-//        Iterator<Building> it = set.iterator();
-//
-//        while (it.hasNext()) {
-//
-//            // 1개씩 중복없는 위도 경도를 뽑음
-//            Building tempBuilding = it.next();
-//
-//            // 쿼리날려서 해당 위도 경도의 중복 없는 리스트를 뽑아옴
-//            List<Building> save = buildingService.getDetailList(tempBuilding);
-//
-//            // 그다음 우선 빌딩부터 이미지를 찾아보자!!
-//            for (int i = 0; i < save.size(); i++) {
-//
-//                String image = buildingService.getBImage(save.get(i));
-//                // 이미지가 없네? 그러면 메인턴스로 가서 조회해!
-//                if (image == null) {
-//                    String mimage = buildingService.getMImage(save.get(i));
-//                    save.get(i).setImage("images/"+mimage);
-//                } else { // 이미지가 있네? 이걸쓰면 됨^^
-//                    save.get(i).setImage("images/"+image);
-//                }
-//                Building b = save.get(i);
-//                result.add(b);
-//            }
-//        }
-//
-//        return result;
-//    }
+    @PostMapping("/building/detail/block")
+    @ApiOperation("건물 블록 정보 뿌려주기")
+    public List<FabricResponseDto> getBuildingDetail(@RequestBody FabricResponseDto request) throws IOException {
+        System.out.println("POST : /api/building/detail/block");
 
-//    @PostMapping("/building/detail/block")
-//    @ApiOperation("건물 블록 정보 뿌려주기")
-//    public List<Building> getBlockDetail(@RequestBody Building building) throws IOException {
-//        logger.info("POST : /api/building/detail/block");
-//        // Address , dong , ho 만 사용한다.
-//
-//        List<Building> result = new ArrayList<>();
-//
-//        List<Building> bTemp = new ArrayList<Building>();
-//        List<Maintenance> mTemp = new ArrayList<Maintenance>();
-//
-//        // Address, Dong, Ho가 같은 모든 이력 찾아옴
-//        bTemp = buildingService.getBuildingNum(building);
-//        Maintenance m = new Maintenance();
-//        m.setAddress(building.getAddress());
-//        m.setDong(building.getDong());
-//        m.setHo(building.getHo());
-//        mTemp = maintenanceService.getMaintenanceNum(m);
-//
-//        // BuildingInfo 불러오기
-//        for (int i = 0; i < bTemp.size(); i++) {
-//            FabricRecord fb = new FabricRecord();
-//            Building bd = new Building();
-//
-//            // Fabric에서 num에 해당하는 Building 정보 찾아옴 ( 1개씩 )
-//            fb = fabricService.query("BB" + bTemp.get(i).getNum());
-//
-//            // fb를 bd로 데이터 복사
-//            bd.setNum(fb.getNum());
-//            bd.setAddress(fb.getAddress());
-//            bd.setDong(fb.getDong());
-//            bd.setHo(fb.getHo());
-//            bd.setLatitude(fb.getLatitude());
-//            bd.setLongitude(fb.getLongitude());
-//            bd.setSupply(fb.getSupply());
-//            bd.setExclusive(fb.getExclusive());
-//            bd.setDetails(fb.getDetails());
-//            bd.setCost(fb.getCost());
-//            bd.setStartDate(fb.getStartDate());
-//            bd.setEndDate(fb.getEndDate());
-//            bd.setName(fb.getName());
-//            bd.setLicense(fb.getLicense());
-//            bd.setImage("images/" + fb.getImage());
-//            bd.setType("거래");
-//
-//            // 빈 데이터에 대한 에러처리
-//            if (bd.getEndDate().equals("-")) {
-//                bd.setEndDate("");
-//            }
-//
-//            if (bd.getDong().equals("-")) {
-//                bd.setDong("");
-//            }
-//
-//            if (bd.getHo().equals("-")) {
-//                bd.setHo("");
-//            }
-//
-//            // result에 넣어주기
-//            result.add(bd);
-//        }
+        List<Contract> contracts = new ArrayList<Contract>();
+        List<Status> statuses = new ArrayList<Status>();
 
-//        // MaintenanceInfo 불러오기
-//        for (int i = 0; i < mTemp.size(); i++) {
-//            MaintenanceRecord mfb = new MaintenanceRecord();
-//            Building bd = new Building();
-//
-//            // Fabric에서 num에 해당하는 Building 정보 찾아옴 ( 1개씩 )
-//            mfb = fabricService.queryMaintenance("MM" + mTemp.get(i).getNum());
-//
-//            // fb를 bd로 데이터 복사
-//            bd.setNum(mfb.getNum());
-//            bd.setAddress(mfb.getAddress());
-//            bd.setDong(mfb.getDong());
-//            bd.setHo(mfb.getHo());
-//            bd.setLatitude(mfb.getLatitude());
-//            bd.setLongitude(mfb.getLongitude());
-//            bd.setCategory(mfb.getCategory());
-//            bd.setDetails(mfb.getDetails());
-//            bd.setCost(mfb.getCost());
-//            bd.setStartDate(mfb.getStartDate());
-//            bd.setEndDate(mfb.getEndDate());
-//            bd.setLicense(mfb.getLicense());
-//            bd.setImage("images/" + mfb.getImage());
-//            bd.setType("상태");
-//
-//            // 빈 데이터에 대한 에러처리
-//            if (bd.getEndDate().equals("-")) {
-//                bd.setEndDate("");
-//            }
-//
-//            if (bd.getDong().equals("-")) {
-//                bd.setDong("");
-//            }
-//
-//            if (bd.getHo().equals("-")) {
-//                bd.setHo("");
-//            }
-//
-//            // result에 넣어주기
-//            result.add(bd);
-//        }
-//
-//        Collections.sort(result, new Comparator<Building>() {
-//
-//            @Override
-//            public int compare(Building o1, Building o2) {
-//                return o2.getStartDate().compareTo(o1.getStartDate());
-//            }
-//        });
-//
-//        return result;
-//    }
+        // Address, Dong, Ho가 같은 모든 계약 이력 찾아옴
+        String address = request.getAddress();
+        String floor = request.getFloor();
+        String ho = request.getHo();
+        contracts = contractService.findAllByAddressAndFloorAndHo(address, floor, ho);
+
+        // Address, Dong, Ho가 같은 모든 유지보수 이력 찾아옴
+        statuses = statusService.findAllByAddressAndFloorAndHo(address, floor, ho);
+
+        // 이제 각각의 ID를 뽑아서 Fabric에 가서 해당하는 상세 정보를 하나씩 뽑아온다.
+        List<FabricResponseDto> result = new ArrayList<>();
+        FabricResponseDto fabricResponseDto = new FabricResponseDto();
+
+        // BuildingInfo 불러오기
+        for (int i = 0; i < contracts.size(); i++) {
+            FabricContractRecord fabricContractRecord = new FabricContractRecord();
+            FabricResponseDto contractOne = new FabricResponseDto();
+
+            // "TEST+contract_id"에 해당하는 이력 1개 찾아옴
+            fabricContractRecord = iFabricCCService.queryContract("TEST00" + contracts.get(i).getContractId());
+
+            // 찾아온 fabricContractRecord를 FabricResponseDto로 데이터 복사
+            contractOne.setContractId(fabricContractRecord.getContract_id());
+            contractOne.setAddress(fabricContractRecord.getAddress());
+            contractOne.setSd(fabricContractRecord.getSd());
+            contractOne.setSgg(fabricContractRecord.getSgg());
+            contractOne.setEmd(fabricContractRecord.getEmd());
+            contractOne.setLongitude(fabricContractRecord.getLongitude());
+            contractOne.setLatitude(fabricContractRecord.getLatitude());
+            contractOne.setExclusive(fabricContractRecord.getExclusive());
+            contractOne.setFloor(fabricContractRecord.getFloor());
+            contractOne.setHo(fabricContractRecord.getHo());
+            contractOne.setKind(fabricContractRecord.getKind());
+            contractOne.setDetail(fabricContractRecord.getDetail());
+            contractOne.setCost(fabricContractRecord.getCost());
+            contractOne.setMonthly(fabricContractRecord.getMonthly());
+            contractOne.setLicense(fabricContractRecord.getLicense());
+            contractOne.setImage(fabricContractRecord.getImage());
+            contractOne.setContractDate(fabricContractRecord.getContract_date());
+            contractOne.setType("거래이력");
+
+            // result에 넣어주기
+            result.add(contractOne);
+        }
+
+        // StatusInfo 불러오기
+        for (int i = 0; i < statuses.size(); i++) {
+            FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();
+            FabricResponseDto statusOne = new FabricResponseDto();
+
+            // "TEST+status_id"에 해당하는 이력 1개 찾아옴
+            fabricStatusRecord = iFabricCCService.queryStatus("TSS00" + statuses.get(i).getStatusId());
+
+            // 찾아온 fabricStatusRecord를 FabricResponseDto로 데이터 복사
+            statusOne.setContractId(fabricStatusRecord.getStatus_id());
+            statusOne.setAddress(fabricStatusRecord.getAddress());
+            statusOne.setSd(fabricStatusRecord.getSd());
+            statusOne.setSgg(fabricStatusRecord.getSgg());
+            statusOne.setEmd(fabricStatusRecord.getEmd());
+            statusOne.setLongitude(fabricStatusRecord.getLongitude());
+            statusOne.setLatitude(fabricStatusRecord.getLatitude());
+            statusOne.setFloor(fabricStatusRecord.getFloor());
+            statusOne.setHo(fabricStatusRecord.getHo());
+            statusOne.setKind(fabricStatusRecord.getCategory());
+            statusOne.setDetail(fabricStatusRecord.getDetail());
+            statusOne.setCost(fabricStatusRecord.getCost());
+            statusOne.setLicense(fabricStatusRecord.getLicense());
+            statusOne.setImage(fabricStatusRecord.getImage());
+            statusOne.setExclusive(fabricStatusRecord.getExclusive());
+            statusOne.setContractDate(fabricStatusRecord.getContract_date());
+            statusOne.setEndDate(fabricStatusRecord.getEnd_date());
+            statusOne.setType("상태이력");
+
+            // result에 넣어주기
+            result.add(statusOne);
+        }
+
+        Collections.sort(result, new Comparator<FabricResponseDto>() {
+
+            @Override
+            public int compare(FabricResponseDto o1, FabricResponseDto o2) {
+                return o2.getContractDate().compareTo(o1.getContractDate());
+            }
+        });
+
+        for(int i = 0; i < result.size(); i++){
+            System.out.println(result.get(i).toString());
+        }
+
+        return result;
+    }
+
+    // Channel Load
+    @GetMapping("/loadchannel")
+    @ApiOperation("채널 한번 로드하기")
+    public boolean loadChannel() throws IOException {
+        return iFabricCCService.loadChannel();
+    }
 }
 

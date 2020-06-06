@@ -82,15 +82,8 @@ public class ContractService {
      * 5. 해당 주소의 계약이력 모두 조회 -> 원장으로 보내기 위해
      * List<Building> getBuildingNum(Building building);
      */
-    public List<ContractResponseDto> findAllByAddressAndFloorAndHo(String address, String floor, String ho) {
-        List<Contract> data = contractRepository.findAllByAddressAndFloorAndHo(address, floor, ho);
-        List<ContractResponseDto> result = new ArrayList<>();
-
-        for (Contract contract : data) {
-            result.add(new ContractResponseDto(contract));
-        }
-
-        return result;
+    public List<Contract> findAllByAddressAndFloorAndHo(String address, String floor, String ho) {
+        return contractRepository.findAllByAddressAndFloorAndHo(address, floor, ho);
     }
 
     /**
