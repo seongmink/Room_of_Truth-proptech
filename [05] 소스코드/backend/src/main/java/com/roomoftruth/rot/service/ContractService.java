@@ -124,9 +124,8 @@ public class ContractService {
     }
 
     /**
-     *  8. 해당 위치 (id, address, floor, ho, latitude, longitude, image)
-     *  List<ContractFind> findAllDetails(String latitude, String longitude);
-     *
+     *  8. 해당 위치 (address, floor, ho)
+     *  List<ContractFind> findAllDetails(requestDto[]);
      */
     public List<ContractDetailsResponseDto> findAllDetail(ContractFindRequestDto[] requestDto) {
 

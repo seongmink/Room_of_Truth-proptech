@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -56,17 +57,23 @@ public class ContractController {
 
     /**
      * 위도, 경도로 모든 이력 조회
-     * @param latitude, longitude
+     * @param ContractFindRequestDto[]
      * @return contact_id, address, floor, ho, latitude, longitude, image
      */
     @PostMapping("/building/details")
     @ApiOperation("건물 상세 정보 뿌려주기")
-    public List<ContractDetailsResponseDto> getAllDetails(@RequestBody ContractFindRequestDto[] requestDto){
+    public List<getAllDetailsDto> getAllDetails(@RequestBody ContractFindRequestDto[] requestDto){
         System.out.println("====== POST : api/details");
 
         List<ContractDetailsResponseDto> result = contractService.findAllDetail(requestDto);
-        System.out.println("result Size : " + result.size());
-        return result;
+        List<getAllDetailsDto> response = new ArrayList<>();
+        for (ContractDetailsResponseDto data : result) {
+            String image = contractService.getContractImage(new ContractFindResponseDto(data.getAddress(), data.getFloor(), data.getHo()));
+            getAllDetailsDto detail = new getAllDetailsDto(data.getAddress(), data.getFloor(), data.getHo(), image);
+            response.add(detail);
+        }
+
+        return response;
     }
 
     /**
