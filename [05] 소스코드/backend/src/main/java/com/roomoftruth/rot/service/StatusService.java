@@ -80,15 +80,8 @@ public class StatusService {
      * List<Status> findByAddress(Status status);
      *
      */
-    public List<StatusResponseDto> findAllByAddressAndFloorAndHo(String address, String floor, String ho){
-        List<Status> data = statusRespository.findAllByAddressAndFloorAndHo(address, floor, ho);
-        List<StatusResponseDto> result = new ArrayList<>();
-
-        for (Status status : data) {
-            result.add(new StatusResponseDto(status));
-        }
-
-        return result;
+    public List<Status> findAllByAddressAndFloorAndHo(String address, String floor, String ho){
+        return statusRespository.findAllByAddressAndFloorAndHo(address, floor, ho);
     }
 
     /**

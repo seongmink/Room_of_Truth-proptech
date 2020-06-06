@@ -19,7 +19,7 @@ public class ContractResponseDto {
     private String ho;
     private String kind;
     private String detail;
-    private String cost;
+    private Long cost;
     private String monthly;
     private String license;
     private String image;

@@ -19,7 +19,7 @@ public class StatusResponseDto {
     private String ho;
     private String category;
     private String detail;
-    private String cost;
+    private Long cost;
     private String license;
     private String image;
 

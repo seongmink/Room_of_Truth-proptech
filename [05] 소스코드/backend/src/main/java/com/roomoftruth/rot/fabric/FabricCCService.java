@@ -115,6 +115,7 @@ public class FabricCCService implements IFabricCCService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println(" channel Load Success ! ");
 		return true;
 	}
 
@@ -134,7 +135,7 @@ public class FabricCCService implements IFabricCCService {
 				object.getString("sd"), object.getString("sgg"), object.getString("emd"), object.getString("longitude"),
 				object.getString("latitude"), object.getString("floor"), object.getString("ho"), object.getString("category"),
 				object.getString("detail"), object.getString("cost"), object.getString("license"), object.getString("image"),
-				object.getString("exclusive"), object.getString("start_date"), object.getString("end_date")
+				object.getString("exclusive"), object.getString("contract_date"), object.getString("end_date")
 		);
 
 		return fabricStatusRecord;
@@ -260,7 +261,7 @@ public class FabricCCService implements IFabricCCService {
 		String[] args = {
 				fs.getStatus_id(), fs.getAddress(), fs.getSd(), fs.getSgg(), fs.getEmd(), fs.getLongitude(),
 				fs.getLatitude(), fs.getFloor(), fs.getHo(), fs.getCategory(), fs.getDetail(), fs.getCost(),
-				fs.getLicense(), fs.getImage(), fs.getExclusive(), fs.getStart_date(), fs.getEnd_date()
+				fs.getLicense(), fs.getImage(), fs.getExclusive(), fs.getContract_date(), fs.getEnd_date()
 		};
 		tpr.setArgs(args);
 		Collection<ProposalResponse> res;

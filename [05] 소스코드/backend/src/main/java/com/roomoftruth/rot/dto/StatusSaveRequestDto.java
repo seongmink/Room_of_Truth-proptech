@@ -25,7 +25,7 @@ public class StatusSaveRequestDto {
     private String ho;
     private String category;
     private String detail;
-    private String cost;
+    private Long cost;
     @NotEmpty
     private String license;
     private String image;
