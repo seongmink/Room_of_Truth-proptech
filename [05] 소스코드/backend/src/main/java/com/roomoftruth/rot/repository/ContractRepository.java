@@ -12,6 +12,8 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     List<Contract> findAllByLicense(String license);
     List<Contract> findTop1000AllByLicenseOrderByContractDate(String license);
 
+    Contract getTop1AllByAddressOrderByContractDateDesc(String address);
+
     @Query(value = "select image " +
             "from contract " +
             "where address= ?1 and floor= ?2 and ho= ?3 " +

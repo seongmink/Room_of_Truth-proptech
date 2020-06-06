@@ -22,7 +22,6 @@ public class FavoriteDeleteRequestDto {
 
     public Favorite toEntity(User user, Around around) {
         return Favorite.builder()
-                .user(user)
                 .around(around).build();
     }
 }

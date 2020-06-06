@@ -17,7 +17,6 @@ public class UserResponseDto {
     private String picture;
     private List<Search> searches;
     private Interest interest;
-    private List<Favorite> favorites;
 
     public UserResponseDto(User entity){
         this.num = entity.getNum();
@@ -26,6 +25,5 @@ public class UserResponseDto {
         this.picture = entity.getPicture();
         this.searches = entity.getSearches();
         this.interest = entity.getInterest();
-        this.favorites = entity.getFavorite();
     }
 }

@@ -3,6 +3,7 @@ package com.roomoftruth.rot.controller;
 import com.roomoftruth.rot.domain.Favorite;
 import com.roomoftruth.rot.dto.AddressResponseDto;
 import com.roomoftruth.rot.dto.FavoriteDeleteRequestDto;
+import com.roomoftruth.rot.dto.FavoriteResponseDto;
 import com.roomoftruth.rot.dto.FavoriteSaveRequestDto;
 import com.roomoftruth.rot.service.AddressService;
 import com.roomoftruth.rot.service.FavoriteService;
@@ -36,6 +37,14 @@ public class FavoriteController {
 		log.info("FavoriteController : deleteFavorite");
 
 		return favoriteService.deleteFavorite(requestDto);
+	}
+
+	@GetMapping("/favorite/{num}")
+	@ApiOperation("찜한 건물 가져오기")
+	public List<FavoriteResponseDto> getFavorite(@PathVariable long num) {
+		log.info("FavoriteController : getFavorite");
+
+		return favoriteService.getFavorite(num);
 	}
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Columns;
 
 import javax.jws.soap.SOAPBinding;
 import javax.persistence.*;
@@ -29,10 +30,11 @@ public class Favorite extends BaseTimeEntity {
 	private User user;
 
 	@Builder
-	public Favorite(int score, Around around, User user) {
+	public Favorite(int score, Around around) {
 		this.score = score;
 		this.around = around;
-		this.user = user;
 	}
+
+
 
 }
