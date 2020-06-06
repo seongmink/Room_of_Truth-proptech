@@ -28,16 +28,16 @@ public class Contract {
     private String emd;
 
     @Column(nullable = false)
+    private String longitude;
+    @Column(nullable = false)
     private String latitude;
 
-    @Column(nullable = false)
-    private String longitude;
     private String exclusive;
     private String floor;
     private String ho;
     private String kind;
     private String detail;
-    private String cost;
+    private Long cost;
     private String monthly;
 
     @Column(nullable = false)
@@ -55,6 +55,30 @@ public class Contract {
         this.longitude = longitude;
         this.floor = floor;
         this.ho = ho;
+    }
+
+    @Builder
+    public Contract(Long id, String address, String sd, String sgg, String emd,
+                    String longitude, String latitude, String exclusive, String floor, String ho,
+                    String kind, String detail, Long cost, String monthly,
+                    String license, String image){
+        this.contractId = id;
+        this.address = address;
+        this.sd = sd;
+        this.sgg = sgg;
+        this.emd = emd;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.exclusive = exclusive;
+        this.floor = floor;
+        this.ho = ho;
+        this.kind = kind;
+        this.detail = detail;
+        this.cost = cost;
+        this.monthly = monthly;
+        this.license = license;
+        this.image = image;
+        this.contractDate = LocalDate.now();
     }
 
     /**

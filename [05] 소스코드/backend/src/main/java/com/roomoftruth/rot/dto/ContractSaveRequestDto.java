@@ -26,7 +26,7 @@ public class ContractSaveRequestDto {
     private String ho;
     private String kind;
     private String detail;
-    private String cost;
+    private Long cost;
     private String monthly;
     @NotEmpty
     private String license;

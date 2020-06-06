@@ -4,11 +4,13 @@ import java.util.List;
 
 public interface IFabricCCService {
 
-	public FabricRecord query(String num);
+	public FabricContractRecord queryContract(String num);
 
-	public boolean registerBuildingInfo(FabricRecord fb);
+	public FabricStatusRecord queryStatus(String num);
 
-	List<FabricRecord> getBuildingHistory(String Serial);
+	public boolean registerContract(FabricContractRecord fc);
+
+	public boolean registerStatus(FabricStatusRecord fs);
 
 	public boolean loadChannel();
 
