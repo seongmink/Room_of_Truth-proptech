@@ -35,7 +35,6 @@ public class ContractDetailsResponseDto {
         this.floor = floor;
         this.ho = ho;
         this.image = image;
-        this.contractDate = contract_date
-        ;
+        this.contractDate = contract_date;
     }
 }

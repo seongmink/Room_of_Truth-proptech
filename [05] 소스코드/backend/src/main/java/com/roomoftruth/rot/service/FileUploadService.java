@@ -54,9 +54,11 @@ public class FileUploadService {
                 User user = userRepository.findByNum(num);
                 user.getAgent().updatePicture(destinationImageName);
             }
+
+            return destinationImageName;
         }
 
-        return "success";
+        return "failed";
     }
 
 }

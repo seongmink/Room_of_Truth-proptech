@@ -36,6 +36,10 @@ public class User extends BaseTimeEntity {
 	@JsonBackReference
 	private Agent agent;
 
+	@OneToMany(mappedBy = "user")
+	@JsonBackReference
+	private List<Favorite> favorite = new ArrayList<>();
+
 	@Builder
 	public User(long num, String nickname, String auth, String picture, Interest interest) {
 		this.num = num;

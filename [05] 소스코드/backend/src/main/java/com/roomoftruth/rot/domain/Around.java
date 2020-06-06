@@ -1,5 +1,7 @@
 package com.roomoftruth.rot.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,10 @@ public class Around {
     private int medical;
     private int eatery;
     private int culture;
+
+    @OneToOne(mappedBy = "around")
+    @JsonManagedReference
+    private Favorite favorite;
 
     @Builder
     public Around(Long aroundId, int trans, int comforts, int education,
