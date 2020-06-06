@@ -132,7 +132,7 @@ public class ContractService {
         List<ContractDetailsResponseDto> result = new ArrayList<>();
 
         for (ContractFindRequestDto c : requestDto) {
-            List<ContractDetailsResponseDto> temp = contractDetailsResponseDtoRepository.findAllDetail(c.getLatitude(), c.getLongitude());
+            List<ContractDetailsResponseDto> temp = contractDetailsResponseDtoRepository.findAllDetail(c.getLatitude().substring(0, c.getLatitude().length() - 3), c.getLongitude().substring(0, c.getLongitude().length() - 3));
             for (ContractDetailsResponseDto cd : temp) {
                 result.add(cd);
             }

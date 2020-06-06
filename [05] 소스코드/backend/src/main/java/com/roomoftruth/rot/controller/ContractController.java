@@ -57,24 +57,23 @@ public class ContractController {
 
     /**
      * 위도, 경도로 모든 이력 조회
-     * @param ContractFindRequestDto[]
      * @return contact_id, address, floor, ho, latitude, longitude, image
      */
     @PostMapping("/building/details")
     @ApiOperation("건물 상세 정보 뿌려주기")
-    public List<getAllDetailsDto> getAllDetails(@RequestBody ContractFindRequestDto[] requestDto){
+    public List<ContractDetailsResponseDto> getAllDetails(@RequestBody ContractFindRequestDto[] requestDto,
+                                                          @RequestBody ContractFindLocationDto[] locationDto){
         System.out.println("====== POST : api/details");
 
-        List<ContractDetailsResponseDto> result = contractService.findAllDetail(requestDto);
-        List<getAllDetailsDto> response = new ArrayList<>();
-        for (ContractDetailsResponseDto data : result) {
-            String image = contractService.getContractImage(new ContractFindResponseDto(data.getAddress(), data.getFloor(), data.getHo()));
-            getAllDetailsDto detail = new getAllDetailsDto(data.getAddress(), data.getFloor(), data.getHo(), image);
-            response.add(detail);
+        List<ContractDetailsResponseDto> result = new ArrayList<>();
+
+        for(int i = 0; i < requestDto.length; i++){
+
         }
 
-        return response;
+        return result;
     }
+
 
     /**
      * param -> return Passed

@@ -14,7 +14,7 @@ public interface ContractDetailsResponseDtoRepository extends JpaRepository<Cont
             "union " +
             "select address, floor, ho, latitude, longitude " +
             "from status)as main, (SELECT @RN \\:= 0) RR " +
-            "where latitude = ?1 AND longitude = ?2", nativeQuery = true)
+            "where latitude like ?1% AND longitude like ?2%", nativeQuery = true)
     List<ContractDetailsResponseDto> findAllDetail(String latitude, String longitude);
 
 }
