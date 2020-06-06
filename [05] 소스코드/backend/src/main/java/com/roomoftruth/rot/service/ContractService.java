@@ -124,16 +124,15 @@ public class ContractService {
     }
 
     /**
-     *  8. 해당 위치 (id, address, floor, ho, latitude, longitude, image)
-     *  List<ContractFind> findAllDetails(String latitude, String longitude);
-     *
+     *  8. 해당 위치 (address, floor, ho)
+     *  List<ContractFind> findAllDetails(requestDto[]);
      */
     public List<ContractDetailsResponseDto> findAllDetail(ContractFindRequestDto[] requestDto) {
 
         List<ContractDetailsResponseDto> result = new ArrayList<>();
 
         for (ContractFindRequestDto c : requestDto) {
-            List<ContractDetailsResponseDto> temp = contractDetailsResponseDtoRepository.findAllDetail(c.getLatitude(), c.getLongitude());
+            List<ContractDetailsResponseDto> temp = contractDetailsResponseDtoRepository.findAllDetail(c.getLatitude().substring(0, c.getLatitude().length() - 3), c.getLongitude().substring(0, c.getLongitude().length() - 3));
             for (ContractDetailsResponseDto cd : temp) {
                 result.add(cd);
             }

@@ -20,13 +20,4 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
             "order by contract_id desc limit 1", nativeQuery = true)
     String getContractImage(String address, String floor, String ho);
 
-//    느린 1번 방식
-//    @Query(value = "select * from contract where address = ?1 limit 1", nativeQuery = true)
-//    Contract findContractLocation(String address);
-
-//    @Query(value = "select distinct contract_id, address, floor, ho, latitude, longitude from" +
-//            "( select distinct contract_id, address, floor, ho, latitude, longitude from contract union select distinct status_id, address, floor, ho, latitude, longitude from status) " +
-//            "as main  where latitude= ?1 and longitude= ?2 order by floor asc, ho asc", nativeQuery = true)
-//    List<Contract> findAllDetails(String latitude, String longitude);
-
 }

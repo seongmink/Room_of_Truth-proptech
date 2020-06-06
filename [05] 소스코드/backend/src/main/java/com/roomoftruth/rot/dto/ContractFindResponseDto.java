@@ -22,6 +22,12 @@ public class ContractFindResponseDto {
     private String latitude;
     private String longitude;
 
+    public ContractFindResponseDto(String address, String floor, String ho){
+        this.address = address;
+        this.floor = floor;
+        this.ho = ho;
+    }
+
     public ContractFindResponseDto(String address, String floor, String ho, String latitude, String longitude) {
         this.address = address;
         this.floor = floor;

@@ -4,37 +4,28 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.time.LocalDate;
+import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
 @Entity
 public class ContractDetailsResponseDto {
-    @Id
-    @Column(name = "contract_id")
-    private Long contractId;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "detail_id")
+    private Long detailId;
     private String address;
-    private String latitude;
-    private String longitude;
     private String floor;
     private String ho;
-    private String image;
-    @Column(name = "contract_date")
-    private LocalDate contractDate;
+    private String latitude;
+    private String longitude;
 
     @Builder
-    public ContractDetailsResponseDto(Long contractId, String address, String latitude, String longitude, String floor,
-                                      String ho, String image, LocalDate contract_date){
-        this.contractId = contractId;
+    public ContractDetailsResponseDto(Long detailId, String address, String floor, String ho, String latitude, String longitude){
+        this.detailId = detailId;
         this.address = address;
-        this.latitude = latitude;
-        this.longitude = longitude;
         this.floor = floor;
         this.ho = ho;
-        this.image = image;
-        this.contractDate = contract_date;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }
