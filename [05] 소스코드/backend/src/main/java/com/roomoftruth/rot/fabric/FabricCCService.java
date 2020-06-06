@@ -201,52 +201,20 @@ public class FabricCCService implements IFabricCCService {
 		return null;
 	}
 
-
 	@Override
-	public List<FabricContractRecord> getBuildingHistory(String Serial) {
-		ChaincodeID id = ChaincodeID.newBuilder().setName("bloom20").build();
-		QueryByChaincodeRequest qpr = hfClient.newQueryProposalRequest();
-		qpr.setChaincodeID(id);
-		qpr.setFcn("getBuildingHistory");
-		qpr.setArgs(new String[] { String.valueOf(Serial) });
-		Collection<ProposalResponse> res;
-		try {
-			res = channel.queryByChaincode(qpr);
-			List<ProposalResponse> invalid = res.stream().filter(r -> r.isInvalid()).collect(Collectors.toList());
-			if (!invalid.isEmpty()) {
-				invalid.forEach(response -> {
-					logger.info(response.getMessage());
-				});
-			}
-			List<FabricContractRecord> records = new ArrayList<>();
-			for (ProposalResponse response : res) {
-				logger.info(new String(response.getChaincodeActionResponsePayload()));
-				JsonReader parser = Json
-						.createReader(new ByteArrayInputStream(response.getChaincodeActionResponsePayload()));
-				for (JsonValue record : parser.readArray()) {
-					FabricContractRecord rec = getFabricRecord((JsonObject) record);
-					records.add(rec);
-				}
-			}
-			return records;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	public boolean registerContract(FabricContractRecord fc) {
+		logger.info("Request Regist Contract :" + fc.toString());
 
-	@Override
-	public boolean registerBuildingInfo(FabricContractRecord fb) {
-		logger.info("Request Regist Building Date :" + fb.toString());
-
-		ChaincodeID id = ChaincodeID.newBuilder().setName("bloom20").build();
+		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
 		TransactionProposalRequest tpr = hfClient.newTransactionProposalRequest();
 
 		tpr.setChaincodeID(id);
-		tpr.setFcn("registerBuildingInfo");
-		String[] args = { fb.getNum(), fb.getAddress(), fb.getDong(), fb.getHo(), fb.getLatitude(), fb.getLongitude(),
-				fb.getSupply(), fb.getExclusive(), fb.getDetails(), fb.getCost(), fb.getStartDate(), fb.getEndDate(),
-				fb.getName(), fb.getLicense(), fb.getImage(), fb.getCreatedAt(), fb.getExpiredAt() };
+		tpr.setFcn("registerContract");
+		String[] args = {
+				fc.getContract_id(), fc.getAddress(), fc.getSd(), fc.getSgg(), fc.getEmd(), fc.getLongitude(),
+				fc.getLatitude(), fc.getExclusive(), fc.getFloor(), fc.getHo(), fc.getKind(), fc.getDetail(),
+				fc.getCost(), fc.getMonthly(), fc.getLicense(), fc.getImage(), fc.getContract_date()
+		};
 		tpr.setArgs(args);
 		Collection<ProposalResponse> res;
 		try {
@@ -261,8 +229,54 @@ public class FabricCCService implements IFabricCCService {
 			}
 
 			CompletableFuture<TransactionEvent> cf = channel.sendTransaction(res);
-			
-			
+
+			TransactionEvent block = cf.get();
+
+			for (ProposalResponse response : res) {
+				logger.info(new String(response.getChaincodeActionResponsePayload()));
+			}
+
+			if (res.size() >= 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+
+	@Override
+	public boolean registerStatus(FabricStatusRecord fs) {
+		logger.info("Request Regist Building Date :" + fs.toString());
+
+		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
+		TransactionProposalRequest tpr = hfClient.newTransactionProposalRequest();
+
+		tpr.setChaincodeID(id);
+		tpr.setFcn("registerStatus");
+		String[] args = {
+				fs.getStatus_id(), fs.getAddress(), fs.getSd(), fs.getSgg(), fs.getEmd(), fs.getLongitude(),
+				fs.getLatitude(), fs.getFloor(), fs.getHo(), fs.getCategory(), fs.getDetail(), fs.getCost(),
+				fs.getLicense(), fs.getImage(), fs.getExclusive(), fs.getStart_date(), fs.getEnd_date()
+		};
+		tpr.setArgs(args);
+		Collection<ProposalResponse> res;
+		try {
+
+			res = channel.sendTransactionProposal(tpr);
+
+			List<ProposalResponse> invalid = res.stream().filter(r -> r.isInvalid()).collect(Collectors.toList());
+			if (!invalid.isEmpty()) {
+				invalid.forEach(response -> {
+					logger.info(response.getMessage());
+				});
+			}
+
+			CompletableFuture<TransactionEvent> cf = channel.sendTransaction(res);
+
 			TransactionEvent block = cf.get();
 
 			for (ProposalResponse response : res) {

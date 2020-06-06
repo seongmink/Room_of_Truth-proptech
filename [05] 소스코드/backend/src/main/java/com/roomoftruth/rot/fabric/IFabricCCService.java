@@ -8,10 +8,9 @@ public interface IFabricCCService {
 
 	public FabricStatusRecord queryStatus(String num);
 
+	public boolean registerContract(FabricContractRecord fc);
 
-	public boolean registerBuildingInfo(FabricContractRecord fb);
-
-	List<FabricContractRecord> getBuildingHistory(String Serial);
+	public boolean registerStatus(FabricStatusRecord fs);
 
 	public boolean loadChannel();
 
