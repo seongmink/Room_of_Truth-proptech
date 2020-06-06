@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 public class ContractFindRequestDto {
     private String latitude;
     private String longitude;
+    private String sd;
+    private String sgg;
 }

@@ -7,6 +7,7 @@ import com.roomoftruth.rot.service.AroundService;
 import com.roomoftruth.rot.service.ContractService;
 import com.roomoftruth.rot.service.StatusService;
 import io.swagger.annotations.ApiOperation;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -61,15 +62,19 @@ public class ContractController {
      */
     @PostMapping("/building/details")
     @ApiOperation("건물 상세 정보 뿌려주기")
-    public List<ContractDetailsResponseDto> getAllDetails(@RequestBody ContractFindRequestDto[] requestDto,
-                                                          @RequestBody ContractFindLocationDto[] locationDto){
+    public List<Contract> getAllDetails(@RequestBody ContractFindRequestDto[] requestDto){
         System.out.println("====== POST : api/details");
+        String sd = requestDto[0].getSd();
+        String sgg = requestDto[0].getSgg();
+        String key = sd + " " + sgg;
 
-        List<ContractDetailsResponseDto> result = new ArrayList<>();
+        // 시도, 시군구로 모든 이력 찾기
+        List<Contract> searchData = contractService.findAllByAddressContaining(key);
 
-        for(int i = 0; i < requestDto.length; i++){
+        // 요청받은 위도, 경도(requestDto)에 맞는 이력 찾아주기
+        List<Contract> result = new ArrayList<>();
 
-        }
+        result = contractService.getAllDetails(requestDto, searchData);
 
         return result;
     }
