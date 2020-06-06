@@ -1,10 +1,8 @@
 package com.roomoftruth.rot.service;
 
-import com.roomoftruth.rot.domain.Address;
 import com.roomoftruth.rot.domain.Around;
 import com.roomoftruth.rot.domain.Favorite;
 import com.roomoftruth.rot.domain.User;
-import com.roomoftruth.rot.dto.AddressResponseDto;
 import com.roomoftruth.rot.dto.FavoriteDeleteRequestDto;
 import com.roomoftruth.rot.dto.FavoriteResponseDto;
 import com.roomoftruth.rot.dto.FavoriteSaveRequestDto;
@@ -13,8 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -32,8 +29,7 @@ public class FavoriteService {
 		Around around = aroundRepository.findById(requestDto.getAroundId())
 				.orElseThrow(()-> new IllegalArgumentException("해당 around가 없습니다."));
 
-//		return favoriteRepository.save(requestDto.toEntity(user, around)).getUser().getNum();
-		return 0L;
+		return favoriteRepository.save(requestDto.toEntity(user, around)).getUser().getNum();
 	}
 
 	@Transactional
@@ -51,14 +47,20 @@ public class FavoriteService {
 
 		List<Favorite> list = favoriteRepository.getAllByUserNum(num);
 
-		System.out.println("list = " + list);
-		System.out.println(list.size());
 		List<FavoriteResponseDto> result = new ArrayList<>();
 
-//		for(int i = 0; i < list.size(); i++) {
-//			result.add(new FavoriteResponseDto(
-//					contractRepository.getTop1AllByAddressOrderByContractDateDesc(list.get(i).getAround().getAddress())));
-//		}
+		for(int i = 0; i < list.size(); i++) {
+
+			result.add(new FavoriteResponseDto(
+					contractRepository.getTop1AllByAddressOrderByContractDateDesc(list.get(i).getAround().getAddress()), list.get(i).getFavoriteId()));
+		}
+
+		Collections.sort(result, new Comparator<FavoriteResponseDto>() {
+			@Override
+			public int compare(FavoriteResponseDto o1, FavoriteResponseDto o2) {
+				return (int) (o2.getFavoriteId() - o1.getFavoriteId());
+			}
+		});
 
 		return result;
 
