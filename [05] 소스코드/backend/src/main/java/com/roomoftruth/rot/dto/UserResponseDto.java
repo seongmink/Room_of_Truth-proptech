@@ -1,5 +1,6 @@
 package com.roomoftruth.rot.dto;
 
+import com.roomoftruth.rot.domain.Favorite;
 import com.roomoftruth.rot.domain.Interest;
 import com.roomoftruth.rot.domain.Search;
 import com.roomoftruth.rot.domain.User;

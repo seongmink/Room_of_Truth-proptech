@@ -76,8 +76,6 @@ public class KakaoAPIService {
 
 		String jwt = jwtService.create("user", userResponseDto, "user");
 
-		logger.info("JWT : " + jwt);
-
 		return jwt;
 	}
 

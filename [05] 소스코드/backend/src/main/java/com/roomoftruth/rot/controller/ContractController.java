@@ -59,12 +59,12 @@ public class ContractController {
      * @param latitude, longitude
      * @return contact_id, address, floor, ho, latitude, longitude, image
      */
-    @PostMapping("details")
+    @PostMapping("/building/details")
     @ApiOperation("건물 상세 정보 뿌려주기")
-    public List<ContractDetailsResponseDto> getAllDetails(@RequestParam String latitude, @RequestParam String longitude){
+    public List<ContractDetailsResponseDto> getAllDetails(@RequestBody ContractFindRequestDto[] requestDto){
         System.out.println("====== POST : api/details");
 
-        List<ContractDetailsResponseDto> result = contractService.findAllDetail(latitude, longitude);
+        List<ContractDetailsResponseDto> result = contractService.findAllDetail(requestDto);
         System.out.println("result Size : " + result.size());
         return result;
     }
