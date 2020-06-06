@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Favorite extends BaseTimeEntity {
+public class Favorite {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class Favorite extends BaseTimeEntity {
 
 	private int score;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JsonBackReference
 	private Around around;
 
@@ -30,7 +30,8 @@ public class Favorite extends BaseTimeEntity {
 	private User user;
 
 	@Builder
-	public Favorite(int score, Around around) {
+	public Favorite(User user, int score, Around around) {
+		this.user = user;
 		this.score = score;
 		this.around = around;
 	}
