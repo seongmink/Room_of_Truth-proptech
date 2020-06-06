@@ -20,4 +20,6 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
             "order by contract_id desc limit 1", nativeQuery = true)
     String getContractImage(String address, String floor, String ho);
 
+    List<Contract> findAllByAddressContaining(String key);
+
 }

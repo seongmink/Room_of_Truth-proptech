@@ -18,14 +18,16 @@ public class ContractDetailsResponseDto {
     private String ho;
     private String latitude;
     private String longitude;
+    private String image;
 
     @Builder
-    public ContractDetailsResponseDto(Long detailId, String address, String floor, String ho, String latitude, String longitude){
+    public ContractDetailsResponseDto(Long detailId, String address, String floor, String ho, String latitude, String longitude, String image){
         this.detailId = detailId;
         this.address = address;
         this.floor = floor;
         this.ho = ho;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.image = image;
     }
 }
