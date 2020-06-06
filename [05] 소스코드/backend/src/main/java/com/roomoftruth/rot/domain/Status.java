@@ -27,28 +27,28 @@ public class Status {
     private String emd;
 
     @Column(nullable = false)
-    private String latitude;
-    @Column(nullable = false)
     private String longitude;
+    @Column(nullable = false)
+    private String latitude;
 
-    private String exclusive;
     private String floor;
     private String ho;
     private String category;
     private String detail;
-    private String cost;
+    private Long cost;
 
     @Column(nullable = false)
     private String license;
     private String image;
 
+    private String exclusive;
     private LocalDate startDate;
     private LocalDate endDate;
 
     @Builder
     public Status(long statusId, String address, String sd, String sgg, String emd,
                   String latitude, String longitude, String exclusive, String floor, String ho,
-                  String category, String detail, String cost, String license, String image,
+                  String category, String detail, Long cost, String license, String image,
                   LocalDate startDate, LocalDate endDate){
         this.statusId = statusId;
         this.address = address;

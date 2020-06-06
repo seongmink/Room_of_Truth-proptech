@@ -26,12 +26,8 @@ import org.hyperledger.fabric.sdk.security.CryptoSuite;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-//import com.rot.service.IAddressService;
-//import com.rot.service.impl.BuildingService;
 
 @Service
 public class FabricCCService implements IFabricCCService {
@@ -122,32 +118,34 @@ public class FabricCCService implements IFabricCCService {
 		return true;
 	}
 
-	private FabricRecord getFabricRecord(JsonObject object) {
-		FabricRecord fabircRecord = new FabricRecord(object.getString("num"), object.getString("address"),
-				object.getString("dong"), object.getString("ho"), object.getString("latitude"),
-				object.getString("longitude"), object.getString("supply"), object.getString("exclusive"),
-				object.getString("details"), object.getString("cost"), object.getString("startDate"),
-				object.getString("endDate"), object.getString("name"), object.getString("license"),
-				object.getString("image"), object.getString("createdAt"), object.getString("expiredAt"));
+	private FabricContractRecord getFabricContractRecord(JsonObject object) {
+		FabricContractRecord fabricContractRecord = new FabricContractRecord(object.getString("contract_id"), object.getString("address"),
+				object.getString("sd"), object.getString("sgg"), object.getString("emd"), object.getString("longitude"),
+				object.getString("latitude"), object.getString("exclusive"), object.getString("floor"), object.getString("ho"),
+				object.getString("kind"), object.getString("detail"), object.getString("cost"), object.getString("monthly"),
+				object.getString("license"), object.getString("image"), object.getString("contract_date")
+				);
 
-		logger.info("num : " + object.getString("num") + ", address : " + object.getString("address") + ", dong : "
-				+ object.getString("dong") + ", ho : " + object.getString("ho") + ", latitude : "
-				+ object.getString("latitude") + ", longitude : " + object.getString("longitude") + ", supply : "
-				+ object.getString("supply") + ", exclusive : " + object.getString("exclusive") + ", details : "
-				+ object.getString("details") + ", cost : " + object.getString("cost") + ", startDate : "
-				+ object.getString("startDate") + ", endDate : " + object.getString("endDate") + ", name : "
-				+ object.getString("name") + ", license : " + object.getString("license") + ", image : "
-				+ object.getString("image") + " ,createdAt : " + object.getString("createdAt") + ", expiredAt : "
-				+ object.getString("expiredAt"));
-		return fabircRecord;
+		return fabricContractRecord;
+	}
+
+	private FabricStatusRecord getFabricStatusRecord(JsonObject object) {
+		FabricStatusRecord fabricStatusRecord = new FabricStatusRecord(object.getString("status_id"), object.getString("address"),
+				object.getString("sd"), object.getString("sgg"), object.getString("emd"), object.getString("longitude"),
+				object.getString("latitude"), object.getString("floor"), object.getString("ho"), object.getString("category"),
+				object.getString("detail"), object.getString("cost"), object.getString("license"), object.getString("image"),
+				object.getString("exclusive"), object.getString("start_date"), object.getString("end_date")
+		);
+
+		return fabricStatusRecord;
 	}
 
 	@Override
-	public FabricRecord query(String num) {
-		ChaincodeID id = ChaincodeID.newBuilder().setName("bloom20").build();
+	public FabricContractRecord queryContract(String num) {
+		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
 		QueryByChaincodeRequest qpr = hfClient.newQueryProposalRequest();
 		qpr.setChaincodeID(id);
-		qpr.setFcn("query");
+		qpr.setFcn("queryContract");
 		qpr.setArgs(new String[] { num });
 		Collection<ProposalResponse> res;
 		try {
@@ -158,22 +156,54 @@ public class FabricCCService implements IFabricCCService {
 					logger.info(response.getMessage());
 				});
 			}
-			FabricRecord fabricrecord = null;
+			FabricContractRecord fabricContractRecord = null;
 			for (ProposalResponse response : res) {
 				logger.info(new String(response.getChaincodeActionResponsePayload()));
 				JsonReader parser = Json
 						.createReader(new ByteArrayInputStream(response.getChaincodeActionResponsePayload()));
-				fabricrecord = getFabricRecord(parser.readObject());
+				fabricContractRecord = getFabricContractRecord(parser.readObject());
 			}
-			return fabricrecord;
+			return fabricContractRecord;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
+
 	@Override
-	public List<FabricRecord> getBuildingHistory(String Serial) {
+	public FabricStatusRecord queryStatus(String num) {
+		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
+		QueryByChaincodeRequest qpr = hfClient.newQueryProposalRequest();
+		qpr.setChaincodeID(id);
+		qpr.setFcn("queryStatus");
+		qpr.setArgs(new String[] { num });
+		Collection<ProposalResponse> res;
+		try {
+			res = channel.queryByChaincode(qpr);
+			List<ProposalResponse> invalid = res.stream().filter(r -> r.isInvalid()).collect(Collectors.toList());
+			if (!invalid.isEmpty()) {
+				invalid.forEach(response -> {
+					logger.info(response.getMessage());
+				});
+			}
+			FabricStatusRecord fabricStatusRecord = null;
+			for (ProposalResponse response : res) {
+				logger.info(new String(response.getChaincodeActionResponsePayload()));
+				JsonReader parser = Json
+						.createReader(new ByteArrayInputStream(response.getChaincodeActionResponsePayload()));
+				fabricStatusRecord = getFabricStatusRecord(parser.readObject());
+			}
+			return fabricStatusRecord;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	@Override
+	public List<FabricContractRecord> getBuildingHistory(String Serial) {
 		ChaincodeID id = ChaincodeID.newBuilder().setName("bloom20").build();
 		QueryByChaincodeRequest qpr = hfClient.newQueryProposalRequest();
 		qpr.setChaincodeID(id);
@@ -188,13 +218,13 @@ public class FabricCCService implements IFabricCCService {
 					logger.info(response.getMessage());
 				});
 			}
-			List<FabricRecord> records = new ArrayList<>();
+			List<FabricContractRecord> records = new ArrayList<>();
 			for (ProposalResponse response : res) {
 				logger.info(new String(response.getChaincodeActionResponsePayload()));
 				JsonReader parser = Json
 						.createReader(new ByteArrayInputStream(response.getChaincodeActionResponsePayload()));
 				for (JsonValue record : parser.readArray()) {
-					FabricRecord rec = getFabricRecord((JsonObject) record);
+					FabricContractRecord rec = getFabricRecord((JsonObject) record);
 					records.add(rec);
 				}
 			}
@@ -206,7 +236,7 @@ public class FabricCCService implements IFabricCCService {
 	}
 
 	@Override
-	public boolean registerBuildingInfo(FabricRecord fb) {
+	public boolean registerBuildingInfo(FabricContractRecord fb) {
 		logger.info("Request Regist Building Date :" + fb.toString());
 
 		ChaincodeID id = ChaincodeID.newBuilder().setName("bloom20").build();
