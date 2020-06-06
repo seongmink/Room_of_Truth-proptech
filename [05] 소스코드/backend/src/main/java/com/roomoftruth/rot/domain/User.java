@@ -35,7 +35,7 @@ public class User extends BaseTimeEntity {
 
 	@OneToMany(mappedBy = "user")
 	@JsonBackReference
-	private List<Favorite> favorite = new ArrayList<>();
+	private List<Favorite> favorites = new ArrayList<>();
 
 	@Builder
 	public User(long num, String nickname, String auth, String picture, Interest interest) {

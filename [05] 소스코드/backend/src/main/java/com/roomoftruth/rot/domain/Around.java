@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -24,9 +26,9 @@ public class Around {
     private int eatery;
     private int culture;
 
-    @OneToOne(mappedBy = "around")
+    @OneToMany(mappedBy = "around")
     @JsonManagedReference
-    private Favorite favorite;
+    private List<Favorite> favorites = new ArrayList<>();
 
     @Builder
     public Around(Long aroundId, int trans, int comforts, int education,
