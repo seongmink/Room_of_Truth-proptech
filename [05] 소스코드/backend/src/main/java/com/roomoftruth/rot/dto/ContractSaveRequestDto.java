@@ -1,17 +1,12 @@
 package com.roomoftruth.rot.dto;
 
-import com.roomoftruth.rot.domain.Contract;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.tomcat.jni.Local;
-
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
 public class ContractSaveRequestDto {
-    private long contractId;
     @NotEmpty
     private String address;
     private String sd;
@@ -32,4 +27,40 @@ public class ContractSaveRequestDto {
     private String license;
     private String image;
 
+    public void setSd(String sd) {
+        this.sd = sd;
+    }
+
+    public void setSgg(String sgg) {
+        this.sgg = sgg;
+    }
+
+    public void setEmd(String emd) {
+        this.emd = emd;
+    }
+
+    public void setMonthly(String monthly) {
+        this.monthly = monthly;
+    }
+
+    @Override
+    public String toString() {
+        return "ContractSaveRequestDto{" +
+                ", address='" + address + '\'' +
+                ", sd='" + sd + '\'' +
+                ", sgg='" + sgg + '\'' +
+                ", emd='" + emd + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", exclusive='" + exclusive + '\'' +
+                ", floor='" + floor + '\'' +
+                ", ho='" + ho + '\'' +
+                ", kind='" + kind + '\'' +
+                ", detail='" + detail + '\'' +
+                ", cost=" + cost +
+                ", monthly='" + monthly + '\'' +
+                ", license='" + license + '\'' +
+                ", image='" + image + '\'' +
+                '}';
+    }
 }

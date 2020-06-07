@@ -1,10 +1,7 @@
 package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.Favorite;
-import com.roomoftruth.rot.dto.AddressResponseDto;
-import com.roomoftruth.rot.dto.FavoriteDeleteRequestDto;
-import com.roomoftruth.rot.dto.FavoriteResponseDto;
-import com.roomoftruth.rot.dto.FavoriteSaveRequestDto;
+import com.roomoftruth.rot.dto.*;
 import com.roomoftruth.rot.service.AddressService;
 import com.roomoftruth.rot.service.FavoriteService;
 import io.swagger.annotations.ApiOperation;
@@ -23,12 +20,18 @@ public class FavoriteController {
 
 	private final FavoriteService favoriteService;
 
+	/**
+	 *
+	 * @param  address, num, isLike
+	 * @return
+	 */
+
 	@PostMapping("/favorite")
 	@ApiOperation("찜하기")
-	public Long saveFavorite(@RequestBody FavoriteSaveRequestDto requestDto) {
+	public Long saveFavorite(@RequestBody saveFavoriteDto saveFavoriteDto) {
 		log.info("FavoriteController : saveFavorite");
 
-		return favoriteService.saveFavorite(requestDto);
+		return favoriteService.saveFavorite(saveFavoriteDto);
 	}
 
 	@DeleteMapping("/favorite")

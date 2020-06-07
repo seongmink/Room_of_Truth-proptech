@@ -50,6 +50,11 @@ public class AgentService {
 		}
 	}
 
+	@Transactional
+	public void pointUp(String license) {
+		agentRepository.pointUp(license);
+	}
+
 	public List<AgentRankingResponseDto> getRanking() {
 
 		List<Agent> ranking = agentRepository.getRankingTop9();
@@ -100,7 +105,5 @@ public class AgentService {
 
 		return result;
 	}
-
-
 
 }

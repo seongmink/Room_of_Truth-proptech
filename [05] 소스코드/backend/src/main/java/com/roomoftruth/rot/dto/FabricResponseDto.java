@@ -1,10 +1,8 @@
 package com.roomoftruth.rot.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@ToString
 @Getter
 @Setter
 @AllArgsConstructor
@@ -31,31 +29,6 @@ public class FabricResponseDto {
     private String startDate;
     private String endDate;
     private String type;
+    private String isLike;
 
-    @Override
-    public String toString() {
-        return "FabricResponseDto{" +
-                "contractId='" + contractId + '\'' +
-                ", address='" + address + '\'' +
-                ", sd='" + sd + '\'' +
-                ", sgg='" + sgg + '\'' +
-                ", emd='" + emd + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", exclusive='" + exclusive + '\'' +
-                ", floor='" + floor + '\'' +
-                ", ho='" + ho + '\'' +
-                ", kind='" + kind + '\'' +
-                ", detail='" + detail + '\'' +
-                ", cost='" + cost + '\'' +
-                ", monthly='" + monthly + '\'' +
-                ", license='" + license + '\'' +
-                ", image='" + image + '\'' +
-                ", contractDate='" + contractDate + '\'' +
-                ", category='" + category + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
-                ", type='" + type + '\'' +
-                '}';
-    }
 }

@@ -1,16 +1,15 @@
 package com.roomoftruth.rot.dto;
 
-import com.roomoftruth.rot.domain.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
 
+@ToString
 @Getter
 @NoArgsConstructor
 public class StatusSaveRequestDto {
-    @NotEmpty
-    private long statusId;
     @NotEmpty
     private String address;
     private String sd;
@@ -29,24 +28,19 @@ public class StatusSaveRequestDto {
     @NotEmpty
     private String license;
     private String image;
+    private String start_date;
+    private String end_date;
 
-    public Status toEntity(){
-        return Status.builder()
-                .statusId(statusId)
-                .address(address)
-                .sd(sd)
-                .sgg(sgg)
-                .emd(emd)
-                .latitude(latitude)
-                .longitude(longitude)
-                .exclusive(exclusive)
-                .floor(floor)
-                .ho(ho)
-                .category(category)
-                .detail(detail)
-                .cost(cost)
-                .license(license)
-                .image(image)
-                .build();
+    public void setSd(String sd) {
+        this.sd = sd;
     }
+
+    public void setSgg(String sgg) {
+        this.sgg = sgg;
+    }
+
+    public void setEmd(String emd) {
+        this.emd = emd;
+    }
+
 }

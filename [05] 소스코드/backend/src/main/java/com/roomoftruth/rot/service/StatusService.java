@@ -3,7 +3,7 @@ package com.roomoftruth.rot.service;
 import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.dto.ContractFindResponseDto;
 import com.roomoftruth.rot.dto.StatusResponseDto;
-import com.roomoftruth.rot.dto.StatusSaveRequestDto;
+import com.roomoftruth.rot.fabric.FabricStatusRecord;
 import com.roomoftruth.rot.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,17 +25,9 @@ public class StatusService {
      *
      */
     @Transactional
-    public long saveStatus(StatusSaveRequestDto statusSaveRequestDto){
-        Status response = statusSaveRequestDto.toEntity();
-
-        //
-        // fabric 처리후
-        System.out.println("===== FABRIC에서 등록 해야 함 =====");
-        //
-
-        statusRespository.save(response);
-
-        return response.getStatusId();
+    public long saveStatus(FabricStatusRecord fabricStatusRecord) {
+        Status status = new Status(fabricStatusRecord);
+        return statusRespository.save(status).getStatusId();
     }
 
     /**

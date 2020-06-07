@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -81,7 +79,7 @@ public class AgentController {
 
 		return agentService.getAgentContribution(num);
 	}
-//
+
 //	@GetMapping("/agent/contribution/detail/{type}/{num}")
 //	@ApiOperation("공인중개사가 등록한 건물 조회")
 //	public Building getAgentContributionDetail(@PathVariable(value = "type") int type, @PathVariable long num) {
@@ -127,21 +125,7 @@ public class AgentController {
 //		}
 //
 //		return(bd);
-//
 //	}
-//
-//	public void pointUp(String license) {
-//		logger.info("METHOD : pointUp");
-//
-//		agentService.pointUp(license);
-//	}
-//
-//	public void reportUp(long num) {
-//		logger.info("METHOD : reportUp");
-//
-//		agentService.reportUp(num);
-//	}
-//
 //}
 
 }

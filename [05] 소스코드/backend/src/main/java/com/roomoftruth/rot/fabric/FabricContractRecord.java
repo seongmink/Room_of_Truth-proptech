@@ -1,19 +1,23 @@
 package com.roomoftruth.rot.fabric;
 
 import com.roomoftruth.rot.domain.Contract;
+import com.roomoftruth.rot.dto.ContractSaveRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+
+import java.time.LocalDate;
 
 /**
  * 패브릭 체인코드로부터 조회된 결과를 담기위한 클래스
  */
 
+@ToString
 @Getter
 @Setter
 @AllArgsConstructor
 public class FabricContractRecord {
-
 	private String contract_id;	// PK
 	private String address;	// 주소
 	private String sd;	// 시도
@@ -35,6 +39,29 @@ public class FabricContractRecord {
 	public FabricContractRecord() {
 	}
 
+	public void setContract_id(String contract_id) {
+		this.contract_id = contract_id;
+	}
+
+	public FabricContractRecord(ContractSaveRequestDto contractSaveRequestDto){
+		this.address = contractSaveRequestDto.getAddress();
+		this.sd = contractSaveRequestDto.getSd();
+		this.sgg = contractSaveRequestDto.getSgg();
+		this.emd = contractSaveRequestDto.getEmd();
+		this.longitude = contractSaveRequestDto.getLongitude();
+		this.latitude = contractSaveRequestDto.getLatitude();
+		this.exclusive = contractSaveRequestDto.getExclusive();
+		this.floor = contractSaveRequestDto.getFloor();
+		this.ho = contractSaveRequestDto.getHo();
+		this.kind = contractSaveRequestDto.getKind();
+		this.detail = contractSaveRequestDto.getDetail();
+		this.cost = ""+contractSaveRequestDto.getCost();
+		this.monthly = contractSaveRequestDto.getMonthly();
+		this.license = contractSaveRequestDto.getLicense();
+		this.image = contractSaveRequestDto.getImage();
+		this.contract_date = ""+ LocalDate.now();
+	}
+
 	public FabricContractRecord(Contract contract){
 		this.contract_id = "CONTRACT"+contract.getContractId();
 		this.address = contract.getAddress();
@@ -54,4 +81,5 @@ public class FabricContractRecord {
 		this.image = contract.getImage();
 		this.contract_date = ""+contract.getContractDate();
 	}
+
 }
