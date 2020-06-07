@@ -69,8 +69,8 @@ class Contract(models.Model):
 class Favorite(models.Model):
     favorite_id = models.AutoField(primary_key=True)
     score = models.IntegerField()
-    around = models.ForeignKey('Around', on_delete=models.CASCADE, db_column='around', blank=True, null=True, related_name="fav_around")
-    user = models.ForeignKey('User', on_delete=models.CASCADE, db_column='user', blank=True, null=True, related_name="fav_user")
+    around = models.ForeignKey('Around', on_delete=models.CASCADE, db_column='around_around_id', blank=True, null=True, related_name="fav_around")
+    user = models.ForeignKey('User', on_delete=models.CASCADE, db_column='user_num', blank=True, null=True, related_name="fav_user")
 
     class Meta:
         managed = False

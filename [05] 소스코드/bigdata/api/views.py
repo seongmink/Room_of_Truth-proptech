@@ -7,16 +7,16 @@ from api.pagination import PaginationHandlerMixin
 from rest_framework.pagination import PageNumberPagination
 from api import models, serializers
 
-# import os
-# import sys
-# import urllib.request
-# import json
 from django.db.models import Avg
 from datetime import datetime
 from django.db.models import Q
 import pandas as pd
 from api.content_base import getContentBaseData
+from api.user_base import getUserBaseData
 import time
+
+import requests
+import json
 
 DICT_KEY = {'교통':'trans','마트/편의점':'comforts','교육시설':'education','의료시설':'medical','음식점/카페':'eatery','문화시설':'culture'}
 
@@ -37,6 +37,30 @@ class Contract(APIView, PaginationHandlerMixin):
             instance = models.Contract.objects.filter(address__contains=area)
         else:
             instance = models.Contract.objects.all()
+
+        page = self.paginate_queryset(instance)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(page,
+ many=True).data)
+        else:
+            serializer = self.serializer_class(instance, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+
+class Favorites(APIView, PaginationHandlerMixin):
+    pagination_class = SmallPagination
+    serializer_class = serializers.FavoriteSerializer
+
+    def get(self, request, pk):
+        user = get_object_or_404(models.User, pk=pk)
+        interest = user.interest_user.get()
+
+        if interest.sd =='세종특별자치시':
+            addr = interest.sd
+        else:
+            addr = interest.sd+" "+interest.sgg
+        print(addr)
+        instance = models.Favorite.objects.filter(user=pk).filter(around__address__contains=addr)
 
         page = self.paginate_queryset(instance)
         if page is not None:
@@ -166,7 +190,7 @@ class TotalRank(APIView):
 # 나이대,성별, 카테고리에 따른 첫 화면 3개 선정
 class Rank(APIView):
     def getResult(self, users,addr,pk,interest):
-        start_time = time.time()
+        # start_time = time.time()
         # q = Q()
         # for u in users:
         #     q.add(Q(user=u.user_num), q.OR)
@@ -192,7 +216,7 @@ class Rank(APIView):
                 "image": b.image,
                 "isLike": True if fav ==1 else False
             })
-        print(time.time()-start_time)
+        # print(time.time()-start_time)
         return result
 
     def get(self, request, pk):
@@ -313,6 +337,7 @@ class Prefer(APIView):
 class Recommend(APIView):
 
     def get(self, request, pk):
+        # 공통 : 유저정보, 관심 지역
         user = get_object_or_404(models.User, pk=pk)
         interest = user.interest_user.get()
 
@@ -323,11 +348,15 @@ class Recommend(APIView):
 
         # 유저가 관심 지역 내에서 평가를 내린 것들의 모임
         favs = user.fav_user.filter(around__address__contains=addr)
-        print(len(favs))
+        fav_arounds = models.Favorite.objects.filter(around__address__contains=addr).count()
+        # print(len(favs))
+        # print(fav_arounds)
         if len(favs)==0:
+            print("--0")
             # 평가 내린게 없다면 around를 관심도에 따라 정렬을 한 다음 걍 준다;;
             # TODO : 평가가 없는 경우 관심도 9개에 따라 평가를 내리게끔 유도하면 어떨까
             sorted_around = models.Around.objects.filter(address__contains=addr).order_by('-'+DICT_KEY[interest.first],'-'+DICT_KEY[interest.second],'-'+DICT_KEY[interest.third])[:9]
+            # print(str(sorted_around.query))
             results=[]
             for arnd in sorted_around:
                 cont = models.Contract.objects.filter(address=arnd.address).first()
@@ -341,7 +370,9 @@ class Recommend(APIView):
                 })
             return Response(results, status=status.HTTP_200_OK)
 
-        elif len(favs)<=15:
+        # 관심지역의 리뷰개수가 30개 이하일때
+        elif len(favs)<=15 or fav_arounds<=30:
+            print("elif")
             # 유저가 평가한 건물들의 평균으로 유저 프로필을 생성하자
             # user profile
             results = []
@@ -352,7 +383,6 @@ class Recommend(APIView):
             index = []
             index.append(pk)
             user_df = pd.DataFrame(data=[t], columns = keys, index=index)
-
 
             # 해당 유저가 평가하지 않았고, 관심지역에 속하는 around의 모임
             favs_idx = [f.around.around_id for f in favs]
@@ -377,9 +407,137 @@ class Recommend(APIView):
                 })
             return Response(results, status=status.HTTP_200_OK)
         else:
-            # 유저가 관심지역에 남긴 평점이 15개 초과일 경우
+            print("else")
+            # 유저가 관심지역에 남긴 평점이 30개 초과일 경우
             # 혹은 관심지역에 대한 전체 평점의 갯수가 일정개수 이상일 경우
-            pass
+            results = []
+            arounds_in_favs = models.Favorite.objects.filter(around__address__contains=addr.split(" ")[0])
+            q = arounds_in_favs.values('user', 'around','score')
+            # item profile
+            raw = pd.DataFrame.from_records(q)
+            # print(raw.head())
+            re = getUserBaseData(pk, addr,raw,9)
+            for r in re:
+                arnd = models.Around.objects.get(pk=r)
+                cont = models.Contract.objects.filter(address=arnd.address).first()
+                results.append({
+                "num" : arnd.around_id,
+                "name" : arnd.address,
+                "image": cont.image,
+                "latitude":cont.latitude,
+                "longitude":cont.longitude,
+                "isLike": False
+                })
             
         return Response(results, status=status.HTTP_200_OK)
+
+
+class AddAround(APIView):
+    def getLatLong(self, addr):
+        apiKey = "KakaoAK d975a099d11c3a17c9bef6da9adef0ec"
+        headers = {
+        "Authorization":apiKey  }
+        params = {'query': addr}
+        response = requests.get('https://dapi.kakao.com/v2/local/search/address.json', headers=headers, params=params)
+        count = response.json()['meta']['total_count']
+        if count!=0:
+            res = response.json()
+            try:
+                y =res['documents'][0]['address']['y']
+                x = res['documents'][0]['address']['x']
+                return str(x)[:13], str(y)[:12]
+            except:
+                print(res)
+                return "ERROR","ERROR"
+        else :
+            return "NO","NO"
+
+    def get(self, request, format=None, *args, **kwargs):
+        addr = request.query_params.get("addr",None)
+      
+        if addr is None:
+            return Response("road address is required", status=status.HTTP_400_BAD_REQUEST)
+        arnd = models.Around.objects.filter(address=addr).first()
+        if arnd is None:
+            apiKey = "KakaoAK d975a099d11c3a17c9bef6da9adef0ec"
+            headers = {
+            "Authorization":apiKey
+            }
+            category = ['trans','comforts','education','medical','eatery','culture']
+            keywords = {'trans':['SW8'],
+            'comforts':['MT1','CS2'],
+            'education':['PS3','SC4','AC5'],
+            'medical':['HP8','PM9'],
+            'eatery':['FD6','CE7'],
+            'culture':['CT1','PO3']}
+            # 먼저 위도,경도 찾아야함
+            x, y = self.getLatLong(addr)
+            # print('-----')
+            # print(x)
+            # print(y)
+            # print('-----')
+            if x=="ERROR" or x=="NO":
+                try:
+                    results={}
+                    results['trans']=0
+                    results['comforts']=0
+                    results['education']=0
+                    results['medical']=0
+                    results['eatery']=0
+                    results['culture']=0
+                    results['address']=addr
+                    serializer = serializers.AroundSerializer(data=results)
+                    if serializer.is_valid():
+                        serializer.save()
+                        print("error saved")
+                except:
+                    pass
+                finally:
+                    return Response("no data & no Lat:Lon",status=status.HTTP_201_CREATED)
+                # return Response(x,status=status.HTTP_400_BAD_REQUEST)
+            
+            results={}
+            for c in category:
+                # print(c)
+                keyword = keywords[c]
+                sum_count = 0
+                for k in keyword:
+                    try:
+                        params = {'category_group_code': k, 'x':x,
+                            'y':y,'radius':1000,'page':1}
+
+                        response = requests.get('https://dapi.kakao.com/v2/local/search/category.json', headers=headers, params=params)
+                        # print(k)
+                        # print(response.json()['meta'])
+                        count = response.json()['meta']['total_count']
+
+                        sum_count += count
+                    except:
+                        print("API ERROR")
+                        break
+                results[c]=sum_count
+            results['address']=addr
+            print(results)
+            try:
+                serializer = serializers.AroundSerializer(data=results)
+                if serializer.is_valid():
+                    serializer.save()
+                    print("new Around Saved !")
+                return Response("no data but 내가 만들어찌 ㅎㅋ",status=status.HTTP_201_CREATED)
+            except:
+                results['trans']=0
+                results['comforts']=0
+                results['education']=0
+                results['medical']=0
+                results['eatery']=0
+                results['culture']=0
+                results['address']=addr
+                serializer = serializers.AroundSerializer(data=results)
+                if serializer.is_valid():
+                    serializer.save()
+                    print('category api')
+                return Response("no data & cate api error",status=status.HTTP_201_CREATED)
+        else:
+            return Response("already exists",status=status.HTTP_200_OK)
+
 

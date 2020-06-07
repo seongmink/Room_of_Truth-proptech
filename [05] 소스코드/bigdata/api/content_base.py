@@ -1,6 +1,4 @@
 import pandas as pd
-import surprise
-import numpy as np
 import os
 import sklearn
 from sklearn.metrics.pairwise import cosine_similarity
