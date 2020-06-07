@@ -36,9 +36,13 @@ urlpatterns = [
    # params : 없음
    path('arounds/<int:pk>/', views.ContractAround.as_view()),
 
+   path('favs/<int:pk>/', views.Favorites.as_view()),
+
 # -------------------------------------------------------------------
    # get [거래이력pk] : 거래 이력에 대한 가격 변동 그래프 출력
-   # params(필수) : detail=[mm,js,ws] -> 매매,전세,월세에 따른 그래프 결과값 넘겨줌
+   # params(필수) : 
+   # address=[검색할주소]
+   # detail=[mm,js,ws] -> 매매,전세,월세에 따른 그래프 결과값 넘겨줌
    path('charts/', views.ContractChart.as_view()),
    
    # get : 전체 around에서 상위 9개를 뽑아서 돌려줌(비회원 전용)
@@ -58,5 +62,7 @@ urlpatterns = [
 
    # get [유저pk] : 유저의 찜 평가 내용을 기반으로 추천 건물 뽑아서 돌려줌
    path('recommend/<int:pk>/', views.Recommend.as_view()),
+
+   path('around/', views.AddAround.as_view()),
     
 ]
