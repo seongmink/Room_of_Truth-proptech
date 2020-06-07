@@ -203,6 +203,15 @@ public class ContractController {
         return result;
     }
 
+    /**
+     * DB에 있는 데이터 Fabric 원장에 등록하기
+     */
+    @GetMapping("/dataTransfer")
+    @ApiOperation("원장에 데이터 등록하기 ~999")
+    public void dataTransfer(){
+        contractService.dataTransfer();
+    }
+
     // Channel Load
     @GetMapping("/loadchannel")
     @ApiOperation("채널 한번 로드하기")

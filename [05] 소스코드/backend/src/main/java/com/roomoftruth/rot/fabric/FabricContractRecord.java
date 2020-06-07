@@ -1,5 +1,6 @@
 package com.roomoftruth.rot.fabric;
 
+import com.roomoftruth.rot.domain.Contract;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,5 +33,25 @@ public class FabricContractRecord {
 	private String contract_date;	// 계약 날짜
 
 	public FabricContractRecord() {
+	}
+
+	public FabricContractRecord(Contract contract){
+		this.contract_id = "CONTRACT"+contract.getContractId();
+		this.address = contract.getAddress();
+		this.sd = contract.getSd();
+		this.sgg = contract.getSgg();
+		this.emd = contract.getEmd();
+		this.longitude = contract.getLongitude();
+		this.latitude = contract.getLatitude();
+		this.exclusive = contract.getExclusive();
+		this.floor = contract.getFloor();
+		this.ho = contract.getHo();
+		this.kind = contract.getKind();
+		this.detail = contract.getDetail();
+		this.cost = ""+contract.getCost();
+		this.monthly = contract.getMonthly();
+		this.license = contract.getLicense();
+		this.image = contract.getImage();
+		this.contract_date = ""+contract.getContractDate();
 	}
 }
