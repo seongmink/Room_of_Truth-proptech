@@ -1,5 +1,7 @@
 package com.roomoftruth.rot.domain;
 
+import com.roomoftruth.rot.fabric.FabricContractRecord;
+import com.roomoftruth.rot.fabric.FabricStatusRecord;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -67,5 +69,44 @@ public class Status {
         this.image = image;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    @Builder
+    public Status(FabricStatusRecord fabricStatusRecord){
+        this.statusId = Long.parseLong(fabricStatusRecord.getStatus_id());
+        this.address = fabricStatusRecord.getAddress();
+        this.sd = fabricStatusRecord.getSd();
+        this.sgg = fabricStatusRecord.getSgg();
+        this.emd = fabricStatusRecord.getEmd();
+        this.latitude = fabricStatusRecord.getLatitude();
+        this.longitude = fabricStatusRecord.getLongitude();
+        this.exclusive = fabricStatusRecord.getExclusive();
+        this.floor = fabricStatusRecord.getFloor();
+        this.ho = fabricStatusRecord.getHo();
+        this.category = fabricStatusRecord.getCategory();
+        this.detail = fabricStatusRecord.getDetail();
+        this.cost = Long.parseLong(fabricStatusRecord.getCost());
+        this.license = fabricStatusRecord.getLicense();
+        this.image = ""+fabricStatusRecord.getImage();
+        int year = this.startDate.getYear();
+        int month = this.startDate.getMonthValue();
+        int day = this.startDate.getDayOfMonth();
+        this.startDate = LocalDate.of(year, month, day);
+        year = this.endDate.getYear();
+        month = this.endDate.getMonthValue();
+        day = this.endDate.getDayOfMonth();
+        this.endDate = LocalDate.of(year, month, day);
     }
 }

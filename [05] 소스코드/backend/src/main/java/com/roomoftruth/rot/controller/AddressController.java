@@ -21,9 +21,7 @@ public class AddressController {
 	@GetMapping("/address/{keyword}")
 	@ApiOperation("주소 검색")
 	public List<AddressResponseDto> getAddress(@PathVariable String keyword) {
-//		log.info("AddressController : getAddress / {}", keyword);
 
 		return addressService.getAddress(keyword);
 	}
-
 }

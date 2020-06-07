@@ -15,9 +15,17 @@ public class FileController {
 
 	public final FileUploadService fileUploadService;
 
+	/**
+	 *
+	 * @param image
+	 * @param flag
+	 * @param num
+	 * @return ConvertedImageName
+	 * @throws Exception
+	 */
 	@PostMapping("/upload")
 	@ResponseBody
-	public String imageUpload(@RequestParam MultipartFile image, @RequestParam int flag, int num) throws Exception {
+	public String imageUpload(@RequestParam MultipartFile image, @RequestParam int flag, @RequestParam int num) throws Exception {
 		log.info("FileController : imageUpload");
 
 		if(!image.getContentType().contains("image")) {
