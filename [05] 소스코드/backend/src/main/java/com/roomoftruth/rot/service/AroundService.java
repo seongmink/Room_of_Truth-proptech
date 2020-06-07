@@ -16,4 +16,9 @@ public class AroundService {
     public List<Around> findAllAddress(String key){
         return aroundRepository.findByAddressContaining(key);
     }
+
+
+    public Long findByAddress(String addr){
+        return aroundRepository.findByAddress(addr);
+    }
 }

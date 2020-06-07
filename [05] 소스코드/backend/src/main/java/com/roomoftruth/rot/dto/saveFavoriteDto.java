@@ -1,6 +1,5 @@
 package com.roomoftruth.rot.dto;
 
-import com.roomoftruth.rot.domain.Agent;
 import com.roomoftruth.rot.domain.Around;
 import com.roomoftruth.rot.domain.Favorite;
 import com.roomoftruth.rot.domain.User;
@@ -10,16 +9,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class FavoriteSaveRequestDto {
-
-    private long aroundId;
-    private long userNum;
+public class saveFavoriteDto {
+    private String address;
+    private long userId;
     private int score;
 
     @Builder
-    public FavoriteSaveRequestDto(long aroundId, long userNum, int score) {
-        this.aroundId = aroundId;
-        this.userNum = userNum;
+    public saveFavoriteDto(String address, long userId, int score) {
+        this.address = address;
+        this.userId = userId;
         this.score = score;
     }
 

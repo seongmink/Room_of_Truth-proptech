@@ -34,6 +34,7 @@ public class ContractController {
     private final AroundService aroundService;
     private final IFabricCCService iFabricCCService;
     private final AgentService agentService;
+    private final FavoriteService favoriteService;
 
     static long contract_idx = 162836;
 
@@ -216,6 +217,17 @@ public class ContractController {
             statusOne.setType("상태이력");
 
             result.add(statusOne);
+        }
+
+        for (int i = 0; i < result.size(); i++){
+            long temp = 0;
+            String addr = result.get(i).getAddress();
+            Long aroundId = aroundService.findByAddress(addr);
+            long score = favoriteService.findByAroundId(aroundId);
+
+            if(score > 0)
+                temp = score;
+            result.get(i).setIsLike(String.valueOf(temp));
         }
 
         Collections.sort(result, new Comparator<FabricResponseDto>() {
