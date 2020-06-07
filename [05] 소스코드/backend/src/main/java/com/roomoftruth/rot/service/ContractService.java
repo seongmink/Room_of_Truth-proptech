@@ -2,6 +2,8 @@ package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.dto.*;
+import com.roomoftruth.rot.fabric.FabricContractRecord;
+import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.repository.ContractDetailsResponseDtoRepository;
 import com.roomoftruth.rot.repository.ContractFindLocationDtoRepository;
 import com.roomoftruth.rot.repository.ContractFindResponseRepository;
@@ -25,6 +27,7 @@ public class ContractService {
     private final ContractFindResponseRepository contractFindResponseRepository;
     private final ContractFindLocationDtoRepository contractFindLocationDtoRepository;
     private final StatusService statusService;
+    private final IFabricCCService iFabricCCService;
 
     /**
      * 1. 계약 이력 등록하기
@@ -179,6 +182,16 @@ public class ContractService {
             }
         }
         return result;
+    }
+
+    public void dataTransfer(){
+        List<Contract> data = contractRepository.dataTransfer();
+        System.out.println(data.size());
+        for(int i = 0; i < data.size(); i++){
+            Contract temp = data.get(i);
+            FabricContractRecord record = new FabricContractRecord(temp);
+            iFabricCCService.registerContract(record);
+        }
     }
 
     @Data

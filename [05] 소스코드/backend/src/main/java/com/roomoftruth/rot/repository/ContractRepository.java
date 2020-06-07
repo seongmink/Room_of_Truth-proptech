@@ -22,4 +22,6 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     List<Contract> findAllByAddressContaining(String key);
 
+    @Query(value = "select * from contract where contract_id > 10000 AND contract_id <= 15000", nativeQuery = true)
+    List<Contract> dataTransfer();
 }

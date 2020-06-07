@@ -204,8 +204,6 @@ public class FabricCCService implements IFabricCCService {
 
 	@Override
 	public boolean registerContract(FabricContractRecord fc) {
-		logger.info("Request Regist Contract :" + fc.toString());
-
 		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
 		TransactionProposalRequest tpr = hfClient.newTransactionProposalRequest();
 
