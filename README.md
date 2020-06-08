@@ -6,7 +6,7 @@
 - Team
 - Getting Started
 - Rule
-- Design
+- Architecture
 - Project Schedule
 - Docs
 
@@ -24,7 +24,7 @@
   - Vue.js
 
 - Back-End
-  - Spring-Boot
+  - IntelliJ - Open
 
 ## Rule
 
@@ -89,9 +89,9 @@
     Rename login_info to loginInfo
     ```
 
-## Design
+## Architecture
 
-![ERD](./image/ERD.png)
+![ERD](./image/architecture.png)
 
 
 ## Project Schedule
