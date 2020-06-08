@@ -20,4 +20,7 @@ public interface AgentRepository extends JpaRepository<Agent, Long>{
 
     @Query(nativeQuery = true, value = "update agent set count = count + 1, point = point + 10 where license = ?1")
     void pointUp(String license);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM agent WHERE license = ?1")
+    Agent findByLicense(String license);
 }
