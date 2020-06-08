@@ -16,8 +16,8 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long>{
     @Query(nativeQuery = true, value = "SELECT * FROM favorite WHERE user_num = :num")
     List<Favorite> getAllByUserNum(long num);
 
-    @Query(nativeQuery = true, value = "select AVG(score) from favorite where around_around_Id = ?1")
-    int findByAroundId(Long aroundId);
+    @Query(nativeQuery = true, value = "select AVG(score) from favorite where around_around_id = ?1")
+    long findByAroundId(Long aroundId);
 
     @Query(nativeQuery = true, value = "select * from favorite where around_around_id = ?1 AND user_num = ?2")
     Favorite findByAroundAnduserNum(long aroundId, long userNum);
@@ -25,4 +25,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long>{
     @Modifying
     @Query(nativeQuery = true, value = "update favorite set score = ?1 where around_around_id = ?2 AND user_num = ?3")
     int updateScore(int score, long aroundId, long userNum);
+
+    @Query(nativeQuery = true, value = "select score from favorite where around_around_id = ?1 limit 1")
+    String findByAroundIdInFavorite(long aroundId);
 }

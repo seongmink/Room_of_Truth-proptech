@@ -20,7 +20,6 @@ public class FabricStatusRecord {
     private String emd; // 읍면동
     private String longitude; // 경도
     private String latitude; // 위도
-    private String exclusive; // 전용 면적
     private String floor; // 층
     private String ho; // 호
     private String category;    // 유지보수 내용
@@ -28,6 +27,7 @@ public class FabricStatusRecord {
     private String cost; // 비용
     private String license;	// 공인중개사 번호
     private String image;	// 이미지
+    private String exclusive;   // 전용 면적
     private String start_date;	// 시작 날짜
     private String end_date;    // 종료 날짜
 
@@ -45,7 +45,6 @@ public class FabricStatusRecord {
         this.emd = statusSaveRequestDto.getEmd();
         this.longitude = statusSaveRequestDto.getLongitude();
         this.latitude = statusSaveRequestDto.getLatitude();
-        this.exclusive = statusSaveRequestDto.getExclusive();
         this.floor = statusSaveRequestDto.getFloor();
         this.ho = statusSaveRequestDto.getHo();
         this.category = statusSaveRequestDto.getCategory();
@@ -53,6 +52,7 @@ public class FabricStatusRecord {
         this.cost = ""+statusSaveRequestDto.getCost();
         this.license = statusSaveRequestDto.getLicense();
         this.image = statusSaveRequestDto.getImage();
+        this.exclusive = statusSaveRequestDto.getExclusive();
         this.start_date = statusSaveRequestDto.getStart_date();
         this.end_date = statusSaveRequestDto.getEnd_date();
     }
@@ -65,7 +65,6 @@ public class FabricStatusRecord {
         this.emd = status.getEmd();
         this.longitude = status.getLongitude();
         this.latitude = status.getLatitude();
-        this.exclusive = status.getExclusive();
         this.floor = status.getFloor();
         this.ho = status.getHo();
         this.category = status.getCategory();
@@ -73,6 +72,7 @@ public class FabricStatusRecord {
         this.cost = ""+status.getCost();
         this.license = status.getLicense();
         this.image = status.getImage();
+        this.exclusive = status.getExclusive();
         this.start_date = ""+status.getStartDate();
         this.end_date = ""+status.getEndDate();
     }

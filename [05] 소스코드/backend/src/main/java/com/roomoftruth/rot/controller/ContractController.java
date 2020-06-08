@@ -12,8 +12,6 @@ import com.roomoftruth.rot.util.AddressChangeUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,7 +35,7 @@ public class ContractController {
     private final AgentService agentService;
     private final FavoriteService favoriteService;
 
-    static long contract_idx = 162835;
+    static long contract_idx = 162836;
 
     /**
      *
@@ -159,8 +157,8 @@ public class ContractController {
         String address = request.getAddress();
         String floor = request.getFloor();
         String ho = request.getHo();
-        contracts = contractService.findAllByAddressAndFloorAndHo(address, floor, ho);
 
+        contracts = contractService.findAllByAddressAndFloorAndHo(address, floor, ho);
         statuses = statusService.findAllByAddressAndFloorAndHo(address, floor, ho);
 
         List<FabricResponseDto> result = new ArrayList<>();
@@ -171,11 +169,13 @@ public class ContractController {
 
             fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + contracts.get(i).getContractId());
 
+            System.out.println(fabricContractRecord.toString());
+
             contractOne.setContractId(fabricContractRecord.getContract_id());
             contractOne.setAddress(fabricContractRecord.getAddress());
-            contractOne.setSd(fabricContractRecord.getSd());
-            contractOne.setSgg(fabricContractRecord.getSgg());
-            contractOne.setEmd(fabricContractRecord.getEmd());
+//            contractOne.setSd(fabricContractRecord.getSd());
+//            contractOne.setSgg(fabricContractRecord.getSgg());
+//            contractOne.setEmd(fabricContractRecord.getEmd());
             contractOne.setLongitude(fabricContractRecord.getLongitude());
             contractOne.setLatitude(fabricContractRecord.getLatitude());
             contractOne.setExclusive(fabricContractRecord.getExclusive());
@@ -188,7 +188,7 @@ public class ContractController {
             contractOne.setLicense(fabricContractRecord.getLicense());
             contractOne.setImage(fabricContractRecord.getImage());
             contractOne.setContractDate(fabricContractRecord.getContract_date());
-            contractOne.setType("거래이력");
+//            contractOne.setType("거래이력");
 
             result.add(contractOne);
         }
@@ -199,11 +199,13 @@ public class ContractController {
 
             fabricStatusRecord = iFabricCCService.queryStatus("STATUS" + statuses.get(i).getStatusId());
 
+            System.out.println(fabricStatusRecord.toString());
+
             statusOne.setContractId(fabricStatusRecord.getStatus_id());
             statusOne.setAddress(fabricStatusRecord.getAddress());
-            statusOne.setSd(fabricStatusRecord.getSd());
-            statusOne.setSgg(fabricStatusRecord.getSgg());
-            statusOne.setEmd(fabricStatusRecord.getEmd());
+//            statusOne.setSd(fabricStatusRecord.getSd());
+//            statusOne.setSgg(fabricStatusRecord.getSgg());
+//            statusOne.setEmd(fabricStatusRecord.getEmd());
             statusOne.setLongitude(fabricStatusRecord.getLongitude());
             statusOne.setLatitude(fabricStatusRecord.getLatitude());
             statusOne.setFloor(fabricStatusRecord.getFloor());
@@ -216,22 +218,32 @@ public class ContractController {
             statusOne.setExclusive(fabricStatusRecord.getExclusive());
             statusOne.setContractDate(fabricStatusRecord.getStart_date());
             statusOne.setEndDate(fabricStatusRecord.getEnd_date());
-            statusOne.setType("상태이력");
+//            statusOne.setType("상태이력");
 
             result.add(statusOne);
         }
 
+
         for (int i = 0; i < result.size(); i++){
             long temp = 0;
             String addr = result.get(i).getAddress();
+            System.out.println("========== 시작 =============");
             Long aroundId = aroundService.findByAddress(addr);
-            long score = favoriteService.findByAroundId(aroundId);
+            System.out.println("ID : " + aroundId);
+            System.out.println("around clear !!!");
+
+            long score = 0;
+            if(favoriteService.findByAroundIdInFavorite(aroundId) != null){
+                score = favoriteService.findByAroundId(aroundId);
+                System.out.println(" ------- favorie clear !!! --------");
+            }
 
             if(score > 0)
                 temp = score;
             result.get(i).setIsLike(String.valueOf(temp));
         }
 
+        System.out.println("--- sort 시작 ----");
         Collections.sort(result, new Comparator<FabricResponseDto>() {
 
             @Override
@@ -243,7 +255,7 @@ public class ContractController {
         for (int i = 0; i < result.size(); i++) {
             System.out.println(result.get(i).toString());
         }
-
+        System.out.println("result Size :  " + result.size());
         return result;
     }
 
@@ -259,6 +271,22 @@ public class ContractController {
         contractService.dataTransfer(startIndex, endIndex);
     }
 
+
+    @PostMapping("/contract/confirm")
+    @ApiOperation("계약 이력 상세 정보 확인")
+    public Object getBuildingDetail(@RequestParam("type") int type, @RequestParam("num") long num) throws IOException {
+        System.out.println("POST : /api/contract/confirm ");
+        if (type == 0) {
+            FabricContractRecord fabricContractRecord = new FabricContractRecord();
+            fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + num);
+            return fabricContractRecord;
+        } else {
+            FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();
+            fabricStatusRecord = iFabricCCService.queryStatus("STATUS" + num);
+            StatusConfirmDto statusConfirmDto = new StatusConfirmDto(fabricStatusRecord);
+            return statusConfirmDto;
+        }
+    }
 
     /**
      *

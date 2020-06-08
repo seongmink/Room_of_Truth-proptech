@@ -6,6 +6,7 @@ import com.roomoftruth.rot.fabric.FabricContractRecord;
 import com.roomoftruth.rot.fabric.FabricStatusRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.jwt.JwtService;
+import com.roomoftruth.rot.service.AgentService;
 import com.roomoftruth.rot.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

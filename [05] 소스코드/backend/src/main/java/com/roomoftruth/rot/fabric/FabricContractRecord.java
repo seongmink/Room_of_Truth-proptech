@@ -1,6 +1,7 @@
 package com.roomoftruth.rot.fabric;
 
 import com.roomoftruth.rot.domain.Contract;
+import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.dto.ContractSaveRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
