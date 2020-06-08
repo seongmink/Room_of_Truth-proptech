@@ -33,6 +33,7 @@ public class AgentController {
     public String checkAgentLicense(@RequestParam String license) {
         log.info("AgentController : checkAgentLicense / {}", license);
 
+<<<<<<< HEAD
 //		if(!(license.equals("대전-SSAFY-001") || license.equals("대전-SSAFY-002") ||
 //				license.equals("대전-SSAFY-003") || license.equals("대전-SSAFY-004") ||
 //				license.equals("대전-SSAFY-005"))) {
@@ -90,6 +91,100 @@ public class AgentController {
     public Object getAgentContributionDetail(@PathVariable(value = "type") int type, @PathVariable long num) {
         System.out.println("POST : /api/agent/contribution/detail/{type}/{num}");
         // 계약 = 0, 상태 = 1
+=======
+		return agentService.checkAgentLicense(license);
+	}
+
+	@PostMapping("/agent")
+	@ApiOperation("공인중개사 등록")
+	public String createAgent(@RequestBody AgentSaveRequestDto requestDto) {
+		log.info("AgentController : createAgent / {}", requestDto.getUserNum());
+
+		agentService.save(requestDto);
+
+		User user = userService.findByNum(requestDto.getUserNum());
+		UserResponseDto userResponseDto = new UserResponseDto(user);
+
+		String jwt = jwtService.create("user", userResponseDto, "user");
+
+		return jwt;
+	}
+
+	@GetMapping("/agent/ranking")
+	@ApiOperation("랭킹 가져오기")
+	public List<AgentRankingResponseDto> getRanking() {
+		log.info("AgentController : getRanking");
+
+		agentService.updateRanking();
+
+		return agentService.getRanking();
+	}
+
+	@GetMapping("/agent/detail/{num}")
+	@ApiOperation("공인중개사 상세 조회")
+	public AgentDetailResponseDto getAgentDetail(@PathVariable long num) {
+		log.info("AgentController : getAgentDetail");
+
+		return agentService.getAgentDetail(num);
+	}
+
+
+	@GetMapping("/agent/contribution/{num}")
+	@ApiOperation("공인중개사가 등록한 건물 조회")
+	public List<ContributionResponseDto> getAgentContribution(@PathVariable long num) {
+		log.info("AgentController : getAgentContribution");
+
+		return agentService.getAgentContribution(num);
+	}
+
+//	@GetMapping("/agent/contribution/detail/{type}/{num}")
+//	@ApiOperation("공인중개사가 등록한 건물 조회")
+//	public Building getAgentContributionDetail(@PathVariable(value = "type") int type, @PathVariable long num) {
+//		logger.info("POST : /api/agent/contribution/detail/{type}/{num}");
+//		// 계약 = 0, 상태 = 1
+//
+//		Building bd = new Building();
+//
+//		if(type == 0) {
+//			FabricRecord fb = new FabricRecord();
+//			fb = fabricService.query("BB" + num);
+//
+//			// fb를 bd로 데이터 복사
+//			bd.setNum(fb.getNum());
+//			bd.setAddress(fb.getAddress());
+//			bd.setDong(fb.getDong());
+//			bd.setHo(fb.getHo());
+//			bd.setLatitude(fb.getLatitude());
+//			bd.setLongitude(fb.getLongitude());
+//			bd.setSupply(fb.getSupply());
+//			bd.setExclusive(fb.getExclusive());
+//			bd.setDetails(fb.getDetails());
+//			bd.setCost(fb.getCost());
+//			bd.setStartDate(fb.getStartDate());
+//			bd.setEndDate(fb.getEndDate());
+//			bd.setName(fb.getName());
+//			bd.setLicense(fb.getLicense());
+//			bd.setImage("images/" + fb.getImage());
+//			bd.setType("거래");
+//
+//			// 빈 데이터에 대한 에러처리
+//			if (bd.getEndDate().equals("-")) {
+//				bd.setEndDate("");
+//			}
+//
+//			if (bd.getDong().equals("-")) {
+//				bd.setDong("");
+//			}
+//
+//			if (bd.getHo().equals("-")) {
+//				bd.setHo("");
+//			}
+//		}
+//
+//		return(bd);
+//	}
+//}
+>>>>>>> e1589b0b6063c26a526a4d308e0145621c36ddfa
 
         if (type == 0) {
             FabricContractRecord fabricContractRecord = new FabricContractRecord();
