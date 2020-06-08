@@ -6,7 +6,7 @@
             <!-- <p style="text-align:center; font-size:60px">궁금하세요?</p> -->
              
             <br>
-            <p style="text-align:center; font-size:25px" >하이퍼레저 패브릭을 이용한 부동산 이력 조회</p>
+            <p style="text-align:center; font-size:25px" >하이퍼레저 패브릭을 이용한 부동산 이력 조회 및 추천서비스</p>
             <p style="text-align:center; font-size:20px; color:#00c03f;  font-weight: bold "> “진실의 방은 신뢰성 있는 내역을 제공합니다”</p>
      
         </div>
@@ -47,13 +47,12 @@
                 </b-list-group>
 
                 <b-list-group v-if="keywordopen" style="margin-top:5px;">
-                    <b-list-group-item v-if="keyword==null || keyword.length==0" button="button" disabled="disabled">시도명 + 시군구명 + 도로명을 입력해주세요!</b-list-group-item>
+                    <b-list-group-item v-if="keyword==null || keyword.length==0" button="button" disabled="disabled">시도명 + 시군구명을 입력해주세요!</b-list-group-item>
                     <b-list-group-item class="click" v-for="(item,index) in keyword" :key="index" v-text="item.roadAddress" @click="select2(index)" button="button"></b-list-group-item>
                 </b-list-group>
                 <button class="styled__SearchBtn-sc-10v4ocj-6 kvrxoz" @click="searches(search)">방 찾기</button>
             </div>
-            <MainRecommendation :data="rdata"></MainRecommendation>
-            <!-- <MostVisitedPlaces  :data="data"></MostVisitedPlaces> -->
+            <MainRecommendation :data="rdata" style="margin-bottom:-50px;"></MainRecommendation>
             <MostVisitedPlaces  :data="data"></MostVisitedPlaces>
             <hr/>
             <div class="context" style="margin:auto; ">
@@ -98,7 +97,7 @@ import { getRankInfo } from "../../api/user.js";
 import VueDaumMap from 'vue-daum-map' 
 import { getData } from "../../api/item.js";
 import { getUserData } from "../../api/item.js";
-
+import {mapState} from 'vuex';
 export default {
     props: ['layout'],
     data() {
@@ -137,33 +136,51 @@ export default {
             ],
             keyword: null,
             rdata:null,
+        
         }
     },
     created() {
-
+ 
         //메인에서 랭킹데이터불러오기
         getRankInfo(response => {
-            console.log(response.data)
+         
             this.data = response.data;
         })
 
         //메인에 추천할 데이터 불러오기
 		if(this.$store.state.userInfo==null){
 			getData(response => {
-				console.log("로그인을 안한상태의 메인추천데이터")
-				console.log(response)
+			
 				this.rdata = response
 					
 			});
+        }else{
+
+            //로그인할때 추천데이터 불러오기(num값 넘기기)
+            getUserData(this.$store.state.userInfo.num, response => {
+     
+                    this.rdata=[]
+                 
+
+                    for(var i=0; i<3; i++){
+                        
+                        this.rdata.push(response.ages[i])
+                    }
+                 
+                    for(var i=0; i<3; i++){
+                    
+                        this.rdata.push(response.genders[i])
+                    }
+                    for(var i=0; i<3; i++){
+                        
+                        this.rdata.push(response.categorys[i])
+                    }
+                   
+               
+                        
+            });
         }
 
-        //로그인할때 추천데이터 불러오기(num값 넘기기)
-        getUserData(1, response => {
-				console.log("로그인완료하여 메인추천데이터 가져오기")
-				console.log(response)
-				//this.rdata = response
-					
-		});
         
     },
     components: {
@@ -172,7 +189,41 @@ export default {
         MainRecommendation,
     },
     watch: {
-       
+      userInfo:function(hook){
+          if(hook==null){
+              getData(response => {
+			
+              
+				this.rdata = response
+					
+			});
+
+          }else{
+              
+              //로그인할때 추천데이터 불러오기(num값 넘기기)
+            getUserData(this.$store.state.userInfo.num, response => {
+               
+                    this.rdata=[]
+                 
+
+                    for(var i=0; i<3; i++){
+                        
+                        this.rdata.push(response.ages[i])
+                    }
+                   
+                    for(var i=0; i<3; i++){
+                    
+                        this.rdata.push(response.genders[i])
+                    }
+                    for(var i=0; i<3; i++){
+                        
+                        this.rdata.push(response.categorys[i])
+                    }
+                   
+                        
+            });
+          }
+       },
     },
     mounted() {},
     methods: {
@@ -181,7 +232,7 @@ export default {
                 this.listopen = true;
                 if (this.$store.state.userInfo != null) {
                     getAddress(this.$store.state.userInfo.num, response => {
-                        console.log(response.data)
+                    
                         this.selected = response.data;
                     })
                 } else {
@@ -248,26 +299,30 @@ export default {
 
             }
             searchAddress(keyword, n, response => {
-                //console.log(response)
+       
+       
             })
             //최근검색 추가 끝
 
-            this.$router.push({name : 'Search', query:{
+            this.$router.push({name : 'AddressSearch', query:{
 				search: this.search
 			}});
             }
           
         },
         deletes(id) {
-            //console.log("지울거 : " + keyword)
+           
             deleteKeyword(id, response => {
-                //console.log(response)
+           
                 if (response.data == "success") {
                     this.search = '';
                 }
             })
         }
-    }
+    },
+     computed: {
+	  ...mapState(['userInfo']),
+   },
 };
 </script>
 

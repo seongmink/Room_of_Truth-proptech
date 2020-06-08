@@ -13,7 +13,7 @@
 
                <div class="mb-4">
                     <div style="margin-top:60px;">
-                        <div v-if="datadetail.statekind==null" style="border:1px solid #EAEAEA">
+                        <div v-if="datadetail!=null&&datadetail.category==null" style="border:1px solid #EAEAEA">
                         <div style="margin-top:30px;">
                             <h4 class="mb-3">{{datadetail.contractedAt}}</h4>
                             <div style="margin-top:-20px; margin-bottom:50px">
@@ -22,7 +22,7 @@
                         </div>
                         <div style="">
                             <div style="float:left; margin-right:15px; margin-left:25px">
-                                <img :src="datadetail.image"  style="width:375px;height:295px;margin-bottom:20px"/>
+                                <img :src="url+datadetail.image"  style="width:375px;height:295px;margin-bottom:20px"/>
                             </div>
                             <div>
                                 <b-input-group prepend="주소" class="mt-3" style="width:350px;">
@@ -71,16 +71,16 @@
                             </div> 
                         </div>  
                         </div>
-                        <div v-else style="border:1px solid #EAEAEA">
+                        <div v-if="datadetail!=null&&datadetail.category!=null" style="border:1px solid #EAEAEA">
                             <div style="margin-top:30px;">
-                            <h4 class="mb-3">{{datadetail.firstdate}} ~ {{datadetail.enddate}}</h4>
+                            <h4 class="mb-3">{{datadetail.startDate}} ~ {{datadetail.endDate}}</h4>
                             <div style="margin-top:-20px;margin-bottom:50px;">
                                <h3><span style="background-color:#B2CCFF; color:#1428A0;" class="badge badge-pill badge-danger text-uppercase">상태이력</span> </h3>
                             </div>
                         </div>
                         <div style="">
                             <div style="float:left; margin-right:15px; margin-left:25px">
-                                <img :src="datadetail.image"  style="width:375px;height:295px;margin-bottom:20px"/>
+                                <img :src="url+datadetail.image"  style="width:375px;height:295px;margin-bottom:20px"/>
                             </div>
                             <div>
                                 <b-input-group prepend="주소" class="mt-3" style="width:350px;">
@@ -95,7 +95,7 @@
                             </div>
 
 					        <b-input-group prepend="상태분류" class="mt-3" style="width:170px; margin-right:10px; float:left;">
-   			                    <b-form-input readonly style="background-color:white;text-align:center" v-model="datadetail.statekind"></b-form-input>
+   			                    <b-form-input readonly style="background-color:white;text-align:center" v-model="datadetail.category"></b-form-input>
   		                    </b-input-group>
 
                             <b-input-group prepend="비용" append="만원" class="mt-3" style="width:170px; margin-right:10px;">
@@ -131,9 +131,10 @@
 </template>
 
 <script>
-import {getUserBlockDetail} from "../../api/item.js";
+import {getUserBlockDetails} from "../../api/item.js";
 import { getUrl } from "../../api/index.js";
 import TitleBar from '../common/TitleBar';
+import { addAround } from "../../api/item.js";
 export default {
    
   components:{
@@ -144,20 +145,7 @@ export default {
         
         num:'',
         type:'',
-        datadetail:{
-               address : '군산시 서수면 마룡리 993-22',
-			    image : 'static/b1.jpg',
-			    floor : '1',
-			    ho : '201',
-			    exclusive : '103',
-			    detail : '전세',
-			    cost : '3000',
-			    license : 'SSAFY-대전-001',
-			    kind : '아파트',
-			    monthly : '30',
-			    contractedAt : '2020-05-21'
-
-            },
+        datadetail:null,
         url:'',
 
 
@@ -174,12 +162,15 @@ export default {
       if(this.type==0){
          this.type=null;
       }
-    //   getUserBlockDetail(this.num, this.type, responses=>{
-             
-    //      this.datadetail = responses.data;  
+      getUserBlockDetails(this.num, this.type, responses=>{
+
+         this.datadetail = responses.data;  
       
+                addAround(this.datadetail.address, responses=>{
+               
+                })
                 
-    //   })
+      })
     
    },
    mounted() {

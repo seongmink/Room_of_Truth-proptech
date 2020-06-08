@@ -99,7 +99,7 @@
 
                            <div style="display: inline-block;">
                               <b-input-group prepend="공인중개사 번호"  class="mt-3" style="width:670px; ">
-   			                     <b-form-input  style="text-align:center" v-model="agentnum" ></b-form-input>
+   			                     <b-form-input readonly style="text-align:center" v-model="agentnum" ></b-form-input>
   		                        </b-input-group>
                            </div>
                         </div>
@@ -171,7 +171,7 @@
   		                        </b-input-group>
                               <div style="margin-top:25px; margin-bottom:20px;">
                                  <b-input-group prepend="공인중개사 번호"  class="mt-3" style="width:670px; ">
-   			                        <b-form-input style="text-align: center;" v-model="agentnum" ></b-form-input>
+   			                        <b-form-input readonly style="text-align: center;" v-model="agentnum" ></b-form-input>
   		                           </b-input-group>
                               </div>
                            </div>
@@ -247,6 +247,7 @@ import { addStateBuliding } from "../../api/item.js";
 import {mapState} from 'vuex';
 import VueGoogleAutocomplete from 'vue-google-autocomplete'
 import TitleBar from '../common/TitleBar';
+
 
 export default {
    
@@ -419,7 +420,7 @@ export default {
                   "kind" : this.bselecteds,
                   "cost" : this.cost,
                   "monthly" : this.monthcost,
-                  "contract_date" : this.date,
+                  "contractDate" : this.date,
                   "file" :  this.file,
                   "image" :  this.file,
                   "latitude" : this.la,   
@@ -432,10 +433,12 @@ export default {
                   }
                   var n = '';
                   addBuliding(info,responses => {
+                     
+                    
                      n = responses.data
-                     console.log(responses.data)
+                
                   });
-                  // console.log(info)
+           
                   
                   this.show = true;
                    setTimeout(() => {
@@ -456,7 +459,7 @@ export default {
                   "ho" : this.address3,
                   "category" : this.stateselecteds,
                   "cost" : this.cost,
-                  "report_date" : this.date,
+                  "start_date" : this.statedate,
                   "end_date" : this.statedate,
                   "detail" : this.detail,
                   "file" :  this.file,
@@ -468,15 +471,16 @@ export default {
                   if(this.file!=null){
                      info.image = this.file.name;
                   }
-                  console.log(info)
+                 
                    var n = '';
                   
                    addStateBuliding(info,responses => {
                       
                        n = responses.data
-                       console.log(responses.data)
+                      
                   });
-                
+
+                  
                   this.show = true;
                    setTimeout(() => {
                       alert("등록이 완료되었습니다.")
