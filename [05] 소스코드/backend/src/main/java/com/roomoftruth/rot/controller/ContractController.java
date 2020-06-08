@@ -69,9 +69,11 @@ public class ContractController {
 
         String PK = "CONTRACT" + contract_idx;
 
+        System.out.println("-- 요청 requestDto : " + contractSaveRequestDto.toString());
         FabricContractRecord fabricContractRecord = new FabricContractRecord(contractSaveRequestDto);
         fabricContractRecord.setContract_id(PK);
 
+        System.out.println("-- 넣기 직전 : " + fabricContractRecord);
         boolean result = iFabricCCService.registerContract(fabricContractRecord);
 
         if (result == true) {
