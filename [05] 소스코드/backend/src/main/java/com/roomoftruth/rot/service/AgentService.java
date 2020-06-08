@@ -28,6 +28,21 @@ public class AgentService {
 	private final ContractRepository contractRepository;
 	private final StatusRepository statusRepository;
 
+	public String checkAgentLicense(String license) {
+
+		Agent agent = agentRepository.findByLicense(license);
+
+		if(agent != null) { // 없으면 등록 가능
+			if(license.equals("SSAFY-대전-006")) {
+				return "success";
+			}
+			return "failed";
+//			return "success";
+		}
+
+		return "failed";
+	}
+
 	@Transactional
 	public Long save(AgentSaveRequestDto requestDto) {
 
