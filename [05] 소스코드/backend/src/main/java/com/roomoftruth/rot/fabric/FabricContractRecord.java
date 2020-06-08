@@ -60,7 +60,7 @@ public class FabricContractRecord {
 		this.monthly = contractSaveRequestDto.getMonthly();
 		this.license = contractSaveRequestDto.getLicense();
 		this.image = contractSaveRequestDto.getImage();
-		this.contract_date = ""+ LocalDate.now();
+		this.contract_date = contractSaveRequestDto.getContractDate();
 	}
 
 	public FabricContractRecord(Contract contract){

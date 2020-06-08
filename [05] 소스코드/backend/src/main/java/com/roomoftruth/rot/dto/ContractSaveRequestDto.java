@@ -2,10 +2,13 @@ package com.roomoftruth.rot.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import javax.validation.constraints.NotEmpty;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class ContractSaveRequestDto {
     @NotEmpty
     private String address;
@@ -26,9 +29,14 @@ public class ContractSaveRequestDto {
     @NotEmpty
     private String license;
     private String image;
+    private String contractDate;
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public void setContractDate(String contractDate) {
+        this.contractDate = contractDate;
     }
 
     public void setSd(String sd) {
@@ -47,24 +55,4 @@ public class ContractSaveRequestDto {
         this.monthly = monthly;
     }
 
-    @Override
-    public String toString() {
-        return "ContractSaveRequestDto{" +
-                ", address='" + address + '\'' +
-                ", sd='" + sd + '\'' +
-                ", sgg='" + sgg + '\'' +
-                ", emd='" + emd + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", exclusive='" + exclusive + '\'' +
-                ", floor='" + floor + '\'' +
-                ", ho='" + ho + '\'' +
-                ", kind='" + kind + '\'' +
-                ", detail='" + detail + '\'' +
-                ", cost=" + cost +
-                ", monthly='" + monthly + '\'' +
-                ", license='" + license + '\'' +
-                ", image='" + image + '\'' +
-                '}';
-    }
 }

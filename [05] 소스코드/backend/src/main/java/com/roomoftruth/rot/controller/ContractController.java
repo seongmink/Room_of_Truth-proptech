@@ -35,7 +35,7 @@ public class ContractController {
     private final AgentService agentService;
     private final FavoriteService favoriteService;
 
-    static long contract_idx = 162836;
+    static long contract_idx = 162842;
 
     /**
      *
@@ -103,7 +103,6 @@ public class ContractController {
         List<Around> allAddress = aroundService.findAllAddress(key);
 
         List<ContractFindLocationDto> result = contractService.findContractLocations(key);
-
         return result;
     }
 
@@ -210,7 +209,7 @@ public class ContractController {
             statusOne.setLatitude(fabricStatusRecord.getLatitude());
             statusOne.setFloor(fabricStatusRecord.getFloor());
             statusOne.setHo(fabricStatusRecord.getHo());
-            statusOne.setKind(fabricStatusRecord.getCategory());
+            statusOne.setCategory(fabricStatusRecord.getCategory());
             statusOne.setDetail(fabricStatusRecord.getDetail());
             statusOne.setCost(fabricStatusRecord.getCost());
             statusOne.setLicense(fabricStatusRecord.getLicense());
