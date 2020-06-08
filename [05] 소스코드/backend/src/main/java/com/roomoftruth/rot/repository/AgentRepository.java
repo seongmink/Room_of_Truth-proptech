@@ -2,6 +2,7 @@ package com.roomoftruth.rot.repository;
 
 import com.roomoftruth.rot.domain.Agent;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public interface AgentRepository extends JpaRepository<Agent, Long>{
     @Query(nativeQuery = true, value = "SELECT * FROM agent WHERE user_num = :num")
     Agent getAgentByUserNum(long num);
 
+    @Modifying
     @Query(nativeQuery = true, value = "update agent set count = count + 1, point = point + 10 where license = ?1")
     void pointUp(String license);
 

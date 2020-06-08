@@ -1,8 +1,6 @@
 package com.roomoftruth.rot.controller;
 
-import com.roomoftruth.rot.domain.Favorite;
 import com.roomoftruth.rot.dto.*;
-import com.roomoftruth.rot.service.AddressService;
 import com.roomoftruth.rot.service.FavoriteService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +26,7 @@ public class FavoriteController {
 
 	@PostMapping("/favorite")
 	@ApiOperation("찜하기")
-	public Long saveFavorite(@RequestBody saveFavoriteDto saveFavoriteDto) {
+	public Long saveFavorite(@RequestBody SaveFavoriteDto saveFavoriteDto) {
 		log.info("FavoriteController : saveFavorite");
 
 		return favoriteService.saveFavorite(saveFavoriteDto);

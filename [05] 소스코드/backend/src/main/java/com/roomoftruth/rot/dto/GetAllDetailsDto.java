@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class getAllDetailsDto {
+public class GetAllDetailsDto {
     private String address;
     private String floor;
     private String ho;

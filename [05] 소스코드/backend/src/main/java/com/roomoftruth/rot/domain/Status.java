@@ -100,13 +100,16 @@ public class Status {
         this.cost = Long.parseLong(fabricStatusRecord.getCost());
         this.license = fabricStatusRecord.getLicense();
         this.image = ""+fabricStatusRecord.getImage();
-        int year = this.startDate.getYear();
-        int month = this.startDate.getMonthValue();
-        int day = this.startDate.getDayOfMonth();
+        String[] arr = fabricStatusRecord.getStart_date().split("-");
+        int year = Integer.parseInt(arr[0]);
+        int month = Integer.parseInt(arr[1]);
+        int day = Integer.parseInt(arr[2]);
+        System.out.println("year : " + year + ", month : " + month +", day : " + day);
         this.startDate = LocalDate.of(year, month, day);
-        year = this.endDate.getYear();
-        month = this.endDate.getMonthValue();
-        day = this.endDate.getDayOfMonth();
-        this.endDate = LocalDate.of(year, month, day);
+        String[] arr2 = fabricStatusRecord.getEnd_date().split("-");
+        int year2 = Integer.parseInt(arr2[0]);
+        int month2 = Integer.parseInt(arr2[1]);
+        int day2 = Integer.parseInt(arr2[2]);
+        this.endDate = LocalDate.of(year2, month2, day2);
     }
 }

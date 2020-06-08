@@ -27,6 +27,10 @@ public class ContractSaveRequestDto {
     private String license;
     private String image;
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public void setSd(String sd) {
         this.sd = sd;
     }

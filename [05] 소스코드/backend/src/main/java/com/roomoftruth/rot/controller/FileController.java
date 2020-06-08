@@ -27,12 +27,17 @@ public class FileController {
 	@ResponseBody
 	public String imageUpload(@RequestParam MultipartFile image, @RequestParam int flag, @RequestParam int num) throws Exception {
 		log.info("FileController : imageUpload");
-
-		if(!image.getContentType().contains("image")) {
-			return "failed";
-		}
-
+		System.out.println(image);
 		return fileUploadService.fileUpload(image, flag, num);
+	}
+
+	@PostMapping("/uploadNull")
+	@ResponseBody
+	public String imageUpload(@RequestParam String image, @RequestParam int flag, @RequestParam int num) throws Exception {
+		log.info("FileController : imageUpload");
+		MultipartFile multipartFile = null;
+		System.out.println(image);
+		return fileUploadService.fileUpload(multipartFile, flag, num);
 	}
 
 }

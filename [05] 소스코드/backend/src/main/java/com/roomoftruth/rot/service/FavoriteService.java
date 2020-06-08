@@ -5,10 +5,8 @@ import com.roomoftruth.rot.domain.Favorite;
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.FavoriteDeleteRequestDto;
 import com.roomoftruth.rot.dto.FavoriteResponseDto;
-import com.roomoftruth.rot.dto.FavoriteSaveRequestDto;
-import com.roomoftruth.rot.dto.saveFavoriteDto;
+import com.roomoftruth.rot.dto.SaveFavoriteDto;
 import com.roomoftruth.rot.repository.*;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,7 @@ public class FavoriteService {
 	private final ContractRepository contractRepository;
 
 	@Transactional
-	public long saveFavorite(saveFavoriteDto saveFavoriteDto) {
+	public long saveFavorite(SaveFavoriteDto saveFavoriteDto) {
 
 		long userId = saveFavoriteDto.getUserId();
 		long aroundId = aroundRepository.findAroundIdByAddress(saveFavoriteDto.getAddress());

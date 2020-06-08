@@ -29,8 +29,7 @@ public class FileUploadService {
     public String fileUpload(MultipartFile image, int flag, int num) throws Exception {
 
         String saveUrl = "none";
-
-        if(!image.isEmpty()){
+        if(image != null){
             String imageName = image.getOriginalFilename();
             String imageExtension = FilenameUtils.getExtension(imageName).toLowerCase();
             File destinationImage;

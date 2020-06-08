@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class saveFavoriteDto {
+public class SaveFavoriteDto {
     private String address;
     private long userId;
     private int score;
 
     @Builder
-    public saveFavoriteDto(String address, long userId, int score) {
+    public SaveFavoriteDto(String address, long userId, int score) {
         this.address = address;
         this.userId = userId;
         this.score = score;
