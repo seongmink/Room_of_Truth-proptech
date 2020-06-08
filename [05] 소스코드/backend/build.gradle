@@ -44,5 +44,4 @@ dependencies {
 	compile('org.hyperledger.fabric-sdk-java:fabric-sdk-java:1.4.0')
 
 	compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
-
 }

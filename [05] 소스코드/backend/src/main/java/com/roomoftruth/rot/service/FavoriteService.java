@@ -74,8 +74,14 @@ public class FavoriteService {
 		return result;
 	}
 
-	public int findByAroundId(Long aroundId){
+	public long findByAroundId(Long aroundId){
 		return favoriteRepository.findByAroundId(aroundId);
+	}
+
+	public String findByAroundIdInFavorite(Long aroundId){
+		String result = favoriteRepository.findByAroundIdInFavorite(aroundId);
+		System.out.println(result);
+		return result;
 	}
 
 }
