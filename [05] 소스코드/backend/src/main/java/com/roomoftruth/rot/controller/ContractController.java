@@ -60,7 +60,7 @@ public class ContractController {
             contractSaveRequestDto.setMonthly("0");
         }
 
-        String PK = "TESTING" + contract_idx;
+        String PK = "CONTRACT" + contract_idx;
 
         FabricContractRecord fabricContractRecord = new FabricContractRecord(contractSaveRequestDto);
         fabricContractRecord.setContract_id(PK);
