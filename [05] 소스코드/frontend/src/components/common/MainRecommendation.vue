@@ -148,13 +148,12 @@
                             longitude:longitude,
                             sd:arr[0],
                         	sgg:arr[1]}
-			console.log(this.send)
+
 			
             getdetailrecord(this.send, response => {
-                           console.log("마커클릭시 데이터")
-                           console.log(response)
+                       
                            this.list = response;
-                           console.log(this.list)
+                         
                            
             })
             this.$bvModal.show('modal-3');	
