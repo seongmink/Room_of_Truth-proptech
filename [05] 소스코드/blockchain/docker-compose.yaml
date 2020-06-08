@@ -1,0 +1,67 @@
+version: "2" #버전을 적는다. dodcker-compose파일의 버전과 호환성은 공식문서 참조하자.
+
+services: #실행하려는 컨테이너들을 정의함.
+    orderer0:
+        image: hyperledger/fabric-orderer:1.4 #서비스에서 사용할 도커 이미지
+        container_name: orderer0.ordererorg #컨테이너의 이름을 지정함.
+        environment:
+            - FABRIC_LOGGING_SPEC=DEBUG
+            - ORDERER_GENERAL_LOGLEVEL=DEBUG #로그 메시지 표시 수준 설정(info/debug 선택가능)
+            - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0 #로그 메시지 표시 수준 설정(info/debug 선택가능)
+            - ORDERER_GENERAL_GENESISMETHOD=file #genesis block을 지정하는 방법(file/provisional 선택가능) - file선택시 ORDERER_GENERAL_BENESISFILE 이용하여 경로지정 / provisional 선택시 OPDERER_GENERAL_GENESISPROFILE 이용하여 경로지정
+            - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block # genesis.block이 있는 경로
+            - ORDERER_GENERAL_LOCALMSPID=OrdererorgMSP #orderer의 local MSP ID
+            - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp #orderer의 local MSP 경로
+            - ORDERER_GENERAL_TLS_ENABLED=false #TSL 통신 활성화 여부 결정
+            - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key #orderer의 개인키 파일이 저장된 경로
+            - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt #orderer의 디지털 인증서 파일이 저장된 경로
+            - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt] #CA의 디지털 인증서 파일이 저장된 경로
+            - ORDERER_FILELEDGER_LOCATION=/var/hyperledger/orderer/ledger #orderer의 ledger 경로
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
+        command: orderer start
+        expose: #호스트OS에 포트를 공개하지 않고, 컨테이너 포트만 공개함.
+            - "7050"
+        ports: #호스트OS와 컨테이너의 포트를 바인딩 시켜준다. 호스트:컨테이너
+            - "7050:7050"
+        volumes: #지정한 경로의 볼륨을 상대경로에 마운트 지정경로:상대경로
+            - "./orderer-genesis.block:/var/hyperledger/orderer/orderer.genesis.block"
+            - "./crypto-config/ordererOrganizations/ordererorg/orderers/orderer0.ordererorg/msp:/var/hyperledger/orderer/msp"
+            - "./ledger/orderer:/var/hyperledger/orderer/ledger"
+
+    peer0.HFTeam1:
+        image: hyperledger/fabric-peer:1.4
+        container_name: peer0.HFTeam1
+        environment:
+            - FABRIC_LOGGING_SPEC=DEBUG
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock #docker 데몬 주소
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=dev_default #컨테이너의 네트워크 모드 설정
+            - CORE_PEER_LOCALMSPID=HFTeam1MSP #peer의 local MSP ID
+            - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/msp #peer의 MSP파일 경로
+            - CORE_PEER_TLS_ENABLED=false #TLS 통신 활성화 여부
+            - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/tls/server.crt #해당 peer의 TLS서버 인증서 파일 경로
+            - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/tls/server.key #해당 peer의 TLS서버 개인키가 저장된 경로
+            - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/tls/cert.pem #해당 peer의 TLS 서버 인증서를 발급한 CA인증서 파일 경로
+            - CORE_PEER_ADDRESSAUTODETECT=false
+            - CORE_PEER_GOSSIP_ORGLEADER=false #해당 peer의 리더 여부
+            - CORE_PEER_GOSSIP_USELEADERELECTION=true #Gossip 프로토콜의 리더 선출 방법 true 자동, false 수동
+            - CORE_PEER_PROFILE_ENABLED=false #peer profile 서버의 사용 여부
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer0.HFTeam1:7052 # 피어가 체인 코드 서비스와 관련하여 청취하는 엔드 포인트를 나타냄.
+            - CORE_PEER_ID=peer0.HFTeam1 #peer를 식별하는 ID
+            - CORE_PEER_ADDRESS=peer0.HFTeam1:7051 #peer의 주소 값
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.HFTeam1:7051 #앵커 peer의 endpoint 및 주소. 앵커 peer가 아닌 peer에 설정
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.HFTeam1:7051 #peer에서 발생하는 모든 외부 통신에 대한 endpoint 또는 주소 (이 값이 설정되지 않으면 해당 peer에 대한 endpoint 정보가 다른 ORG의 peer에게 broadcasting되지 않으며, 자신의 ORG에게만 알려짐)
+            - CORE_PEER_FILESYSTEMPATH=/var/hyperledger/peerledger
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/
+        command: peer node start
+        ports:
+            - 7051:7051
+            - 7053:7053
+        volumes:
+            - "/var/run/:/host/var/run/"
+            - "./ledger/HFTeam1:/var/hyperledger/peerledger"
+            - "./crypto-config/peerOrganizations/HFTeam1/users/Admin@HFTeam1/msp:/var/hyperledger/users/msp"
+            - "./crypto-config/peerOrganizations/HFTeam1/peers/peer0.HFTeam1/msp:/var/hyperledger/msp"
+            - "./channel-artifacts/HFTeam1:/var/hyperledger/production"
+            - "./channel-artifacts/HFTeam1/chaincode:/var/hyperledger/chaincode"
+        depends_on:
+            - orderer0
