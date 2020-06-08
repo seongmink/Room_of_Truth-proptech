@@ -22,7 +22,7 @@
 
 ## About RoT
 
-![RoT 메인사진 or icon](./image/roomoftruth_mainpage.PNG)
+![RoT 메인사진 or icon](./image/roomoftruth_mainpage.png)
 
 진실의 방(Room of Truth)은 하이퍼레저 패브릭으로 건물 거래 이력 조회하는 서비스입니다.
 
@@ -144,7 +144,7 @@
 
 ## Architecture
 
-![ERD](./image/architecture.png)
+![ERD](./image/roomoftruth_architecture.png)
 
 
 ## Project Schedule
