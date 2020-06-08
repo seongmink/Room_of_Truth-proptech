@@ -86,6 +86,10 @@ public class Contract {
         this.contractDate = LocalDate.now();
     }
 
+    public void setSgg(String sgg) {
+        this.sgg = sgg;
+    }
+
     @Builder
     public Contract(FabricContractRecord fabricContractRecord){
         this.contractId = Long.parseLong(fabricContractRecord.getContract_id());
