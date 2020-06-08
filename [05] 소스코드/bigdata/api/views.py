@@ -81,6 +81,9 @@ class Around(APIView, PaginationHandlerMixin):
             # print(serializer.data)
             for item in serializer.data.get('results'):
                 b = models.Contract.objects.filter(address__contains=item.get('address')).first()
+                # print(b)
+                if b is None:
+                    continue
                 results['results'].append({
                 "num":item.get('around_id'),
                 "name":item.get('address'),
@@ -102,6 +105,8 @@ class Around(APIView, PaginationHandlerMixin):
             }
             for item in serializer.data:
                 b = models.Contract.objects.filter(address__contains=item.get('address')).first()
+                if b in None:
+                    continue
                 results['results'].append({
                 "num":item.get('around_id'),
                 "name":item.get('address'),
