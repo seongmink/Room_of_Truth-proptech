@@ -88,6 +88,10 @@ public class FabricCCService implements IFabricCCService {
 	 * 채널 접근 체인코드를 이용하기 위하여 구축해놓은 패브릭 네트워크의 채널을 가져오는 기능을 구현한다.
 	 */
 
+	/**
+	 *
+	 * @return channelLoad
+	 */
 	public boolean loadChannel() {
 		HFCAClient caClient = null;
 		CryptoSuite cryptoSuite = null;
@@ -141,6 +145,11 @@ public class FabricCCService implements IFabricCCService {
 		return fabricStatusRecord;
 	}
 
+	/**
+	 *
+	 * @param num
+	 * @return findContractByNum
+	 */
 	@Override
 	public FabricContractRecord queryContract(String num) {
 		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
@@ -172,6 +181,11 @@ public class FabricCCService implements IFabricCCService {
 	}
 
 
+	/**
+	 *
+	 * @param num
+	 * @return findStatusByNum
+	 */
 	@Override
 	public FabricStatusRecord queryStatus(String num) {
 		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
@@ -202,6 +216,11 @@ public class FabricCCService implements IFabricCCService {
 		return null;
 	}
 
+	/**
+	 *
+	 * @param fc
+	 * @return registerContract
+	 */
 	@Override
 	public boolean registerContract(FabricContractRecord fc) {
 		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
@@ -247,6 +266,11 @@ public class FabricCCService implements IFabricCCService {
 	}
 
 
+	/**
+	 *
+	 * @param fs
+	 * @return registerStatus
+	 */
 	@Override
 	public boolean registerStatus(FabricStatusRecord fs) {
 		logger.info("Request Regist Building Date :" + fs.toString());
@@ -259,7 +283,7 @@ public class FabricCCService implements IFabricCCService {
 		String[] args = {
 				fs.getStatus_id(), fs.getAddress(), fs.getSd(), fs.getSgg(), fs.getEmd(), fs.getLongitude(),
 				fs.getLatitude(), fs.getFloor(), fs.getHo(), fs.getCategory(), fs.getDetail(), fs.getCost(),
-				fs.getLicense(), fs.getImage(), fs.getExclusive(), fs.getContract_date(), fs.getEnd_date()
+				fs.getLicense(), fs.getImage(), fs.getExclusive(), fs.getStart_date(), fs.getEnd_date()
 		};
 		tpr.setArgs(args);
 		Collection<ProposalResponse> res;

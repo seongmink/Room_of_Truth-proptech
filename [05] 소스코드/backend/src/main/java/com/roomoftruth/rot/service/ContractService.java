@@ -34,17 +34,9 @@ public class ContractService {
      * saveContract(ContractSaveRequestDto contractSaveRequestDto)
      */
     @Transactional
-    public long saveContract(ContractSaveRequestDto contractSaveRequestDto) {
-        System.out.println("서비스 왔다");
-
-        // fabric 처리후
-        System.out.println("===== FABRIC에서 등록 해야 함 =====");
-        //
-
-        Contract contract = new Contract(contractSaveRequestDto);
-        contractRepository.save(contract);
-        System.out.println("DB 등록 성공");
-        return contract.getContractId();
+    public long saveContract(FabricContractRecord fabricContractRecord) {
+        Contract contract = new Contract(fabricContractRecord);
+        return contractRepository.save(contract).getContractId();
     }
 
     /**
@@ -111,23 +103,6 @@ public class ContractService {
         return result;
     }
 
-//    /**
-//     *  8. 해당 위치 (address, floor, ho)
-//     *  List<ContractFind> findAllDetails(requestDto[]);
-//     */
-//    public List<ContractDetailsResponseDto> findAllDetail(ContractFindRequestDto[] requestDto) {
-//
-//        List<ContractDetailsResponseDto> result = new ArrayList<>();
-//
-//        for (ContractFindRequestDto c : requestDto) {
-//            List<ContractDetailsResponseDto> temp = contractDetailsResponseDtoRepository.findAllDetail(c.getLatitude().substring(0, c.getLatitude().length() - 3), c.getLongitude().substring(0, c.getLongitude().length() - 3));
-//            for (ContractDetailsResponseDto cd : temp) {
-//                result.add(cd);
-//            }
-//        }
-//        return result;
-//    }
-
     /**
      * 모든 Contract주소와 위도, 경도
      *
@@ -184,14 +159,25 @@ public class ContractService {
         return result;
     }
 
-    public void dataTransfer(){
-        List<Contract> data = contractRepository.dataTransfer();
+    public void dataTransfer(int start, int end){
+        List<Contract> data = contractRepository.dataTransfer(start, end);
         System.out.println(data.size());
         for(int i = 0; i < data.size(); i++){
             Contract temp = data.get(i);
+            if(temp.getSgg()==null || temp.getSgg() == ""){
+                temp.setSgg("-");
+            }
             FabricContractRecord record = new FabricContractRecord(temp);
             iFabricCCService.registerContract(record);
         }
+    }
+
+    /**
+     * @param user_id
+     * @return Agent.License
+     */
+    public String getAgentLicense(Long user_id) {
+        return contractRepository.getAgentLicense(user_id);
     }
 
     @Data

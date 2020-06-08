@@ -6,7 +6,9 @@ import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.FavoriteDeleteRequestDto;
 import com.roomoftruth.rot.dto.FavoriteResponseDto;
 import com.roomoftruth.rot.dto.FavoriteSaveRequestDto;
+import com.roomoftruth.rot.dto.saveFavoriteDto;
 import com.roomoftruth.rot.repository.*;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +25,22 @@ public class FavoriteService {
 	private final ContractRepository contractRepository;
 
 	@Transactional
-	public Long saveFavorite(FavoriteSaveRequestDto requestDto) {
+	public long saveFavorite(saveFavoriteDto saveFavoriteDto) {
 
-		User user = userRepository.findByNum(requestDto.getUserNum());
-		Around around = aroundRepository.findById(requestDto.getAroundId())
-				.orElseThrow(()-> new IllegalArgumentException("해당 around가 없습니다."));
+		long userId = saveFavoriteDto.getUserId();
+		long aroundId = aroundRepository.findAroundIdByAddress(saveFavoriteDto.getAddress());
+		int score = saveFavoriteDto.getScore();
 
-		return favoriteRepository.save(requestDto.toEntity(user, around)).getUser().getNum();
+		if(favoriteRepository.findByAroundAnduserNum(aroundId, userId) != null){
+			int result = favoriteRepository.updateScore(score, aroundId, userId);
+		} else {
+			User user = userRepository.findByNum(userId);
+			Around around = aroundRepository.findByAroundId(aroundId);
+			favoriteRepository.save(saveFavoriteDto.toEntity(user, around, score));
+		}
+
+		long avgScore = favoriteRepository.findByAroundId(aroundId);
+		return avgScore;
 	}
 
 	@Transactional
@@ -63,7 +74,10 @@ public class FavoriteService {
 		});
 
 		return result;
+	}
 
+	public int findByAroundId(Long aroundId){
+		return favoriteRepository.findByAroundId(aroundId);
 	}
 
 }

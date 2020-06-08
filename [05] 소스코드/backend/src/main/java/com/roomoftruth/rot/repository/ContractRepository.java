@@ -9,6 +9,7 @@ import java.util.List;
 public interface ContractRepository extends JpaRepository<Contract, Long> {
     List<Contract> findDistinctByLatitudeAndLongitude(String latitude, String longitude);
     List<Contract> findAllByAddressAndFloorAndHo(String address, String floor, String ho);
+
     List<Contract> findAllByLicense(String license);
     List<Contract> findTop1000AllByLicenseOrderByContractDate(String license);
 
@@ -22,6 +23,9 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     List<Contract> findAllByAddressContaining(String key);
 
-    @Query(value = "select * from contract where contract_id > 10000 AND contract_id <= 15000", nativeQuery = true)
-    List<Contract> dataTransfer();
+    @Query(value = "select * from contract where contract_id >= ?1 AND contract_id <= ?2", nativeQuery = true)
+    List<Contract> dataTransfer(int start, int end);
+
+    @Query(value = "select license from agent where user_num = ?1", nativeQuery = true)
+    String getAgentLicense(Long user_id);
 }

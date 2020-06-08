@@ -29,4 +29,12 @@ public class FavoriteSaveRequestDto {
                 .around(around)
                 .score(score).build();
     }
+
+    public Favorite toEntity(User user, Around around, int score) {
+        return Favorite.builder()
+                .user(user)
+                .around(around)
+                .score(score)
+                .build();
+    }
 }

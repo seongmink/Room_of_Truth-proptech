@@ -1,6 +1,7 @@
 package com.roomoftruth.rot.domain;
 
 import com.roomoftruth.rot.dto.ContractSaveRequestDto;
+import com.roomoftruth.rot.fabric.FabricContractRecord;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -81,33 +82,32 @@ public class Contract {
         this.contractDate = LocalDate.now();
     }
 
-    /**
-     * ContractController    @PostMapping("/buildings")
-     * ContractService
-     */
-
     public void setContractDate() {
         this.contractDate = LocalDate.now();
     }
 
+    public void setSgg(String sgg) {
+        this.sgg = sgg;
+    }
+
     @Builder
-    public Contract(ContractSaveRequestDto contractSaveRequestDto){
-        this.contractId = contractSaveRequestDto.getContractId();
-        this.address = contractSaveRequestDto.getAddress();
-        this.sd = contractSaveRequestDto.getSd();
-        this.sgg = contractSaveRequestDto.getSgg();
-        this.emd = contractSaveRequestDto.getEmd();
-        this.latitude = contractSaveRequestDto.getLatitude();
-        this.longitude = contractSaveRequestDto.getLongitude();
-        this.exclusive = contractSaveRequestDto.getExclusive();
-        this.floor = contractSaveRequestDto.getFloor();
-        this.ho = contractSaveRequestDto.getHo();
-        this.kind = contractSaveRequestDto.getKind();
-        this.detail = contractSaveRequestDto.getDetail();
-        this.cost = contractSaveRequestDto.getCost();
-        this.monthly = contractSaveRequestDto.getMonthly();
-        this.license = contractSaveRequestDto.getLicense();
-        this.image = contractSaveRequestDto.getImage();
+    public Contract(FabricContractRecord fabricContractRecord){
+        this.contractId = Long.parseLong(fabricContractRecord.getContract_id());
+        this.address = fabricContractRecord.getAddress();
+        this.sd = fabricContractRecord.getSd();
+        this.sgg = fabricContractRecord.getSgg();
+        this.emd = fabricContractRecord.getEmd();
+        this.latitude = fabricContractRecord.getLatitude();
+        this.longitude = fabricContractRecord.getLongitude();
+        this.exclusive = fabricContractRecord.getExclusive();
+        this.floor = fabricContractRecord.getFloor();
+        this.ho = fabricContractRecord.getHo();
+        this.kind = fabricContractRecord.getKind();
+        this.detail = fabricContractRecord.getDetail();
+        this.cost = Long.parseLong(fabricContractRecord.getCost());
+        this.monthly = fabricContractRecord.getMonthly();
+        this.license = fabricContractRecord.getLicense();
+        this.image = ""+fabricContractRecord.getImage();
         this.contractDate = LocalDate.now();
     }
 
