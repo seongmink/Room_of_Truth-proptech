@@ -21,7 +21,7 @@ function login(token, success) {
 
 //토큰으로 멤버정보 불러오기
 function getUserInfo(token) {
-  //console.log("토큰으로 정보 불러오기")
+
     let form = new FormData
     form.append('access_token', token)
     instance
@@ -29,7 +29,7 @@ function getUserInfo(token) {
         .then(Response => {
 
             //vuex에 정보 저장하기
-            console.log(Response.data)
+      
             store.commit('loginSucess', Response.data);
         })
         .catch(error => {
@@ -39,7 +39,7 @@ function getUserInfo(token) {
     }
     //처음 로그인시 유저정보 등록
 function addInfo(info, success){
-    console.log(info)
+ 
     instance
         .post("/api/user/", info)
         .then(Response => {
@@ -53,12 +53,12 @@ function addInfo(info, success){
 }
 //마이페이지 수정하기
 function updateInfo(Info, success) {
-  //console.log("마이페이지가서 수정하기")
+
     instance
         .patch("/api/interest", Info)
         .then(Response => {
 
-            console.log(Response.data)
+            
 
             //다시 갱신
             sessionStorage.removeItem('access_token')
@@ -74,7 +74,7 @@ function updateInfo(Info, success) {
 
 //부동산 인증
 function auth(num, name, representative, address, license) {
-  //console.log("부동산 인증하기")
+
     instance
         .post("/api/agent/", {
             userNum: num,
@@ -100,7 +100,7 @@ function auth(num, name, representative, address, license) {
 
 //부동산 인증 해제
 function deleteAuth(num) {
-    //console.log("부동산 해제하기")
+   
 
     instance
         .delete("/api/agent/" + num)
@@ -120,7 +120,7 @@ function deleteAuth(num) {
 
 //부동산 정보불러오기
 function getRealestateInfo(num, success) {
-    //console.log("부동산 정보 불러오기")
+   
 
     instance
         .get("/api/agent/detail/" + num)
@@ -138,7 +138,7 @@ function getRealestateInfo(num, success) {
 
 //메인페이지에서 랭킹 불러오기
 function getRankInfo(success) {
-    //console.log("메인페이지에서 랭킹 불러오기")
+
     instance
         .get("/api/agent/ranking")
         .then(function (response) {
@@ -154,13 +154,13 @@ function getRankInfo(success) {
 
     //공인중개사 사진 등록하기
 function addAimage(num,file,flag, success) {
-    //console.log("공인중개사 사진 등록하기")
+
     let formData = new FormData();
     formData.append('image', file);
     formData.append('num', num);
     formData.append('flag', flag);
 
-    //console.log(formData)
+
     instance
         .post("/api/upload/",formData)
         .then(function (response) {
@@ -178,14 +178,16 @@ function addAimage(num,file,flag, success) {
 
     //공인중개사 번호 검사하기
 function checkAgentNum(num, number, success) {
-    //console.log(number)
+
+    
 
     let formData = new FormData();
    
     formData.append('num', num);
     formData.append('license', number);
 
-    //console.log("공인중개사 번호 검사하기")
+ 
+    
 
     instance
         .post("/api/agent/check",formData)
@@ -200,6 +202,22 @@ function checkAgentNum(num, number, success) {
         })
     }
 
+    
+//내가 찜한 건물 불러오기
+function likeBuilding(num,success) {
+
+    instance
+        .get("/api/favorite/"+num)
+        .then(function (response) {
+
+            success(response.data)
+
+        })
+        .catch(error => {
+
+            console.log(error);
+        })
+    }
 export {
     login,
     getUserInfo,
@@ -210,5 +228,6 @@ export {
     getRankInfo,
     addAimage,
     checkAgentNum,
-    addInfo
+    addInfo,
+    likeBuilding
 };

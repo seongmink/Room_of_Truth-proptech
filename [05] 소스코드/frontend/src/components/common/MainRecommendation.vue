@@ -3,7 +3,7 @@
 		<div class="container" style="margin-bottom:80px;">
 			<div class="block-head text-center mb-5 context">
 				<p v-if="this.$store.state.userInfo!=null" class="head-line display-3;" style="margin-top:30px; font-size:35px;">
-					우동님, 이런 방은 어떠신가요?
+					{{this.$store.state.userInfo.nickname}}님, 이런 방은 어떠신가요?
 				</p>
 				<p v-if="this.$store.state.userInfo==null" class="head-line display-3;" style="margin-top:30px; font-size:35px;">
 					혹시 이런 방은 어떠신가요?
@@ -18,7 +18,7 @@
 				<div v-if="this.$store.state.userInfo!=null&& data">
 				<slick :options="slickOptions" @afterChange="handleAfterChange"  class="fullwidth-slick-carousel category-carousel">
 					<template v-for="(item, index) in data">
-						<div class="fw-carousel-item slide" :key="index" v-b-modal.modal-3>
+						<div class="fw-carousel-item slide" :key="index" @click="showModal(item.latitude, item.longitude, item.name)" >
 							<div class="category-box-container text-center">
 								<div  class="category-box">
 									<div class="category-box-content">
@@ -30,7 +30,8 @@
 									</div>
 									<div class="category-box-background" :style="{'background-image': 'url(' +  url+item.image+ ')'}">
 									</div>
-									<span class="like-banner d-block h4 mb-2" style="color: #dc3545; z-index:1000"><b-icon icon="heart-fill"></b-icon></span>
+									<span v-if="item.isLike==true" class="like-banner d-block h4 mb-2" style="color: #dc3545; z-index:1000"><b-icon icon="heart-fill"></b-icon></span>
+									<span v-else class="like-banner d-block h4 mb-2" style="color: #dc3545; z-index:1000"><b-icon icon="heart"></b-icon></span>
 								</div>
 							</div>
 						</div>
@@ -40,7 +41,7 @@
 				<div v-if="this.$store.state.userInfo==null&& data">
 				<slick :options="slickOptions" class="fullwidth-slick-carousel category-carousel">
 					<template v-for="(item, index) in data">
-						<div class="fw-carousel-item slide" :key="index" v-b-modal.modal-3>
+						<div class="fw-carousel-item slide" :key="index" @click="showModal(item.latitude, item.longitude, item.name)">
 							<div class="category-box-container text-center">
 								<div  class="category-box">
 									<div class="category-box-content">
@@ -63,108 +64,42 @@
 			</div>
 		</div>
 		<!-- 모달 -->
-		<b-modal id="modal-3" title="상세보기" scrollable  size="lg" hide-footer >   
-			<div>
-                <b-form-rating id="rating-lg-no-border" style="width:200px; margin-left:555px;"  no-border size="lg"
-                    v-model="like"
-                    icon-empty="heart"
-                    icon-half="heart-half"
-                    icon-full="heart-fill"
-                    icon-clear="slash-circle"
-                    show-clear
-                    variant="danger">
-                </b-form-rating>
+		<b-modal id="modal-3" title="상세보기" scrollable  size="lg" hide-footer>
+            
+            <div class="row" style="margin-top:20px" >
+                <div class="col-lg-6 col-md-12 grid-layout-list mb-4" v-for="(list,index) in list" :key="index">
+			        <div class="list-cap" style="height:310px">
+				        <div class="list-cap-list mb-4" @click="detail(list.address,list.floor,list.ho)">        
+                            <div class="img-list" style="height:200px;">
+					            <img :src="url+list.image" alt="" style="width:353px; height:200px; max-height:initial;">
+                            </div>
+					        <div class="list-cap-content " style="margin-top:7px; height:100px;">
+						        <h6 style="font-size:14px;" class="mt-2">{{list.address}}</h6>
+						        <div class="address-bar"> 
+                              <h6 style="float:left; margin-right:10px;font-size:14px;">{{list.floor}}층 {{list.ho}}호</h6>
+                           </div>
+					        </div>
+				        </div>
+		            </div>
+                </div>
             </div>
-            <div style="text-align:center; margin-top:-10px">
-            <div id="add-listing" style=" width:690px; display: inline-block;">
-            <div class="mb-4" style="margin-left:-50px; margin-right:-50px;">
-            <div>
-                <div>
-                    <h4 class="mb-3">{{datadetail.contractedAt}}</h4>
-        
-                    <div style=" margin-top:-20px;">
-                        <h3><span style="background-color:#B2CCFF; color:#1428A0;" class="badge badge-pill badge-danger text-uppercase">상세보기</span> </h3>
-                     </div>
-               </div>
-                <div style="margin-top:20px; ">
-                    <div style="float:left; margin-right:15px; margin-left:25px">
-                        <img :src="datadetail.image"  style="width:375px;height:295px;margin-bottom:20px"/>
-                    </div>
-                    <div>
-                        <b-input-group prepend="주소" class="mt-3" style="width:350px;">
-   			                <b-form-input  readonly v-model="datadetail.address" style="background-color:white; text-align:center"></b-form-input>
-  		                </b-input-group>
-                    </div>
-
-                    <div>
-                        <b-input-group prepend="기타" class="mt-3" style="width:350px;">
-   			                <b-form-input  :value="datadetail.floor+'층'+' '+datadetail.ho+'호'" readonly style="background-color:white; text-align:center"></b-form-input>
-  		                </b-input-group>
-                    </div>
-
-                    <b-input-group prepend="전용 면적" append="평" class="mt-3" style="width:170px; margin-right:10px; float:left;   ">
-   			            <b-form-input readonly style="background-color:white;text-align:center" :value="(datadetail.exclusive/3.3058).toFixed(0)"></b-form-input>
-  		            </b-input-group>
-
-                     <b-input-group prepend="단 위" append="㎡" class="mt-3" style="width:170px; ">
-   			            <b-form-input readonly style="background-color:white;text-align:center" v-model="datadetail.exclusive"></b-form-input>
-  		            </b-input-group>
-
-					<b-input-group prepend="건물종류" class="mt-3" style="width:170px; margin-right:10px; float:left;">
-   			            <b-form-input readonly style="background-color:white;text-align:center" v-model="datadetail.kind"></b-form-input>
-  		            </b-input-group>
-
-                     <b-input-group prepend="계약내용" class="mt-3" style="width:170px; margin-right:10px;">
-   			            <b-form-input readonly style="background-color:white;text-align:center" v-model="datadetail.detail"></b-form-input>
-  		            </b-input-group>
-					
-					<b-input-group v-if="datadetail.detail!='월세'" prepend="금액" append="만원" class="mt-3" style="width:350px; margin-right:10px; float:left;">
-   			            <b-form-input readonly style="background-color:white;text-align:center" v-model="datadetail.cost"></b-form-input>
-  		            </b-input-group>
-
-					<b-input-group v-if="datadetail.detail=='월세'" prepend="금액" append="만원" class="mt-3" style="width:170px; margin-right:10px; float:left;">
-   			            <b-form-input readonly style="background-color:white;text-align:center" v-model="datadetail.cost"></b-form-input>
-  		            </b-input-group>
-
-                     <b-input-group v-if="datadetail.detail=='월세'" prepend="월세" append="만원" class="mt-3" style="width:170px; margin-right:10px;">
-   			            <b-form-input readonly style="background-color:white;text-align:center" v-model="datadetail.monthly"></b-form-input>
-  		            </b-input-group>
-
-                    <div style="margin-top:-20px; margin-left:25px">
-                    <b-input-group prepend="공인중개사"  class="mt-3" style="width:380px; ">
-   			            <b-form-input readonly style="background-color:white;text-align:center" v-model="datadetail.license"></b-form-input>
-  		            </b-input-group>
-                    </div> 
-                </div>  
-            </div>
-            </div>
-            </div>  
-            </div>
-  	    </b-modal>
+        </b-modal>
 	</div>
 </template>
 
 <script>
     import Slick from "vue-slick";
 	import { getUrl } from "../../api/index.js";
+	import {mapState} from 'vuex';
+	import { getdetailrecord} from "../../api/item.js";
     export default {
 		data() {
         	return {
+				list:null,
+           		 send:[],
 				like:'',
 				title:'',
-				datadetail:{
-					address : '군산시 서수면 마룡리 99-22',
-					image : 'static/b1.jpg',
-					floor : '1',
-					ho : '201',
-					exclusive : '103',
-					detail : '전세',
-					cost : '300',
-					license : 'SSAFY-대전-001',
-					kind : '아파트',
-					monthly : '30',
-					contractedAt : '2020-05-21'
-				},
+				
 				like:0,
 				url : getUrl(),
 			
@@ -177,21 +112,27 @@
     	},
         props: ['data'],
 		watch:{
-		
+			userInfo:function(hook){
+				if(hook==null){
+					this.title = '';
+				}
+			}
 		},
         components: {
             Slick
 		},
 		methods:{
 			handleAfterChange(event, slick, currentSlide) {
-			
-				if(currentSlide==0){
-					this.title = "<span style='color:#00c03f; font-size:30px'>20대</span>에 맞춤 추천 서비스!"
-				}else if(currentSlide==3){
-					this.title = "<span style='color:#00c03f; font-size:30px'>남성</span>에게 맞춤 추천 서비스!"
-				}else if(currentSlide==6){
-					this.title = "<span style='color:#00c03f; font-size:30px'>교통</span>이 편리한 맞춤 추천 서비스!"
-				}
+				
+
+					if(currentSlide==0){
+						this.title = "<span style='color:#00c03f; font-size:30px'>"+((2020-this.$store.state.userInfo.interest.birth+1)+"").substring(0,1)+"0"+"대</span>에 맞춤 추천 서비스!"
+					}else if(currentSlide==3){
+						this.title = "<span style='color:#00c03f; font-size:30px'>"+this.$store.state.userInfo.interest.gender+"</span>에게 맞춤 추천 서비스!"
+					}else if(currentSlide==6){
+						this.title = "<span style='color:#00c03f; font-size:30px'>"+this.$store.state.userInfo.interest.first+"</span>이 편리한 맞춤 추천 서비스!"
+					}
+				
 			},
 			toggle(){
 				if(this.like==1){
@@ -199,9 +140,38 @@
 				}else{
 					this.like = 1;
 				}
-			}
+			},
+			showModal(latitude, longitude, address){
+			this.list = null;
+			var arr = address.split(" ");
+            this.send[0] = {latitude:latitude,
+                            longitude:longitude,
+                            sd:arr[0],
+                        	sgg:arr[1]}
+			console.log(this.send)
+			
+            getdetailrecord(this.send, response => {
+                           console.log("마커클릭시 데이터")
+                           console.log(response)
+                           this.list = response;
+                           console.log(this.list)
+                           
+            })
+            this.$bvModal.show('modal-3');	
+         },
+         detail(address,floor,ho){
+              
+                   let route = this.$router.resolve({name : 'Detail', query:{
+                            address : address,
+                            floor : floor,
+                            ho : ho
+                    }});
+                    window.open(route.href, '_blank');
+      
+         },
 		},
         computed: {
+			...mapState(['userInfo']),
             slickOptions() {
 				
                 return {

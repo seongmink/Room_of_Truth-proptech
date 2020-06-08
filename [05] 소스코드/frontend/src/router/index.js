@@ -141,15 +141,14 @@ const routes = [{
                     import ("../components/common/Recommendation.vue")
                 
             },
-
-            //테스트 페이지
             {
-                name: "hongju",
-                path: "hongju",
+                name: "AddressSearch",
+                path: "addresssearch",
                 component: () =>
-                    import ("../test/hongju.vue")
+                    import ("../components/structure/AddressSearch.vue")
                 
-            }
+            },
+            
 
         ],
         redirect: () => {

@@ -48,19 +48,43 @@
          </b-navbar>
          <div v-for="(data,index) in list" :key="index" >
          <b-card-group deck style="margin-top:10px;margin-bottom:10px">
-            <b-card class="listing-item-container" :img-src="url+data.image" img-alt="Card image" img-top img-height="250px">
+            <b-card class="listing-item-container" :img-src="url+data.image" img-alt="Card image" img-top img-height="250px;" @click="showModal(data.latitude, data.longitude, data.name)">
+
                <b-card-text style="height:80px;">
                   <h5> {{data.name}} </h5>
                </b-card-text>
             </b-card>
-            <b-card class="listing-item-container">
+            
+            <b-card class="listing-item-container"  @click="showModal(data.latitude, data.longitude, data.name)">
                <chart-bar :label="data.name" :comforts="data.comforts" :culture="data.culture" 
                :eatery="data.eatery" :education="data.education" :medical="data.medical" :trans="data.trans"  :id="index"></chart-bar>	
             </b-card>
          </b-card-group>
          </div>
+         <h4 align="center" v-if="list!=null && list.length==0">검색한 결과가 존재하지 않습니다:)</h4>
+         <img v-if="list==null" src="static/logotexts.png" style="width:100%; margin-bottom:40px;">
       </div> 
    </div>
+   <b-modal id="modal-3" title="상세보기" scrollable  size="lg" hide-footer>
+            
+            <div class="row" style="margin-top:20px" >
+                <div class="col-lg-6 col-md-12 grid-layout-list mb-4" v-for="(list,index) in data" :key="index">
+			        <div class="list-cap" style="height:310px">
+				        <div class="list-cap-list mb-4" @click="detail(list.address,list.floor,list.ho)">        
+                            <div class="img-list" style="height:200px;">
+					            <img :src="url+list.image" alt="" style="width:353px; height:200px; max-height:initial;">
+                            </div>
+					        <div class="list-cap-content " style="margin-top:7px; height:100px;">
+						        <h6 style="font-size:14px;" class="mt-2">{{list.address}}</h6>
+						        <div class="address-bar"> 
+                              <h6 style="float:left; margin-right:10px;font-size:14px;">{{list.floor}}층 {{list.ho}}호</h6>
+                           </div>
+					        </div>
+				        </div>
+		            </div>
+                </div>
+            </div>
+        </b-modal>
 </div>
 </template>
 
@@ -70,9 +94,13 @@ import ChartBar from '../chart/Chart';
 import Chart from 'chart.js'
 import { getSearchData } from "../../api/item.js";
 import { getUrl } from "../../api/index.js";
+import { getdetailrecord} from "../../api/item.js";
+
    export default {
       data() {
          return {
+            data:null,
+            send:[],
             url : getUrl(),
             label:['교통','마트/편의점','교육시설','의료시설','음식점/카페','문화시설'],
             ranking_1:'선택없음',
@@ -88,7 +116,7 @@ import { getUrl } from "../../api/index.js";
         		['남구','달서구','동구','북구','서구','수성구','중구','달성군'],
         		['계양구','남구','남동구','동구','부평구','서구','연수구','중구','강화군','옹진군'],
         		['광산구','남구','동구','북구','서구'],
-        		['대덕구','동구','서구','유구','중구'],
+        		['대덕구','동구','서구','유성구','중구'],
         		['남구','동구','북구','중구','울주군'],
         		['강릉시','동해시','삼척시','속초시','원주시','춘천시','태백시','고성군','양구군','양양군','영월군','인제군','정선군','철원군','평창군','홍천군','화천군','횡성군'],
         		['고양시 덕양구','고양시 일산구','과천시','광명시','광주시','구리시','군포시','김포시','남양주시','동두천시','부천시 소사구','부천시 오정구','부천시 원미구','성남시 분당구','성남시 수정구','성남시 중원구','수원시 권선구','수원시 장안구','수원시 팔달구','시흥시','안산시 단원구','안산시 상록구','안성시','안양시 동안구','안양시 만안구','오산시','용인시','의왕시','의정부시','이천시','파주시','평택시','하남시','화성시','가평군','양주군','양평군','여주군','연천군','포천군'],
@@ -138,7 +166,22 @@ import { getUrl } from "../../api/index.js";
 		   }
       },
       created() {
-         
+         if(this.$store.state.userInfo!=null){
+            this.locationSelect = this.$store.state.userInfo.interest.sd;
+            this.ranking_1 = this.$store.state.userInfo.interest.first
+            setTimeout(() => {
+               this.locationSelect2 = this.$store.state.userInfo.interest.sgg;
+               getSearchData(this.locationSelect,this.locationSelect2,this.ranking_1, response => {
+			
+                  this.list = [];
+                  setTimeout(() => {
+                     this.list = response;
+                  }, 100);
+			      });
+            }, 10);
+            
+            
+         }
 		},
       watch: {
          locationSelect:function(hook){
@@ -227,8 +270,7 @@ import { getUrl } from "../../api/index.js";
                alert("선호도를 선택하세요.")
             }else{
                getSearchData(this.locationSelect,this.locationSelect2,this.ranking_1,response => {
-				      console.log("추천데이터 6개의 검색결과")
-                  console.log(response)
+				   
                   this.list = [];
                   setTimeout(() => {
                      this.list = response;
@@ -238,7 +280,36 @@ import { getUrl } from "../../api/index.js";
 					
 			      });
             }
-         }
+         },
+         showModal(latitude, longitude, address){
+            this.data = null;
+
+			   var arr = address.split(" ");
+            this.send[0] = {latitude:latitude,
+							longitude:longitude,
+							sd:arr[0],
+                     sgg:arr[1]
+                     }
+   
+            getdetailrecord(this.send, response => {
+               
+         
+                           this.data = response;
+                    
+                           
+            })
+            this.$bvModal.show('modal-3');	
+         },
+         detail(address,floor,ho){
+              
+                   let route = this.$router.resolve({name : 'Detail', query:{
+                            address : address,
+                            floor : floor,
+                            ho : ho
+                    }});
+                    window.open(route.href, '_blank');
+      
+         },
 		},
       components: {
          TitleBar,
