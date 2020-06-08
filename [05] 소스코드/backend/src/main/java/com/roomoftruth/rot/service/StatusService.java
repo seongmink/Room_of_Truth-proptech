@@ -26,7 +26,10 @@ public class StatusService {
      */
     @Transactional
     public long saveStatus(FabricStatusRecord fabricStatusRecord) {
+        System.out.println("0------------ saveStatus 시작 -------------0");
         Status status = new Status(fabricStatusRecord);
+        System.out.println(status.toString());
+        System.out.println("statusID : " + status.getStatusId());
         return statusRespository.save(status).getStatusId();
     }
 

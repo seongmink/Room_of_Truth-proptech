@@ -1,6 +1,9 @@
 package com.roomoftruth.rot.dto;
 
+import com.roomoftruth.rot.fabric.FabricContractRecord;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @ToString
 @Getter

@@ -2,12 +2,14 @@ package com.roomoftruth.rot.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
 
 @ToString
 @Getter
+@Setter
 @NoArgsConstructor
 public class StatusSaveRequestDto {
     @NotEmpty
@@ -30,17 +32,5 @@ public class StatusSaveRequestDto {
     private String image;
     private String start_date;
     private String end_date;
-
-    public void setSd(String sd) {
-        this.sd = sd;
-    }
-
-    public void setSgg(String sgg) {
-        this.sgg = sgg;
-    }
-
-    public void setEmd(String emd) {
-        this.emd = emd;
-    }
 
 }

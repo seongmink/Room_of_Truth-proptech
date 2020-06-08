@@ -8,6 +8,7 @@ import com.roomoftruth.rot.fabric.FabricContractRecord;
 import com.roomoftruth.rot.fabric.FabricStatusRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.service.*;
+import com.roomoftruth.rot.util.AddressChangeUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,7 @@ public class ContractController {
     private final AgentService agentService;
     private final FavoriteService favoriteService;
 
-    static long contract_idx = 162836;
+    static long contract_idx = 162835;
 
     /**
      *
@@ -46,13 +47,21 @@ public class ContractController {
      */
     @PostMapping("/contract/save")
     @ApiOperation("계약 이력 등록하기")
-    public ResponseEntity<Object> save(@RequestBody @Valid ContractSaveRequestDto contractSaveRequestDto) throws Exception {
+    public String save(@RequestBody @Valid ContractSaveRequestDto contractSaveRequestDto) throws Exception {
 
-        if (contractSaveRequestDto.getAddress().equals("string")) {
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        // 시도 Address Util Change
+        String[] addr = contractSaveRequestDto.getAddress().split(" ");
+        AddressChangeUtil addressChangeUtil = new AddressChangeUtil();
+        addr[0] = addressChangeUtil.addressChange(addr[0]);
+
+        StringBuilder sb = new StringBuilder();
+        for(int i= 0; i < addr.length; i++){
+            sb.append(addr[i]+" ");
         }
 
-        contractSaveRequestDto.setSd("-");
+        contractSaveRequestDto.setAddress(sb.toString().trim());
+        contractSaveRequestDto.setSd(addr[0]);
+
         contractSaveRequestDto.setSgg("-");
         contractSaveRequestDto.setEmd("-");
         if (contractSaveRequestDto.getMonthly() == "" ||
@@ -65,28 +74,21 @@ public class ContractController {
         FabricContractRecord fabricContractRecord = new FabricContractRecord(contractSaveRequestDto);
         fabricContractRecord.setContract_id(PK);
 
-        System.out.println("원장에 데이터 저장 시작");
-        System.out.println(fabricContractRecord.toString());
         boolean result = iFabricCCService.registerContract(fabricContractRecord);
 
         if (result == true) {
-            System.out.println("원장 저장 성공");
-
             fabricContractRecord.setContract_id(String.valueOf(contract_idx));
 
             if(contractService.saveContract(fabricContractRecord) == contract_idx){
-                System.out.println("DB 저장 성공");
                 contract_idx++;
                 agentService.pointUp(contractSaveRequestDto.getLicense());
 
-                return new ResponseEntity<Object>(String.valueOf(PK), HttpStatus.OK);
+                return String.valueOf(contract_idx - 1);
             } else {
-                System.out.println("DB 저장 실패 !! ");
-                return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+                return "DB 저장 실패";
             }
         } else {
-            System.out.println("원장 저장 실패 !! ");
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            return "실패";
         }
     }
 
@@ -131,13 +133,13 @@ public class ContractController {
 
     /**
      *
-     * @param user_id
+     * @param num
      * @return agent_license
      */
-    @GetMapping("/addbuilding")
+    @GetMapping("/agent/{num}")
     @ApiOperation("이력 작성시 공인중개사 번호 가져오기")
-    public String getAgentLicense(@RequestParam Long user_id){
-        return contractService.getAgentLicense(user_id);
+    public String getAgentLicense(@PathVariable Long num){
+        return contractService.getAgentLicense(num);
     }
 
     /**
@@ -256,6 +258,7 @@ public class ContractController {
     public void dataTransfer(@RequestParam int startIndex, int endIndex) {
         contractService.dataTransfer(startIndex, endIndex);
     }
+
 
     /**
      *

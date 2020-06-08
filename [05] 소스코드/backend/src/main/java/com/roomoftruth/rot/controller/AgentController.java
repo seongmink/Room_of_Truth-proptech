@@ -2,6 +2,9 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.*;
+import com.roomoftruth.rot.fabric.FabricContractRecord;
+import com.roomoftruth.rot.fabric.FabricStatusRecord;
+import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.jwt.JwtService;
 import com.roomoftruth.rot.service.AgentService;
 import com.roomoftruth.rot.service.UserService;
@@ -10,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -19,14 +23,15 @@ import java.util.List;
 @Slf4j
 public class AgentController {
 
-	private final UserService userService;
-	private final AgentService agentService;
-	private final JwtService jwtService;
+    private final UserService userService;
+    private final AgentService agentService;
+    private final JwtService jwtService;
+    private final IFabricCCService iFabricCCService;
 
-	@PostMapping("/agent/check")
-	@ApiOperation("공인중개사 존재 여부 확인")
-	public String checkAgentLicense(@RequestParam String license) {
-		log.info("AgentController : checkAgentLicense / {}", license);
+    @PostMapping("/agent/check")
+    @ApiOperation("공인중개사 존재 여부 확인")
+    public String checkAgentLicense(@RequestParam String license) {
+        log.info("AgentController : checkAgentLicense / {}", license);
 
 //		if(!(license.equals("대전-SSAFY-001") || license.equals("대전-SSAFY-002") ||
 //				license.equals("대전-SSAFY-003") || license.equals("대전-SSAFY-004") ||
@@ -35,97 +40,65 @@ public class AgentController {
 //		}
 
 //		return "success";
-		return "failed";
-	}
+        return "failed";
+    }
 
-	@PostMapping("/agent")
-	@ApiOperation("공인중개사 등록")
-	public String createAgent(@RequestBody AgentSaveRequestDto requestDto) {
-		log.info("AgentController : createAgent / {}", requestDto.getUserNum());
+    @PostMapping("/agent")
+    @ApiOperation("공인중개사 등록")
+    public String createAgent(@RequestBody AgentSaveRequestDto requestDto) {
+        log.info("AgentController : createAgent / {}", requestDto.getUserNum());
 
-		agentService.save(requestDto);
+        agentService.save(requestDto);
 
-		User user = userService.findByNum(requestDto.getUserNum());
-		UserResponseDto userResponseDto = new UserResponseDto(user);
+        User user = userService.findByNum(requestDto.getUserNum());
+        UserResponseDto userResponseDto = new UserResponseDto(user);
 
-		String jwt = jwtService.create("user", userResponseDto, "user");
+        String jwt = jwtService.create("user", userResponseDto, "user");
 
-		return jwt;
-	}
+        return jwt;
+    }
 
-	@GetMapping("/agent/ranking")
-	@ApiOperation("랭킹 가져오기")
-	public List<AgentRankingResponseDto> getRanking() {
-		log.info("AgentController : getRanking");
+    @GetMapping("/agent/ranking")
+    @ApiOperation("랭킹 가져오기")
+    public List<AgentRankingResponseDto> getRanking() {
+        log.info("AgentController : getRanking");
 
-		agentService.updateRanking();
+        agentService.updateRanking();
 
-		return agentService.getRanking();
-	}
+        return agentService.getRanking();
+    }
 
-	@GetMapping("/agent/detail/{num}")
-	@ApiOperation("공인중개사 상세 조회")
-	public AgentDetailResponseDto getAgentDetail(@PathVariable long num) {
-		log.info("AgentController : getAgentDetail");
+    @GetMapping("/agent/detail/{num}")
+    @ApiOperation("공인중개사 상세 조회")
+    public AgentDetailResponseDto getAgentDetail(@PathVariable long num) {
+        log.info("AgentController : getAgentDetail");
 
-		return agentService.getAgentDetail(num);
-	}
+        return agentService.getAgentDetail(num);
+    }
 
 
-	@GetMapping("/agent/contribution/{num}")
-	@ApiOperation("공인중개사가 등록한 건물 조회")
-	public List<ContributionResponseDto> getAgentContribution(@PathVariable long num) {
-		log.info("AgentController : getAgentContribution");
+    @GetMapping("/agent/contribution/{num}")
+    @ApiOperation("공인중개사가 등록한 건물 조회")
+    public List<ContributionResponseDto> getAgentContribution(@PathVariable long num) {
+        log.info("AgentController : getAgentContribution");
 
-		return agentService.getAgentContribution(num);
-	}
+        return agentService.getAgentContribution(num);
+    }
 
-//	@GetMapping("/agent/contribution/detail/{type}/{num}")
-//	@ApiOperation("공인중개사가 등록한 건물 조회")
-//	public Building getAgentContributionDetail(@PathVariable(value = "type") int type, @PathVariable long num) {
-//		logger.info("POST : /api/agent/contribution/detail/{type}/{num}");
-//		// 계약 = 0, 상태 = 1
-//
-//		Building bd = new Building();
-//
-//		if(type == 0) {
-//			FabricRecord fb = new FabricRecord();
-//			fb = fabricService.query("BB" + num);
-//
-//			// fb를 bd로 데이터 복사
-//			bd.setNum(fb.getNum());
-//			bd.setAddress(fb.getAddress());
-//			bd.setDong(fb.getDong());
-//			bd.setHo(fb.getHo());
-//			bd.setLatitude(fb.getLatitude());
-//			bd.setLongitude(fb.getLongitude());
-//			bd.setSupply(fb.getSupply());
-//			bd.setExclusive(fb.getExclusive());
-//			bd.setDetails(fb.getDetails());
-//			bd.setCost(fb.getCost());
-//			bd.setStartDate(fb.getStartDate());
-//			bd.setEndDate(fb.getEndDate());
-//			bd.setName(fb.getName());
-//			bd.setLicense(fb.getLicense());
-//			bd.setImage("images/" + fb.getImage());
-//			bd.setType("거래");
-//
-//			// 빈 데이터에 대한 에러처리
-//			if (bd.getEndDate().equals("-")) {
-//				bd.setEndDate("");
-//			}
-//
-//			if (bd.getDong().equals("-")) {
-//				bd.setDong("");
-//			}
-//
-//			if (bd.getHo().equals("-")) {
-//				bd.setHo("");
-//			}
-//		}
-//
-//		return(bd);
-//	}
-//}
+    @GetMapping("/agent/contribution/detail/{type}/{num}")
+    @ApiOperation("공인중개사가 등록한 건물 조회")
+    public Object getAgentContributionDetail(@PathVariable(value = "type") int type, @PathVariable long num) {
+        System.out.println("POST : /api/agent/contribution/detail/{type}/{num}");
+        // 계약 = 0, 상태 = 1
 
+        if (type == 0) {
+            FabricContractRecord fabricContractRecord = new FabricContractRecord();
+            fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + num);
+            return fabricContractRecord;
+        } else {
+            FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();
+            fabricStatusRecord = iFabricCCService.queryStatus("STATUS" + num);
+            return fabricStatusRecord;
+        }
+    }
 }

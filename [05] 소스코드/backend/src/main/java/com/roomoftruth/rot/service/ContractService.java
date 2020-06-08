@@ -166,7 +166,7 @@ public class ContractService {
             Contract temp = data.get(i);
             if(temp.getSgg()==null || temp.getSgg() == ""){
                 temp.setSgg("-");
-            }
+            }   
             FabricContractRecord record = new FabricContractRecord(temp);
             iFabricCCService.registerContract(record);
         }
