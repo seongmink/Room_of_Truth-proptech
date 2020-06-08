@@ -21,7 +21,7 @@ import json
 DICT_KEY = {'교통':'trans','마트/편의점':'comforts','교육시설':'education','의료시설':'medical','음식점/카페':'eatery','문화시설':'culture'}
 
 class SmallPagination(PageNumberPagination):
-    page_size = 20
+    page_size = 6
     page_size_query_param = "page_size"
     max_page_size = 50
 
@@ -45,6 +45,78 @@ class Contract(APIView, PaginationHandlerMixin):
         else:
             serializer = self.serializer_class(instance, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
+
+class Around(APIView, PaginationHandlerMixin):
+    pagination_class = SmallPagination
+    serializer_class = serializers.AroundSerializer
+
+    def get(self, request, format=None, *args, **kwargs):
+        keyword = request.query_params.get("keyword",None)
+        # print(keyword)
+        # print('------------------------------')
+        if keyword is None:
+            results = {
+                "next":None,
+                "results":[]
+            }
+            return Response(results, status=status.HTTP_200_OK)
+        else:
+            instance = models.Around.objects.filter(address__contains=keyword)
+
+
+        page = self.paginate_queryset(instance)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(page,
+ many=True).data)
+            nxt = serializer.data.get('next')
+            if nxt is None:
+                nxt = None
+            else:
+                nxt = nxt.split("page=")[1]
+            results={
+                "next":nxt,
+                "results":[]
+            }
+            # print(serializer.data)
+            for item in serializer.data.get('results'):
+                b = models.Contract.objects.filter(address__contains=item.get('address')).first()
+                results['results'].append({
+                "num":item.get('around_id'),
+                "name":item.get('address'),
+                "image":b.image,
+                "longitude":b.longitude,
+                "latitude":b.latitude,
+                "trans":item.get('trans'),
+                "comforts":item.get('comforts'),
+                "education":item.get('education'),
+                "medical":item.get('medical'),
+                "eatery":item.get('eatery'),
+                "culture":item.get('culture'),
+                })
+        else:
+            serializer = self.serializer_class(instance, many=True)
+            results={
+                'next':None,
+                'results':[]
+            }
+            for item in serializer.data:
+                b = models.Contract.objects.filter(address__contains=item.get('address')).first()
+                results['results'].append({
+                "num":item.get('around_id'),
+                "name":item.get('address'),
+                "image":b.image,
+                "longitude":b.longitude,
+                "latitude":b.latitude,
+                "trans":item.get('trans'),
+                "comforts":item.get('comforts'),
+                "education":item.get('education'),
+                "medical":item.get('medical'),
+                "eatery":item.get('eatery'),
+                "culture":item.get('culture'),
+                })
+        return Response(results, status=status.HTTP_200_OK)
+
         
 
 class Favorites(APIView, PaginationHandlerMixin):
@@ -71,18 +143,17 @@ class Favorites(APIView, PaginationHandlerMixin):
         return Response(serializer.data, status=status.HTTP_200_OK)
         
 
-# TODO : 주소로 받아서 하는거
 class ContractChart(APIView):
 
     def getAgg(self, instance_addr, instance_emd, target,key):
-        label = {'2019-04':0,'2019-05':1,'2019-06':2,'2019-07':3,'2019-08':4,'2019-09':5,'2019-10':6,'2019-11':7,'2019-12':8,'2020-01':9,'2020-02':10,'2020-03':11,'2020-04':12}
+        label = {'2019-04':0,'2019-05':1,'2019-06':2,'2019-07':3,'2019-08':4,'2019-09':5,'2019-10':6,'2019-11':7,'2019-12':8,'2020-01':9,'2020-02':10,'2020-03':11,'2020-04':12,'2020-05':13,'2020-06':14}
         # --
         result_addr = (instance_addr.filter(detail=key)
         .values_list('contract_date__year', 'contract_date__month','detail')
         .annotate(Avg(target))
         .order_by('contract_date__year', 'contract_date__month'))
         # print(result_addr)
-        addrs = [None]*13
+        addrs = [None]*15
         for r in result_addr:
             m=str(r[1])
             if r[1]<10:
@@ -95,7 +166,7 @@ class ContractChart(APIView):
         .annotate(Avg(target))
         .order_by('contract_date__year', 'contract_date__month'))
         # print(result_emd)
-        emds = [None] * 13
+        emds = [None] * 15
         for r in result_emd:
             m=str(r[1])
             if r[1]<10:
@@ -116,7 +187,10 @@ class ContractChart(APIView):
         if detail is None:
             return Response("detail을 mm(매매),js(전세),ws(월세) 중 하나를 입력해주세요",status=status.HTTP_400_BAD_REQUEST)
         if address is not None and detail is not None: # 둘다 있는 값이라면
+            # print(address)
             bd = models.Contract.objects.filter(address=address).first()
+            # print(bd)
+            # print('-----------')
             sd = bd.sd
             sgg = bd.sgg # 시군구
             emd = bd.emd # 읍면동
@@ -135,7 +209,7 @@ class ContractChart(APIView):
                     return_value = {
                         'road_address':address,
                         'dong_address':calc_address,
-                        'label' : ['2019-04','2019-05','2019-06','2019-07','2019-08','2019-09','2019-10','2019-11','2019-12','2020-01','2020-02','2020-03','2020-04'],
+                        'label' : ['2019-04','2019-05','2019-06','2019-07','2019-08','2019-09','2019-10','2019-11','2019-12','2020-01','2020-02','2020-03','2020-04','2020-05','2020-06'],
                         'datatype': key,
                         'dong_data' :emds,
                         'addr_data':addrs,
@@ -146,7 +220,7 @@ class ContractChart(APIView):
                     return_value = {
                         'road_address':address,
                         'dong_address':calc_address,
-                        'label' : ['2019-04','2019-05','2019-06','2019-07','2019-08','2019-09','2019-10','2019-11','2019-12','2020-01','2020-02','2020-03','2020-04'],
+                        'label' : ['2019-04','2019-05','2019-06','2019-07','2019-08','2019-09','2019-10','2019-11','2019-12','2020-01','2020-02','2020-03','2020-04','2020-05','2020-06'],
                         'datatype': key,
                         'dong_data' :emds,
                         'addr_data':addrs
@@ -201,7 +275,6 @@ class Rank(APIView):
         queryset = instance.values_list('around').annotate(sc = Avg('score')).order_by('-sc')[:3]
         result = []
         if len(queryset) <3:
-            # TODO : 각 지역별로 관심해논게 3개 이하라면, 그냥 유저 선호도를 기반으로 상위 3개를 준다
             instance = models.Around.objects.filter(address__contains=addr).order_by('-'+DICT_KEY[interest.first],'-'+DICT_KEY[interest.second],'-'+DICT_KEY[interest.third])
             queryset = [[id.around_id] for id in instance[:3]]
         for q in  queryset:
@@ -333,7 +406,6 @@ class Prefer(APIView):
             
         return Response(results, status=status.HTTP_200_OK)
 
-    # TODO : 관심 지역에서 평가한 항목을 가지고 아이템(이력) 추천
 class Recommend(APIView):
 
     def get(self, request, pk):
@@ -354,7 +426,6 @@ class Recommend(APIView):
         if len(favs)==0:
             print("--0")
             # 평가 내린게 없다면 around를 관심도에 따라 정렬을 한 다음 걍 준다;;
-            # TODO : 평가가 없는 경우 관심도 9개에 따라 평가를 내리게끔 유도하면 어떨까
             sorted_around = models.Around.objects.filter(address__contains=addr).order_by('-'+DICT_KEY[interest.first],'-'+DICT_KEY[interest.second],'-'+DICT_KEY[interest.third])[:9]
             # print(str(sorted_around.query))
             results=[]
