@@ -165,7 +165,7 @@ export default {
       getUserBlockDetails(this.num, this.type, responses=>{
 
          this.datadetail = responses.data;  
-      
+                console.log(responses)
                 addAround(this.datadetail.address, responses=>{
                
                 })
