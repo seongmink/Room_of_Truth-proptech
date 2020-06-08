@@ -21,7 +21,7 @@ import json
 DICT_KEY = {'교통':'trans','마트/편의점':'comforts','교육시설':'education','의료시설':'medical','음식점/카페':'eatery','문화시설':'culture'}
 
 class SmallPagination(PageNumberPagination):
-    page_size = 20
+    page_size = 6
     page_size_query_param = "page_size"
     max_page_size = 50
 
@@ -53,19 +53,70 @@ class Around(APIView, PaginationHandlerMixin):
 
     def get(self, request, format=None, *args, **kwargs):
         keyword = request.query_params.get("keyword",None)
-      
+        # print(keyword)
+        # print('------------------------------')
         if keyword is None:
-            instance = models.Around.objects.all()
+            results = {
+                "next":None,
+                "results":[]
+            }
+            return Response(results, status=status.HTTP_200_OK)
         else:
             instance = models.Around.objects.filter(address__contains=keyword)
+
 
         page = self.paginate_queryset(instance)
         if page is not None:
             serializer = self.get_paginated_response(self.serializer_class(page,
  many=True).data)
+            nxt = serializer.data.get('next')
+            if nxt is None:
+                nxt = None
+            else:
+                nxt = nxt.split("page=")[1]
+            results={
+                "next":nxt,
+                "results":[]
+            }
+            # print(serializer.data)
+            for item in serializer.data.get('results'):
+                b = models.Contract.objects.filter(address__contains=item.get('address')).first()
+                results['results'].append({
+                "num":item.get('around_id'),
+                "name":item.get('address'),
+                "image":b.image,
+                "longitude":b.longitude,
+                "latitude":b.latitude,
+                "trans":item.get('trans'),
+                "comforts":item.get('comforts'),
+                "education":item.get('education'),
+                "medical":item.get('medical'),
+                "eatery":item.get('eatery'),
+                "culture":item.get('culture'),
+                })
         else:
             serializer = self.serializer_class(instance, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            results={
+                'next':None,
+                'results':[]
+            }
+            for item in serializer.data:
+                b = models.Contract.objects.filter(address__contains=item.get('address')).first()
+                results['results'].append({
+                "num":item.get('around_id'),
+                "name":item.get('address'),
+                "image":b.image,
+                "longitude":b.longitude,
+                "latitude":b.latitude,
+                "trans":item.get('trans'),
+                "comforts":item.get('comforts'),
+                "education":item.get('education'),
+                "medical":item.get('medical'),
+                "eatery":item.get('eatery'),
+                "culture":item.get('culture'),
+                })
+        return Response(results, status=status.HTTP_200_OK)
+
         
 
 class Favorites(APIView, PaginationHandlerMixin):
@@ -92,7 +143,6 @@ class Favorites(APIView, PaginationHandlerMixin):
         return Response(serializer.data, status=status.HTTP_200_OK)
         
 
-# TODO : 주소로 받아서 하는거
 class ContractChart(APIView):
 
     def getAgg(self, instance_addr, instance_emd, target,key):
@@ -225,7 +275,6 @@ class Rank(APIView):
         queryset = instance.values_list('around').annotate(sc = Avg('score')).order_by('-sc')[:3]
         result = []
         if len(queryset) <3:
-            # TODO : 각 지역별로 관심해논게 3개 이하라면, 그냥 유저 선호도를 기반으로 상위 3개를 준다
             instance = models.Around.objects.filter(address__contains=addr).order_by('-'+DICT_KEY[interest.first],'-'+DICT_KEY[interest.second],'-'+DICT_KEY[interest.third])
             queryset = [[id.around_id] for id in instance[:3]]
         for q in  queryset:
@@ -357,7 +406,6 @@ class Prefer(APIView):
             
         return Response(results, status=status.HTTP_200_OK)
 
-    # TODO : 관심 지역에서 평가한 항목을 가지고 아이템(이력) 추천
 class Recommend(APIView):
 
     def get(self, request, pk):
@@ -378,7 +426,6 @@ class Recommend(APIView):
         if len(favs)==0:
             print("--0")
             # 평가 내린게 없다면 around를 관심도에 따라 정렬을 한 다음 걍 준다;;
-            # TODO : 평가가 없는 경우 관심도 9개에 따라 평가를 내리게끔 유도하면 어떨까
             sorted_around = models.Around.objects.filter(address__contains=addr).order_by('-'+DICT_KEY[interest.first],'-'+DICT_KEY[interest.second],'-'+DICT_KEY[interest.third])[:9]
             # print(str(sorted_around.query))
             results=[]
