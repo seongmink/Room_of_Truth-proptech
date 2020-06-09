@@ -10,7 +10,6 @@ import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.service.*;
 import com.roomoftruth.rot.util.AddressChangeUtil;
 import io.swagger.annotations.ApiOperation;
-import jnr.ffi.types.socklen_t;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +35,7 @@ public class ContractController {
     private final AgentService agentService;
     private final FavoriteService favoriteService;
 
-    static long contract_idx = 162850;
+    static long contract_idx = 162851;
 
     /**
      *
@@ -78,12 +77,14 @@ public class ContractController {
         boolean result = iFabricCCService.registerContract(fabricContractRecord);
 
         if (result == true) {
+            System.out.println("원장 저장 성공");
             fabricContractRecord.setContract_id(String.valueOf(contract_idx));
 
             if(contractService.saveContract(fabricContractRecord) == contract_idx){
+                System.out.println("contract_idx 증가시킨다");
                 contract_idx++;
                 agentService.pointUp(contractSaveRequestDto.getLicense());
-
+                System.out.println("point Up");
                 return String.valueOf(contract_idx - 1);
             } else {
                 return "DB 저장 실패";
@@ -212,7 +213,7 @@ public class ContractController {
             statusOne.setLatitude(fabricStatusRecord.getLatitude());
             statusOne.setFloor(fabricStatusRecord.getFloor());
             statusOne.setHo(fabricStatusRecord.getHo());
-            statusOne.setCategory(fabricStatusRecord.getCategory());
+            statusOne.setKind(fabricStatusRecord.getCategory());
             statusOne.setDetail(fabricStatusRecord.getDetail());
             statusOne.setCost(fabricStatusRecord.getCost());
             statusOne.setLicense(fabricStatusRecord.getLicense());
