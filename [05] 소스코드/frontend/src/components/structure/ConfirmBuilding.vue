@@ -15,7 +15,7 @@
                     <div style="margin-top:60px;">
                         <div v-if="datadetail!=null&&datadetail.category==null" style="border:1px solid #EAEAEA">
                         <div style="margin-top:30px;">
-                            <h4 class="mb-3">{{datadetail.contractedAt}}</h4>
+                            <h4 class="mb-3">{{datadetail.contract_date}}</h4>
                             <div style="margin-top:-20px; margin-bottom:50px">
                                 <h3><span style="background-color:#B7F0B1; color:#00c03f;" class="badge badge-pill badge-danger text-uppercase">계약이력</span> </h3>
                             </div>
