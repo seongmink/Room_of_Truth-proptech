@@ -1,7 +1,6 @@
 package com.roomoftruth.rot.fabric;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -10,8 +9,7 @@ import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.json.JsonValue;
-
+import lombok.RequiredArgsConstructor;
 import org.hyperledger.fabric.sdk.BlockEvent.TransactionEvent;
 import org.hyperledger.fabric.sdk.ChaincodeID;
 import org.hyperledger.fabric.sdk.Channel;
@@ -29,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class FabricCCService implements IFabricCCService {
 	private static final Logger logger = LoggerFactory.getLogger(FabricCCService.class);
@@ -88,10 +87,6 @@ public class FabricCCService implements IFabricCCService {
 	 * 채널 접근 체인코드를 이용하기 위하여 구축해놓은 패브릭 네트워크의 채널을 가져오는 기능을 구현한다.
 	 */
 
-	/**
-	 *
-	 * @return channelLoad
-	 */
 	public boolean loadChannel() {
 		HFCAClient caClient = null;
 		CryptoSuite cryptoSuite = null;
@@ -123,28 +118,6 @@ public class FabricCCService implements IFabricCCService {
 		return true;
 	}
 
-	private FabricContractRecord getFabricContractRecord(JsonObject object) {
-		FabricContractRecord fabricContractRecord = new FabricContractRecord(object.getString("contract_id"), object.getString("address"),
-				object.getString("sd"), object.getString("sgg"), object.getString("emd"), object.getString("longitude"),
-				object.getString("latitude"), object.getString("exclusive"), object.getString("floor"), object.getString("ho"),
-				object.getString("kind"), object.getString("detail"), object.getString("cost"), object.getString("monthly"),
-				object.getString("license"), object.getString("image"), object.getString("contract_date")
-				);
-
-		return fabricContractRecord;
-	}
-
-	private FabricStatusRecord getFabricStatusRecord(JsonObject object) {
-		FabricStatusRecord fabricStatusRecord = new FabricStatusRecord(object.getString("status_id"), object.getString("address"),
-				object.getString("sd"), object.getString("sgg"), object.getString("emd"), object.getString("longitude"),
-				object.getString("latitude"), object.getString("floor"), object.getString("ho"), object.getString("category"),
-				object.getString("detail"), object.getString("cost"), object.getString("license"), object.getString("image"),
-				object.getString("exclusive"), object.getString("contract_date"), object.getString("end_date")
-		);
-
-		return fabricStatusRecord;
-	}
-
 	/**
 	 *
 	 * @param num
@@ -152,7 +125,9 @@ public class FabricCCService implements IFabricCCService {
 	 */
 	@Override
 	public FabricContractRecord queryContract(String num) {
-		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
+		if (this.hfClient == null || this.channel == null)
+			loadChannel();
+		ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
 		QueryByChaincodeRequest qpr = hfClient.newQueryProposalRequest();
 		qpr.setChaincodeID(id);
 		qpr.setFcn("queryContract");
@@ -188,7 +163,9 @@ public class FabricCCService implements IFabricCCService {
 	 */
 	@Override
 	public FabricStatusRecord queryStatus(String num) {
-		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
+		if (this.hfClient == null || this.channel == null)
+			loadChannel();
+		ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
 		QueryByChaincodeRequest qpr = hfClient.newQueryProposalRequest();
 		qpr.setChaincodeID(id);
 		qpr.setFcn("queryStatus");
@@ -223,12 +200,17 @@ public class FabricCCService implements IFabricCCService {
 	 */
 	@Override
 	public boolean registerContract(FabricContractRecord fc) {
-		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
+		if (this.hfClient == null || this.channel == null)
+			loadChannel();
+		ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
 		TransactionProposalRequest tpr = hfClient.newTransactionProposalRequest();
 
 		tpr.setChaincodeID(id);
 		tpr.setFcn("registerContract");
 		String[] args = {
+				/**
+				 * 수정 필요
+				*/
 				fc.getContract_id(), fc.getAddress(), fc.getSd(), fc.getSgg(), fc.getEmd(), fc.getLongitude(),
 				fc.getLatitude(), fc.getExclusive(), fc.getFloor(), fc.getHo(), fc.getKind(), fc.getDetail(),
 				fc.getCost(), fc.getMonthly(), fc.getLicense(), fc.getImage(), fc.getContract_date()
@@ -236,7 +218,7 @@ public class FabricCCService implements IFabricCCService {
 		tpr.setArgs(args);
 		Collection<ProposalResponse> res;
 		try {
-			
+
 			res = channel.sendTransactionProposal(tpr);
 
 			List<ProposalResponse> invalid = res.stream().filter(r -> r.isInvalid()).collect(Collectors.toList());
@@ -273,13 +255,16 @@ public class FabricCCService implements IFabricCCService {
 	 */
 	@Override
 	public boolean registerStatus(FabricStatusRecord fs) {
-		logger.info("Request Regist Building Date :" + fs.toString());
-
-		ChaincodeID id = ChaincodeID.newBuilder().setName("rot01").build();
+		if (this.hfClient == null || this.channel == null)
+			loadChannel();
+		ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
 		TransactionProposalRequest tpr = hfClient.newTransactionProposalRequest();
 
 		tpr.setChaincodeID(id);
 		tpr.setFcn("registerStatus");
+		/**
+		 * 수정 필요
+		 */
 		String[] args = {
 				fs.getStatus_id(), fs.getAddress(), fs.getSd(), fs.getSgg(), fs.getEmd(), fs.getLongitude(),
 				fs.getLatitude(), fs.getFloor(), fs.getHo(), fs.getCategory(), fs.getDetail(), fs.getCost(),
@@ -317,4 +302,26 @@ public class FabricCCService implements IFabricCCService {
 		return false;
 	}
 
+
+	private FabricContractRecord getFabricContractRecord(JsonObject object) {
+		FabricContractRecord fabricContractRecord = new FabricContractRecord(object.getString("contract_id"), object.getString("address"),
+				object.getString("sd"), object.getString("sgg"), object.getString("emd"), object.getString("longitude"),
+				object.getString("latitude"), object.getString("exclusive"), object.getString("floor"), object.getString("ho"),
+				object.getString("kind"), object.getString("detail"), object.getString("cost"), object.getString("monthly"),
+				object.getString("license"), object.getString("image"), object.getString("contract_date")
+		);
+
+		return fabricContractRecord;
+	}
+
+	private FabricStatusRecord getFabricStatusRecord(JsonObject object) {
+		FabricStatusRecord fabricStatusRecord = new FabricStatusRecord(object.getString("status_id"), object.getString("address"),
+				object.getString("sd"), object.getString("sgg"), object.getString("emd"), object.getString("longitude"),
+				object.getString("latitude"), object.getString("floor"), object.getString("ho"), object.getString("category"),
+				object.getString("detail"), object.getString("cost"), object.getString("license"), object.getString("image"),
+				object.getString("exclusive"), object.getString("contract_date"), object.getString("end_date")
+		);
+
+		return fabricStatusRecord;
+	}
 }
