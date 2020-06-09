@@ -145,7 +145,8 @@ function getrecord(city,local,success) {
     instance
         .get("/api/contract/search/?city="+city+"&local="+local)
         .then(function (response) {
-          
+            console.log("조회하기시 모든이력")
+            console.log(response.data)
             success(response.data)
         })
         .catch(error => {
