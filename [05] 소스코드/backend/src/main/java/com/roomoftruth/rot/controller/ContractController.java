@@ -10,6 +10,7 @@ import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.service.*;
 import com.roomoftruth.rot.util.AddressChangeUtil;
 import io.swagger.annotations.ApiOperation;
+import jnr.ffi.types.socklen_t;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class ContractController {
     private final AgentService agentService;
     private final FavoriteService favoriteService;
 
-    static long contract_idx = 162842;
+    static long contract_idx = 162850;
 
     /**
      *
@@ -280,6 +281,7 @@ public class ContractController {
         if (type == 0) {
             FabricContractRecord fabricContractRecord = new FabricContractRecord();
             fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + num);
+            System.out.println(fabricContractRecord.toString());
             return fabricContractRecord;
         } else {
             FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();

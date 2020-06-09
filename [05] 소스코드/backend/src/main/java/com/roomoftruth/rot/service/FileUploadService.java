@@ -18,10 +18,10 @@ import java.util.Date;
 @Service
 public class FileUploadService {
 
-    public static final String SAVE_FOLDER = "/home/ubuntu/images/";
-    public static final String IMAGE_URL = "http://k02b2031.p.ssafy.io:8080/images/";
-//    public static final String SAVE_FOLDER = "C:/git/s02p31b203/[05] 소스코드/backend/src/main/resources/static/images/";
-//    public static final String IMAGE_URL = "localhost:8080/images/";
+//    public static final String SAVE_FOLDER = "/home/ubuntu/images/";
+//    public static final String IMAGE_URL = "http://k02b2031.p.ssafy.io:8080/images/";
+    public static final String SAVE_FOLDER = "C:/git/s02p31b203/[05] 소스코드/backend/src/main/resources/static/images/";
+    public static final String IMAGE_URL = "localhost:8080/images/";
 
     public final UserRepository userRepository;
 

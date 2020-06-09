@@ -26,7 +26,7 @@ public class StatusController {
     private final IFabricCCService iFabricCCService;
     private final AgentService agentService;
 
-    static int status_idx = 4;
+    static int status_idx = 6;
 
     /**
      *
