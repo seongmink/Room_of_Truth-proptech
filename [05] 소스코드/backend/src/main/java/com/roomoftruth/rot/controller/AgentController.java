@@ -2,8 +2,6 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.*;
-import com.roomoftruth.rot.fabric.FabricContractRecord;
-import com.roomoftruth.rot.fabric.FabricStatusRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.jwt.JwtService;
 import com.roomoftruth.rot.service.AgentService;

@@ -4,8 +4,6 @@ import com.roomoftruth.rot.domain.Around;
 import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.dto.*;
-import com.roomoftruth.rot.fabric.FabricContractRecord;
-import com.roomoftruth.rot.fabric.FabricStatusRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.service.*;
 import com.roomoftruth.rot.util.AddressChangeUtil;

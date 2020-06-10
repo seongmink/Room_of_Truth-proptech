@@ -1,16 +1,14 @@
 package com.roomoftruth.rot.fabric;
 
-import java.util.List;
-
 public interface IFabricCCService {
 
-	public FabricContractRecord queryContract(String num);
+	public ContractRecord queryContract(String num);
 
-	public FabricStatusRecord queryStatus(String num);
+	public StatusRecord queryStatus(String num);
 
-	public boolean registerContract(FabricContractRecord fc);
+	public boolean registerContract(ContractRecord fc);
 
-	public boolean registerStatus(FabricStatusRecord fs);
+	public boolean registerStatus(StatusRecord fs);
 
 	public boolean loadChannel();
 

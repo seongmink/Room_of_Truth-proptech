@@ -1,9 +1,6 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Status;
-import com.roomoftruth.rot.dto.ContractFindResponseDto;
-import com.roomoftruth.rot.dto.StatusResponseDto;
-import com.roomoftruth.rot.fabric.FabricStatusRecord;
 import com.roomoftruth.rot.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

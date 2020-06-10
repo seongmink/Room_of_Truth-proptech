@@ -1,12 +1,9 @@
 package com.roomoftruth.rot.domain;
 
-import com.roomoftruth.rot.dto.ContractSaveRequestDto;
-import com.roomoftruth.rot.fabric.FabricContractRecord;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

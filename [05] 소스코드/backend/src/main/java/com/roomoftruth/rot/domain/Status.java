@@ -1,7 +1,5 @@
 package com.roomoftruth.rot.domain;
 
-import com.roomoftruth.rot.fabric.FabricContractRecord;
-import com.roomoftruth.rot.fabric.FabricStatusRecord;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

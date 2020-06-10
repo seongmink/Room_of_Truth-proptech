@@ -1,7 +1,5 @@
 package com.roomoftruth.rot.controller;
 
-import com.roomoftruth.rot.dto.StatusSaveRequestDto;
-import com.roomoftruth.rot.fabric.FabricStatusRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.service.AgentService;
 import com.roomoftruth.rot.service.StatusService;
@@ -9,8 +7,6 @@ import com.roomoftruth.rot.util.AddressChangeUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
