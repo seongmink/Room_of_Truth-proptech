@@ -34,7 +34,7 @@ class Contract(APIView, PaginationHandlerMixin):
         area = request.query_params.get("area",None)
       
         if area is not None:
-            instance = models.Contract.objects.filter(address__contains=area)
+            instance = models.Contract.objects.filter(around__address__contains=area)
         else:
             instance = models.Contract.objects.all()
 
@@ -79,8 +79,9 @@ class Around(APIView, PaginationHandlerMixin):
                 "results":[]
             }
             # print(serializer.data)
+            print('----------------------------------------------->>')
             for item in serializer.data.get('results'):
-                b = models.Contract.objects.filter(address__contains=item.get('address')).first()
+                b = models.Around.objects.get(pk=item.get('around_id')).contract_around.first()
                 # print(b)
                 if b is None:
                     continue
@@ -88,8 +89,8 @@ class Around(APIView, PaginationHandlerMixin):
                 "num":item.get('around_id'),
                 "name":item.get('address'),
                 "image":b.image,
-                "longitude":b.longitude,
-                "latitude":b.latitude,
+                "longitude":item.get('longitude'),
+                "latitude":item.get('latitude'),
                 "trans":item.get('trans'),
                 "comforts":item.get('comforts'),
                 "education":item.get('education'),
@@ -104,15 +105,15 @@ class Around(APIView, PaginationHandlerMixin):
                 'results':[]
             }
             for item in serializer.data:
-                b = models.Contract.objects.filter(address__contains=item.get('address')).first()
+                b = models.Around.objects.get(pk=item.get('around_id')).contract_around.first()
                 if b in None:
                     continue
                 results['results'].append({
                 "num":item.get('around_id'),
                 "name":item.get('address'),
                 "image":b.image,
-                "longitude":b.longitude,
-                "latitude":b.latitude,
+                "longitude":item.get('longitude'),
+                "latitude":item.get('latitude'),
                 "trans":item.get('trans'),
                 "comforts":item.get('comforts'),
                 "education":item.get('education'),
@@ -193,24 +194,26 @@ class ContractChart(APIView):
             return Response("detail을 mm(매매),js(전세),ws(월세) 중 하나를 입력해주세요",status=status.HTTP_400_BAD_REQUEST)
         if address is not None and detail is not None: # 둘다 있는 값이라면
             # print(address)
-            bd = models.Contract.objects.filter(address=address).first()
+            bd = models.Around.objects.filter(address=address).first()
             # print(bd)
             # print('-----------')
-            sd = bd.sd
-            sgg = bd.sgg # 시군구
-            emd = bd.emd # 읍면동
+            bd_address = bd.address.split(" ")
+            sd = bd_address[0]
+            sgg = bd_address[1]
             if sd=="세종특별자치시":
-                calc_address = sd+" "+emd
+                calc_address = sd
             else:
-                calc_address = sd+" "+sgg+" "+emd
-            instance_addr = models.Contract.objects.all().filter(address=address)
-            instance_emd = models.Contract.objects.all().filter(address__contains=calc_address)
+                calc_address = sd+" "+sgg
+
+            make_ids = models.Around.objects.filter(address__contains=sd).values_list('around_id', flat=True)
+            instance_sd = models.Contract.objects.filter(around__in=make_ids) # 검색 주소와 같은 시도에 위치하는 것
+            instance_addr = bd.contract_around.all() # 주소가 딱 같은거
             keywords = {"js":"전세", "ws":"월세","mm":"매매"}
             if detail in keywords:
                 key = keywords[detail] # 입력받은 타입
-                addrs, emds = self.getAgg(instance_addr, instance_emd, "cost", key)
+                addrs, emds = self.getAgg(instance_addr, instance_sd, "cost", key)
                 if key=='월세': # 월세의 경우 보증금도 같이 연산해서 줘야함
-                    m_addrs, m_emds = self.getAgg(instance_addr, instance_emd, "monthly", key)
+                    m_addrs, m_emds = self.getAgg(instance_addr, instance_sd, "monthly", key)
                     return_value = {
                         'road_address':address,
                         'dong_address':calc_address,
@@ -242,8 +245,7 @@ class ContractAround(APIView):
     def get(self, request, pk):
         contract = get_object_or_404(models.Contract, pk=pk)
         # print(contract.address)
-        instance = models.Around.objects.get(address=contract.address)
-        serializer = serializers.AroundSerializer(instance)
+        serializer = serializers.AroundSerializer(contract.around)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 # 로그인 하지않은 유저에게 보여줄 전체 상위 9개의 이력
@@ -255,17 +257,19 @@ class TotalRank(APIView):
         # print(favs[:9])
         for idx, f in enumerate(favs):
             arnd = models.Around.objects.get(pk=f[0])
-            b = models.Contract.objects.filter(address=arnd.address).first()
+            b = arnd.contract_around.first()
             results.append({
                 "rank":idx+1,
                 "num" : arnd.around_id,
                 "name" : arnd.address,
                 "image": b.image,
-                "latitude":b.latitude,
-                "longitude":b.longitude
+                "latitude":arnd.latitude,
+                "longitude":arnd.longitude
             })
         return Response(results, status=status.HTTP_200_OK)
 
+## TODO : 여기까지 검토했다
+## -----------------
 # 나이대,성별, 카테고리에 따른 첫 화면 3개 선정
 class Rank(APIView):
     def getResult(self, users,addr,pk,interest):

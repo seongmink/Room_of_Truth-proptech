@@ -30,6 +30,8 @@ class Agent(models.Model):
 class Around(models.Model):
     around_id = models.BigAutoField(primary_key=True)
     address = models.CharField(unique=True, max_length=100, blank=True, null=True)
+    longitude = models.CharField(max_length=45, blank=True, null=True)
+    latitude = models.CharField(max_length=45, blank=True, null=True)
     trans = models.IntegerField(blank=True, null=True)
     comforts = models.IntegerField(blank=True, null=True)
     education = models.IntegerField(blank=True, null=True)
@@ -44,12 +46,7 @@ class Around(models.Model):
 
 class Contract(models.Model):
     contract_id = models.BigAutoField(primary_key=True)
-    address = models.CharField(max_length=100, blank=True, null=True)
-    sd = models.CharField(max_length=20, blank=True, null=True)
-    sgg = models.CharField(max_length=20, blank=True, null=True)
-    emd = models.CharField(max_length=20, blank=True, null=True)
-    latitude = models.CharField(max_length=45, blank=True, null=True)
-    longitude = models.CharField(max_length=45, blank=True, null=True)
+    around = models.ForeignKey('Around', on_delete=models.CASCADE, db_column='around_around_id', blank=True, null=True, related_name="contract_around")
     exclusive = models.CharField(max_length=10, blank=True, null=True)
     floor = models.CharField(max_length=10, blank=True, null=True)
     ho = models.CharField(max_length=10, blank=True, null=True)
@@ -60,6 +57,8 @@ class Contract(models.Model):
     license = models.CharField(max_length=45, blank=True, null=True)
     image = models.CharField(max_length=200, blank=True, null=True)
     contract_date = models.DateField(blank=True, null=True)
+    created_at = models.CharField(max_length=45, blank=True, null=True)
+    is_expired = models.CharField(max_length=10, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -103,29 +102,6 @@ class Search(models.Model):
     class Meta:
         managed = False
         db_table = 'search'
-
-
-class Status(models.Model):
-    status_id = models.BigIntegerField(primary_key=True)
-    address = models.CharField(max_length=100, blank=True, null=True)
-    sd = models.CharField(max_length=20, blank=True, null=True)
-    sgg = models.CharField(max_length=20, blank=True, null=True)
-    emd = models.CharField(max_length=20, blank=True, null=True)
-    latitude = models.CharField(max_length=45, blank=True, null=True)
-    longitude = models.CharField(max_length=45, blank=True, null=True)
-    exclusive = models.CharField(max_length=10, blank=True, null=True)
-    floor = models.CharField(max_length=10, blank=True, null=True)
-    ho = models.CharField(max_length=10, blank=True, null=True)
-    category = models.CharField(max_length=10, blank=True, null=True)
-    detail = models.CharField(max_length=10, blank=True, null=True)
-    cost = models.BigIntegerField(blank=True, null=True)
-    license = models.CharField(max_length=45, blank=True, null=True)
-    image = models.CharField(max_length=200, blank=True, null=True)
-    report_date = models.DateField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'status'
 
 
 class User(models.Model):
