@@ -2,17 +2,29 @@ from .models import Contract,Favorite,Around,User,Interest
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
+class AroundSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Around
+        fields=[
+            "around_id",
+            "address",
+            "latitude",
+            "longitude",
+            "trans",
+            "comforts",
+            "education",
+            "medical",
+            "eatery",
+            "culture"
+        ]
+
 class ContractSerializer(serializers.ModelSerializer):
+    around = AroundSerializer(read_only=True)
     class Meta:
         model = Contract
         fields = [
             "contract_id",
-            "address",
-            "sd",
-            "sgg",
-            "emd",
-            "latitude",
-            "longitude",
+            "around",
             "exclusive",
             "floor",
             "ho",
@@ -24,19 +36,7 @@ class ContractSerializer(serializers.ModelSerializer):
             "image",
             "contract_date",
         ]
-class AroundSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Around
-        fields=[
-            "around_id",
-            "address",
-            "trans",
-            "comforts",
-            "education",
-            "medical",
-            "eatery",
-            "culture"
-        ]
+        
 class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite

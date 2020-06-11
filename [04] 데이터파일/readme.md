@@ -60,7 +60,16 @@
       ---
     
       
-    
+  
   * db_structure_xxxx.sql  
     
     - 2020-xx-xx자 데이터베이스 스키마 백업 파일  
+      ---
+    
+      
+  
+  * 0610contract_around값수정후_db업로드.ipynb
+    
+    - contract, status 테이블 칼럼 수정(일부 추가, 속성값 변경)  
+    - contract, status에 around_id를 FK로 등록해줌  
+    - contract,status에 around_id 등록하면서 address, sd, sgg, emd 데이터 제거(중복제거)  
