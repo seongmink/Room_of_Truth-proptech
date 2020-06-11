@@ -15,9 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class ContractRecord {
     private String contract_id;
-	private String address;
-	private String longitude;
-	private String latitude;
+	private String around_around_id;
 	private String exclusive;
 	private String floor;
 	private String ho;
@@ -28,8 +26,8 @@ public class ContractRecord {
 	private String license;
 	private String image;
 	private String contract_date;
-	private String createdAt;
-	private String expiredAt;
+	private String created_at;
+	private String is_expired;
 
     public ContractRecord() {
     }

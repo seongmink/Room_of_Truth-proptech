@@ -15,9 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class StatusRecord {
     private String status_id;
-    private String address;
-    private String longitude;
-    private String latitude;
+    private String around_around_id;
     private String floor;
     private String ho;
     private String category;
@@ -27,8 +25,8 @@ public class StatusRecord {
     private String image;
     private String start_date;
     private String end_date;
-    private String createdAt;
-    private String expiredAt;
+    private String created_at;
+    private String is_expired;
 
     public StatusRecord(){}
 }
