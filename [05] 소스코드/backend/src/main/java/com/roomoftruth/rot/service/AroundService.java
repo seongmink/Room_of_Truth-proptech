@@ -1,5 +1,6 @@
 package com.roomoftruth.rot.service;
 
+import com.roomoftruth.rot.domain.Address;
 import com.roomoftruth.rot.domain.Around;
 import com.roomoftruth.rot.repository.AroundRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,9 @@ public class AroundService {
 
     public Long findByAddress(String addr){
         return aroundRepository.findByAddress(addr);
+    }
+
+    public Around findTop1ByAddress(String address){
+        return aroundRepository.findTop1ByAddress(address);
     }
 }

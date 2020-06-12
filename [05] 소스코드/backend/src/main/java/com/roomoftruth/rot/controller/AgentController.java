@@ -2,8 +2,6 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.*;
-import com.roomoftruth.rot.fabric.FabricContractRecord;
-import com.roomoftruth.rot.fabric.FabricStatusRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.jwt.JwtService;
 import com.roomoftruth.rot.service.AgentService;
@@ -69,28 +67,28 @@ public String checkAgentLicense(@RequestParam String license) {
     }
 
 
-    @GetMapping("/agent/contribution/{num}")
-    @ApiOperation("공인중개사가 등록한 건물 조회")
-    public List<ContributionResponseDto> getAgentContribution(@PathVariable long num) {
-        log.info("AgentController : getAgentContribution");
+//    @GetMapping("/agent/contribution/{num}")
+//    @ApiOperation("공인중개사가 등록한 건물 조회")
+//    public List<ContributionResponseDto> getAgentContribution(@PathVariable long num) {
+//        log.info("AgentController : getAgentContribution");
+//
+//        return agentService.getAgentContribution(num);
+//    }
 
-        return agentService.getAgentContribution(num);
-    }
-
-    @GetMapping("/agent/contribution/detail/{type}/{num}")
-    @ApiOperation("공인중개사가 등록한 건물 조회")
-    public Object getAgentContributionDetail(@PathVariable(value = "type") int type, @PathVariable long num) {
-        System.out.println("POST : /api/agent/contribution/detail/{type}/{num}");
-        // 계약 = 0, 상태 = 1
-
-        if (type == 0) {
-            FabricContractRecord fabricContractRecord = new FabricContractRecord();
-            fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + num);
-            return fabricContractRecord;
-        } else {
-            FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();
-            fabricStatusRecord = iFabricCCService.queryStatus("STATUS" + num);
-            return fabricStatusRecord;
-        }
-    }
+//    @GetMapping("/agent/contribution/detail/{type}/{num}")
+//    @ApiOperation("공인중개사가 등록한 건물 조회")
+//    public Object getAgentContributionDetail(@PathVariable(value = "type") int type, @PathVariable long num) {
+//        System.out.println("POST : /api/agent/contribution/detail/{type}/{num}");
+//        // 계약 = 0, 상태 = 1
+//
+//        if (type == 0) {
+//            FabricContractRecord fabricContractRecord = new FabricContractRecord();
+//            fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + num);
+//            return fabricContractRecord;
+//        } else {
+//            FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();
+//            fabricStatusRecord = iFabricCCService.queryStatus("STATUS" + num);
+//            return fabricStatusRecord;
+//        }
+//    }
 }

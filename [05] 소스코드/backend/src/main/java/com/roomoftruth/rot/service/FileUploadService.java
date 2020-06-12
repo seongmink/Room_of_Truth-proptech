@@ -29,7 +29,7 @@ public class FileUploadService {
     public String fileUpload(MultipartFile image, int flag, int num) throws Exception {
 
         String saveUrl = "none";
-        if(image != null){
+        if (image != null) {
             String imageName = image.getOriginalFilename();
             String imageExtension = FilenameUtils.getExtension(imageName).toLowerCase();
             File destinationImage;
@@ -45,9 +45,9 @@ public class FileUploadService {
             image.transferTo(destinationImage);
             saveUrl = IMAGE_URL + destinationImageName;
 
-            if(flag == 0) { // 거래 이력
+            if (flag == 0) { // 거래 이력
 
-            } else if(flag == 1) { // 상태 이력
+            } else if (flag == 1) { // 상태 이력
 
             } else { // 공인중개사 사진 등록
                 User user = userRepository.findByNum(num);

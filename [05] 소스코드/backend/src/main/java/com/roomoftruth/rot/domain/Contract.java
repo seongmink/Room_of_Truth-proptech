@@ -1,17 +1,16 @@
 package com.roomoftruth.rot.domain;
 
-import com.roomoftruth.rot.dto.ContractSaveRequestDto;
-import com.roomoftruth.rot.fabric.FabricContractRecord;
+import com.roomoftruth.rot.fabric.ContractRecord;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
@@ -19,20 +18,12 @@ import java.time.LocalDate;
 @Table(name = "contract")
 public class Contract {
 
-    @Id @Column(name = "contract_id")
+    @Id
+    @Column(name = "contract_id")
     private long contractId;
 
-    @Column(nullable = false)
-    private String address;
-    private String sd;
-    private String sgg;
-    private String emd;
-
-    @Column(nullable = false)
-    private String longitude;
-    @Column(nullable = false)
-    private String latitude;
-
+    @Column(name = "around_around_id", nullable = false)
+    private Long aroundId;
     private String exclusive;
     private String floor;
     private String ho;
@@ -48,71 +39,30 @@ public class Contract {
     @Column(name = "contract_date")
     private LocalDate contractDate;
 
-    @Builder
-    public Contract(Long id, String address, String latitude, String longitude, String floor, String ho){
-        this.contractId = id;
-        this.address = address;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.floor = floor;
-        this.ho = ho;
-    }
+    @Column(name = "created_at")
+    private LocalDate createdAt;
 
-    @Builder
-    public Contract(Long id, String address, String sd, String sgg, String emd,
-                    String longitude, String latitude, String exclusive, String floor, String ho,
-                    String kind, String detail, Long cost, String monthly,
-                    String license, String image){
-        this.contractId = id;
-        this.address = address;
-        this.sd = sd;
-        this.sgg = sgg;
-        this.emd = emd;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.exclusive = exclusive;
-        this.floor = floor;
-        this.ho = ho;
-        this.kind = kind;
-        this.detail = detail;
-        this.cost = cost;
-        this.monthly = monthly;
-        this.license = license;
-        this.image = image;
-        this.contractDate = LocalDate.now();
-    }
+    @Column(name = "is_expired")
+    private String isExpired;
 
-    public void setContractDate() {
-        this.contractDate = LocalDate.now();
-    }
-
-    public void setSgg(String sgg) {
-        this.sgg = sgg;
-    }
-
-    @Builder
-    public Contract(FabricContractRecord fabricContractRecord){
-        this.contractId = Long.parseLong(fabricContractRecord.getContract_id());
-        this.address = fabricContractRecord.getAddress();
-        this.sd = fabricContractRecord.getSd();
-        this.sgg = fabricContractRecord.getSgg();
-        this.emd = fabricContractRecord.getEmd();
-        this.latitude = fabricContractRecord.getLatitude();
-        this.longitude = fabricContractRecord.getLongitude();
-        this.exclusive = fabricContractRecord.getExclusive();
-        this.floor = fabricContractRecord.getFloor();
-        this.ho = fabricContractRecord.getHo();
-        this.kind = fabricContractRecord.getKind();
-        this.detail = fabricContractRecord.getDetail();
-        this.cost = Long.parseLong(fabricContractRecord.getCost());
-        this.monthly = fabricContractRecord.getMonthly();
-        this.license = fabricContractRecord.getLicense();
-        this.image = ""+fabricContractRecord.getImage();
-        this.contractDate = LocalDate.now();
-    }
-
-    public void setImage(String image){
+    public void setImage(String image) {
         this.image = image;
     }
 
+    public Contract(ContractRecord contractRecord) {
+        this.contractId = Long.parseLong(contractRecord.getContract_id());
+        this.aroundId = Long.parseLong(contractRecord.getAround_around_id());
+        this.exclusive = contractRecord.getExclusive();
+        this.floor = contractRecord.getFloor();
+        this.ho = contractRecord.getHo();
+        this.kind = contractRecord.getKind();
+        this.detail = contractRecord.getDetail();
+        this.cost = Long.parseLong(contractRecord.getCost());
+        this.monthly = contractRecord.getMonthly();
+        this.license = contractRecord.getLicense();
+        this.image = contractRecord.getImage();
+        this.contractDate = LocalDate.parse(contractRecord.getContract_date(), DateTimeFormatter.BASIC_ISO_DATE);
+        this.createdAt = LocalDate.now();
+        this.isExpired = "N";
+    }
 }

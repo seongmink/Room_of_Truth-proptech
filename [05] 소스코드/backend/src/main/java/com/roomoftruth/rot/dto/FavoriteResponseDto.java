@@ -14,12 +14,12 @@ public class FavoriteResponseDto {
     private String image;
 
 
-    public FavoriteResponseDto(Contract contract, long favoriteId) {
-        this.favoriteId = favoriteId;
-        this.address = contract.getAddress();
-        this.longitude = contract.getLongitude();
-        this.latitude = contract.getLatitude();
-        this.image = contract.getImage();
-    }
+//    public FavoriteResponseDto(Contract contract, long favoriteId) {
+//        this.favoriteId = favoriteId;
+//        this.address = contract.getAddress();
+//        this.longitude = contract.getLongitude();
+//        this.latitude = contract.getLatitude();
+//        this.image = contract.getImage();
+//    }
 
 }
