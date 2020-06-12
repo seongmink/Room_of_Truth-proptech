@@ -1,7 +1,6 @@
 package com.roomoftruth.rot.dto;
 
 import com.roomoftruth.rot.domain.Contract;
-import com.roomoftruth.rot.domain.Status;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -16,21 +15,21 @@ public class ContributionResponseDto {
     private String type;
     private LocalDate date;
 
-    public ContributionResponseDto(Contract entity) {
-        this.address = entity.getAddress();
-        this.floor = entity.getFloor();
-        this.ho = entity.getHo();
-        this.image = entity.getImage();
-        this.type = "계약";
-        this.date = entity.getContractDate();
-    }
-
-    public ContributionResponseDto(Status entity) {
-        this.address = entity.getAddress();
-        this.floor = entity.getFloor();
-        this.ho = entity.getHo();
-        this.image = entity.getImage();
-        this.type = "상태";
-        this.date = entity.getStartDate();
-    }
+//    public ContributionResponseDto(Contract entity) {
+//        this.address = entity.getAddress();
+//        this.floor = entity.getFloor();
+//        this.ho = entity.getHo();
+//        this.image = entity.getImage();
+//        this.type = "계약";
+//        this.date = entity.getContractDate();
+//    }
+//
+//    public ContributionResponseDto(Status entity) {
+//        this.address = entity.getAddress();
+//        this.floor = entity.getFloor();
+//        this.ho = entity.getHo();
+//        this.image = entity.getImage();
+//        this.type = "상태";
+//        this.date = entity.getStartDate();
+//    }
 }

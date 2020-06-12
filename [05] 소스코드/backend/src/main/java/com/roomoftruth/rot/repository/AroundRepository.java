@@ -1,5 +1,6 @@
 package com.roomoftruth.rot.repository;
 
+import com.roomoftruth.rot.domain.Address;
 import com.roomoftruth.rot.domain.Around;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,6 @@ public interface AroundRepository extends JpaRepository<Around, Long> {
 
     @Query(value = "select around_id from around where address = ?1", nativeQuery = true)
     Long findAroundIdByAddress(String address);
+
+    Around findTop1ByAddress(String address);
 }

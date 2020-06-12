@@ -58,11 +58,11 @@ public class FavoriteService {
 
 		List<FavoriteResponseDto> result = new ArrayList<>();
 
-		for(int i = 0; i < list.size(); i++) {
-
-			result.add(new FavoriteResponseDto(
-					contractRepository.getTop1AllByAddressOrderByContractDateDesc(list.get(i).getAround().getAddress()), list.get(i).getFavoriteId()));
-		}
+//		for(int i = 0; i < list.size(); i++) {
+//
+//			result.add(new FavoriteResponseDto(
+//					contractRepository.getTop1AllByAddressOrderByContractDateDesc(list.get(i).getAround().getAddress()), list.get(i).getFavoriteId()));
+//		}
 
 		Collections.sort(result, new Comparator<FavoriteResponseDto>() {
 			@Override

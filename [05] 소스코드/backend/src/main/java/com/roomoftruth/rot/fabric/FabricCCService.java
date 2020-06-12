@@ -125,8 +125,6 @@ public class FabricCCService implements IFabricCCService {
      */
     @Override
     public ContractRecord queryContract(String num) {
-        if (this.hfClient == null || this.channel == null)
-            loadChannel();
         ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
         QueryByChaincodeRequest qpr = hfClient.newQueryProposalRequest();
         qpr.setChaincodeID(id);
@@ -162,8 +160,6 @@ public class FabricCCService implements IFabricCCService {
      */
     @Override
     public StatusRecord queryStatus(String num) {
-        if (this.hfClient == null || this.channel == null)
-            loadChannel();
         ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
         QueryByChaincodeRequest qpr = hfClient.newQueryProposalRequest();
         qpr.setChaincodeID(id);
@@ -198,8 +194,6 @@ public class FabricCCService implements IFabricCCService {
      */
     @Override
     public boolean registerContract(ContractRecord contractRecord) {
-        if (this.hfClient == null || this.channel == null)
-            loadChannel();
         ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
         TransactionProposalRequest tpr = hfClient.newTransactionProposalRequest();
 
@@ -251,16 +245,11 @@ public class FabricCCService implements IFabricCCService {
      */
     @Override
     public boolean registerStatus(StatusRecord statusRecord) {
-        if (this.hfClient == null || this.channel == null)
-            loadChannel();
         ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
         TransactionProposalRequest tpr = hfClient.newTransactionProposalRequest();
 
         tpr.setChaincodeID(id);
         tpr.setFcn("registerStatus");
-        /**
-         * 수정 필요
-         */
         String[] args = {
                 statusRecord.getStatus_id(), statusRecord.getAround_around_id(),
                 statusRecord.getFloor(), statusRecord.getHo(), statusRecord.getCategory(),
