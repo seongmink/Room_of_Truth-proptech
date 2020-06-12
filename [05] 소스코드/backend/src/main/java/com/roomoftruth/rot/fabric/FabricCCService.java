@@ -125,7 +125,7 @@ public class FabricCCService implements IFabricCCService {
      */
     @Override
     public ContractRecord queryContract(String num) {
-        ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
+        ChaincodeID id = ChaincodeID.newBuilder().setName("rot02").build();
         QueryByChaincodeRequest qpr = hfClient.newQueryProposalRequest();
         qpr.setChaincodeID(id);
         qpr.setFcn("queryContract");
@@ -160,7 +160,7 @@ public class FabricCCService implements IFabricCCService {
      */
     @Override
     public StatusRecord queryStatus(String num) {
-        ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
+        ChaincodeID id = ChaincodeID.newBuilder().setName("rot02").build();
         QueryByChaincodeRequest qpr = hfClient.newQueryProposalRequest();
         qpr.setChaincodeID(id);
         qpr.setFcn("queryStatus");
@@ -194,7 +194,7 @@ public class FabricCCService implements IFabricCCService {
      */
     @Override
     public boolean registerContract(ContractRecord contractRecord) {
-        ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
+        ChaincodeID id = ChaincodeID.newBuilder().setName("rot02").build();
         TransactionProposalRequest tpr = hfClient.newTransactionProposalRequest();
 
         tpr.setChaincodeID(id);
@@ -245,7 +245,7 @@ public class FabricCCService implements IFabricCCService {
      */
     @Override
     public boolean registerStatus(StatusRecord statusRecord) {
-        ChaincodeID id = ChaincodeID.newBuilder().setName("rot").build();
+        ChaincodeID id = ChaincodeID.newBuilder().setName("rot02").build();
         TransactionProposalRequest tpr = hfClient.newTransactionProposalRequest();
 
         tpr.setChaincodeID(id);

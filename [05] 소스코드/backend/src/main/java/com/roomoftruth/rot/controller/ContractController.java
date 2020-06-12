@@ -35,7 +35,7 @@ public class ContractController {
     private final FavoriteService favoriteService;
     private final AddressService addressService;
 
-    static long contract_idx = 162835;
+    static long contract_idx = 200200207;
 
     /**
      *
@@ -69,9 +69,6 @@ public class ContractController {
 
         // 주소로 address_id 값 찾아오기
         long aroundId = 0;
-
-        System.out.println("요청 값 : " + contractSaveRequestDto.toString());
-        System.out.println("Around 검색 결과 : " + aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress().toString()));
 
         if(aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()) == null){
             // 1. AddressID -1 설정 후 반환
