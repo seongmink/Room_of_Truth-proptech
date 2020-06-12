@@ -47,7 +47,7 @@ class Contract(APIView, PaginationHandlerMixin):
         return Response(serializer.data, status=status.HTTP_200_OK)
         
 
-class Around(APIView, PaginationHandlerMixin):
+class SearchAround(APIView, PaginationHandlerMixin):
     pagination_class = SmallPagination
     serializer_class = serializers.AroundSerializer
 
@@ -268,7 +268,6 @@ class TotalRank(APIView):
             })
         return Response(results, status=status.HTTP_200_OK)
 
-## TODO : 여기까지 검토했다
 ## -----------------
 # 나이대,성별, 카테고리에 따른 첫 화면 3개 선정
 class Rank(APIView):
@@ -288,13 +287,13 @@ class Rank(APIView):
             queryset = [[id.around_id] for id in instance[:3]]
         for q in  queryset:
             arnd = models.Around.objects.get(pk=q[0])
-            b = models.Contract.objects.filter(address=arnd.address).first()
+            b = arnd.contract_around.first()
             fav = len(models.Favorite.objects.filter(user=pk).filter(around=arnd))
             result.append({
                 "num" : q[0],
-                "name" : b.address,
-                "latitude":b.latitude,
-                "longitude":b.longitude,
+                "name" : arnd.address,
+                "latitude":arnd.latitude,
+                "longitude":arnd.longitude,
                 "image": b.image,
                 "isLike": True if fav ==1 else False
             })
@@ -333,19 +332,18 @@ class Rank(APIView):
             if idx==3:
                 break
             arnd = models.Around.objects.get(pk=item)
-            b = models.Contract.objects.filter(address=arnd.address).first()
+            b = arnd.contract_around.first()
             # print(models.Favorite.objects.filter(around=arnd).filter(user=user))
             fav = len(models.Favorite.objects.filter(around=arnd).filter(user=user))
             result_category.append({
             "num" : arnd.around_id,
             "name" : arnd.address,
             "image": b.image,
-            "latitude":b.latitude,
-            "longitude":b.longitude,
+            "latitude":arnd.latitude,
+            "longitude":arnd.longitude,
             "isLike": True if fav >=1 else False
             })
             idx+=1
-        print(time.time()-start_time)
         # --------------------------------------------------------
         # 연령대 분류
         curr_year = datetime.today().year
@@ -397,13 +395,13 @@ class Prefer(APIView):
         results = []
         for arnd in instance:
             addr = arnd.address
-            b = models.Contract.objects.filter(address=addr).first()
+            b = arnd.contract_around.first()
             data = {
                 "num":arnd.around_id,
                 "name":arnd.address,
                 "image":b.image,
-                "longitude":b.longitude,
-                "latitude":b.latitude,
+                "longitude":arnd.longitude,
+                "latitude":arnd.latitude,
                 "trans":arnd.trans,
                 "comforts":arnd.comforts,
                 "education":arnd.education,
@@ -439,13 +437,13 @@ class Recommend(APIView):
             # print(str(sorted_around.query))
             results=[]
             for arnd in sorted_around:
-                cont = models.Contract.objects.filter(address=arnd.address).first()
+                cont = arnd.contract_around.first()
                 results.append({
                 "num" : arnd.around_id,
                 "name" : arnd.address,
                 "image": cont.image,
-                "latitude":cont.latitude,
-                "longitude":cont.longitude,
+                "latitude":arnd.latitude,
+                "longitude":arnd.longitude,
                 "isLike": False
                 })
             return Response(results, status=status.HTTP_200_OK)
@@ -475,14 +473,14 @@ class Recommend(APIView):
             # print(results_item_id)
             for id in results_item_id:
                 arnd = models.Around.objects.get(pk=id)
-                cont = models.Contract.objects.filter(address=arnd.address).first()
+                cont = arnd.contract_around.first()
                 # print(str(getattr(arnd,DICT_KEY[interest.first]))+"/"+str(getattr(arnd,DICT_KEY[interest.second]))+"/"+str(getattr(arnd,DICT_KEY[interest.third])))
                 results.append({
                 "num" : arnd.around_id,
                 "name" : arnd.address,
                 "image": cont.image,
-                "latitude":cont.latitude,
-                "longitude":cont.longitude,
+                "latitude":arnd.latitude,
+                "longitude":arnd.longitude,
                 "isLike": True if arnd.around_id in favs_idx else False
                 })
             return Response(results, status=status.HTTP_200_OK)
@@ -499,13 +497,13 @@ class Recommend(APIView):
             re = getUserBaseData(pk, addr,raw,9)
             for r in re:
                 arnd = models.Around.objects.get(pk=r)
-                cont = models.Contract.objects.filter(address=arnd.address).first()
+                cont =arnd.contract_around.first()
                 results.append({
                 "num" : arnd.around_id,
                 "name" : arnd.address,
                 "image": cont.image,
-                "latitude":cont.latitude,
-                "longitude":cont.longitude,
+                "latitude":arnd.latitude,
+                "longitude":arnd.longitude,
                 "isLike": False
                 })
             
@@ -525,18 +523,24 @@ class AddAround(APIView):
             try:
                 y =res['documents'][0]['address']['y']
                 x = res['documents'][0]['address']['x']
+                print(x,y)
                 return str(x)[:13], str(y)[:12]
             except:
-                print(res)
+                y =res['documents'][0]['road_address']['y']
+                x = res['documents'][0]['road_address']['x']
+                if x is not None and y is not None:
+                    return str(x)[:13], str(y)[:12]
                 return "ERROR","ERROR"
         else :
             return "NO","NO"
 
-    def get(self, request, format=None, *args, **kwargs):
-        addr = request.query_params.get("addr",None)
-      
-        if addr is None:
+    def post(self, request, format=None):
+        if 'addr' in request.data:
+            addr = request.data['addr']
+            pass
+        else:
             return Response("road address is required", status=status.HTTP_400_BAD_REQUEST)
+
         arnd = models.Around.objects.filter(address=addr).first()
         if arnd is None:
             apiKey = "KakaoAK d975a099d11c3a17c9bef6da9adef0ec"
@@ -557,26 +561,11 @@ class AddAround(APIView):
             # print(y)
             # print('-----')
             if x=="ERROR" or x=="NO":
-                try:
-                    results={}
-                    results['trans']=0
-                    results['comforts']=0
-                    results['education']=0
-                    results['medical']=0
-                    results['eatery']=0
-                    results['culture']=0
-                    results['address']=addr
-                    serializer = serializers.AroundSerializer(data=results)
-                    if serializer.is_valid():
-                        serializer.save()
-                        print("error saved")
-                except:
-                    pass
-                finally:
-                    return Response("no data & no Lat:Lon",status=status.HTTP_201_CREATED)
-                # return Response(x,status=status.HTTP_400_BAD_REQUEST)
+                return Response("-1",status=status.HTTP_400_BAD_REQUEST)
             
             results={}
+            results['longitude']=x
+            results['latitude']=y
             for c in category:
                 # print(c)
                 keyword = keywords[c]
@@ -593,31 +582,23 @@ class AddAround(APIView):
 
                         sum_count += count
                     except:
-                        print("API ERROR")
-                        break
+                        return Response("-2",status=status.HTTP_400_BAD_REQUEST)
                 results[c]=sum_count
             results['address']=addr
-            print(results)
+            # print(results)
             try:
                 serializer = serializers.AroundSerializer(data=results)
                 if serializer.is_valid():
                     serializer.save()
-                    print("new Around Saved !")
-                return Response("no data but 내가 만들어찌 ㅎㅋ",status=status.HTTP_201_CREATED)
+                return Response(serializer.data.get('around_id'),status=status.HTTP_201_CREATED)
             except:
-                results['trans']=0
-                results['comforts']=0
-                results['education']=0
-                results['medical']=0
-                results['eatery']=0
-                results['culture']=0
-                results['address']=addr
-                serializer = serializers.AroundSerializer(data=results)
-                if serializer.is_valid():
-                    serializer.save()
-                    print('category api')
-                return Response("no data & cate api error",status=status.HTTP_201_CREATED)
+                return Response("-3",status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response("already exists",status=status.HTTP_200_OK)
+            return Response(arnd.around_id,status=status.HTTP_200_OK)
 
 
+class DelAround(APIView):
+    def delete(self, request, pk, format=None):
+        arnd = get_object_or_404(models.Around,pk=pk)
+        arnd.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
