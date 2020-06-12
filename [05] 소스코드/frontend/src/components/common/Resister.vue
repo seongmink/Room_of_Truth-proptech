@@ -126,53 +126,15 @@
                         			</div>
                         			<div class="row p-4" >
                                 		<div class="col-md-6 mb-4" v-for="(lists, index) in list" :key="index">
-                                    		<div class="listing-item-container " @click="detail(lists.num,lists.category)">
+                                    		<div class="listing-item-container ">
                                         		<div class="listing-item" style="height:300px">
+													<span class="like-banner d-block h4 mb-2" style="color: #dc3545; z-index:1000"><b-icon icon="heart-fill"></b-icon></span>
                                         			<div style="text-align:right;">
-                                        				<img :src="lists.image" alt="" style="width:100%; height:200px; ">
-                                         				<a v-if="lists.category==null" href="#" style=" background-color:#00c03f; border-color:#00c03f; margin-top:-360px; margin-right:17px " class="btn btn-sm btn-info ">계약이력</a>
-                                                 		<a v-else href="#" style=" background-color:rgb(20, 40, 160); border-color:rgb(20, 40, 160);margin-top:-360px; margin-right:17px" class="btn btn-sm btn-info ">상태이력</a>  
+                                        				<img :src="url+lists.image" alt="" style="width:100%; height:220px; max-height: initial">
                                        				 </div>
                                         			<div class="listing-item-content" style="height:100px;">
-                                                		<div class="listing-item-inner" style="margin-top:-27px;">
+                                                		<div class="listing-item-inner" style="margin-top:-10px;">
                                                 			<h6>{{lists.address}}</h6>
-                                                			<span><small style="font-weight: bold;">{{lists.floor}}층</small></span>
-                                                			<span><small style="font-weight: bold;"> {{lists.ho}}호</small></span>
-                                        				</div>
-                                        			</div>
-                                        		</div>
-                                    		</div>
-                                		</div>
-                        			</div>
-									<div v-if="!check">
-                            			<a href="javascript:" @click="add()" v-b-modal.modal-4 class="btn btn-danger" style="background-color:#00c03f; border-color:#00c03f; width:100%">더보기</a>
-                        			</div>
-                       				 <div v-else>
-                            			<a href="javascript:" v-b-modal.modal-4 class="btn btn-danger" style="background-color:#00c03f; border-color:#00c03f; width:100%;">정보가 존재하지 않습니다.</a>
-                        			</div>
-								</div>
-							</div>
-						</div>
-						<div class="mt-5 py-5 border-top">
-							<div>
-								<div>
-									<div class="px-4">
-                            			<h3>최근 본 건물 이력</h3>
-                        			</div>
-                        			<div class="row p-4" >
-                                		<div class="col-md-6 mb-4" v-for="(lists, index) in list" :key="index">
-                                    		<div class="listing-item-container " @click="detail(lists.num,lists.category)">
-                                        		<div class="listing-item" style="height:300px">
-                                        			<div style="text-align:right;">
-                                        				<img :src="lists.image" alt="" style="width:100%; height:200px; ">
-                                         				<a v-if="lists.category==null" href="#" style=" background-color:#00c03f; border-color:#00c03f; margin-top:-360px; margin-right:17px " class="btn btn-sm btn-info ">계약이력</a>
-                                                 		<a v-else href="#" style=" background-color:rgb(20, 40, 160); border-color:rgb(20, 40, 160);margin-top:-360px; margin-right:17px" class="btn btn-sm btn-info ">상태이력</a>  
-                                       				 </div>
-                                        			<div class="listing-item-content" style="height:100px;">
-                                                		<div class="listing-item-inner" style="margin-top:-27px;">
-                                                			<h6>{{lists.address}}</h6>
-                                                			<span><small style="font-weight: bold;">{{lists.floor}}층</small></span>
-                                                			<span><small style="font-weight: bold;"> {{lists.ho}}호</small></span>
                                         				</div>
                                         			</div>
                                         		</div>
@@ -202,11 +164,12 @@ import DaumPostcode from 'vuejs-daum-postcode'
 import { mypage } from "../../api/user.js";
 import { deleteAuth } from "../../api/user.js";
 import { updateInfo } from "../../api/user.js";
-
-
+import { likeBuilding } from "../../api/user.js";
+import { getUrl } from "../../api/index.js";
 export default {
 	data(){
-		return{	
+		return{
+				url:getUrl(),
 				userinfo:null,
 				selected: 'radio1',
         		options: [
@@ -242,24 +205,10 @@ export default {
 				ranklist:['교통','마트/편의점','교육시설','의료시설','음식점/카페','문화시설'],
 				sranklist:[],
 				tranklist:[],
-				list:[
-					{
-						image : "static/b1.jpg",
-						category : '유지보수',
-						address : "군산시 서수면 동군산로 1142",
-						floor : "2",
-						ho : "302"
-					},
-					{
-						image : "static/b1.jpg",
-					
-						address : "군산시 서수면 동군산로 1142",
-						floor : "2",
-						ho : "302"
-					},
-					
-				],
+				list:[],
+				data:null,
 				check : false,
+				count:0,
 
 		}
 	},
@@ -289,6 +238,21 @@ export default {
 			setTimeout(() => {
 				this.ranking_3 = this.$store.state.userInfo.interest.third;
 			}, 100)	
+
+			//찜한 건물 불러오기
+			likeBuilding(this.$store.state.userInfo.num, response => {
+		
+				this.data=response;
+				if(this.data.length==0){
+                    this.check = true;
+                }else{
+                    for(var i=this.count; i<this.count+2; i++){
+                    if(this.data[i]!=null){
+                        this.list.push(this.data[i]);
+                        }
+                    }
+                }
+			});
       	}
 
 	},
@@ -424,6 +388,21 @@ export default {
 					setTimeout(() => {
 						this.ranking_3 = this.$store.state.userInfo.interest.third;
 					}, 100)	
+					//찜한 건물 불러오기
+					likeBuilding(this.$store.state.userInfo.num, response => {
+					
+					
+						this.data=response;
+						if(this.data.length==0){
+                    		this.check = true;
+                		}else{
+                    		for(var i=this.count; i<this.count+2; i++){
+                    		if(this.data[i]!=null){
+                        		this.list.push(this.data[i]);
+                        		}
+                    		}
+                		}
+					});
 				}
 			}
 
@@ -451,7 +430,7 @@ export default {
           this.$bvModal.hide('modal-3')	
 		},
 		submit(){
-			console.log(this.locationSelect2)
+
 			if(this.date.length!=4){
 					alert('출생년도를 모두 입력해주세요!')
 				}else if(this.locationSelect=='시/도를 선택하세요.'||this.locationSelect==''){
@@ -475,17 +454,36 @@ export default {
 						second : this.ranking_2,
 						third : this.ranking_3
 					}
-					console.log(info)
+				
+					
 					updateInfo(info,response => {
-						console.log("수정성공")
+			
+						alert("수정이 완료되었습니다.")
 						this.$router.push('/')
 					});
+				
 				}
 		},
 		deleteAuth(){
 			
 			deleteAuth(this.$store.state.userInfo.num);
-		}
+		},
+		add(){
+                this.count = this.count+2;
+              
+                if(this.count>=this.data.length){
+                    this.check = true;
+                }else{
+                    
+                 for(var i=this.count; i<this.count+2; i++){
+                    if(this.data[i]!=null){
+                        this.list.push(this.data[i]);
+                    }
+                   
+                }
+                }
+                
+        },
 
    },
    components: {

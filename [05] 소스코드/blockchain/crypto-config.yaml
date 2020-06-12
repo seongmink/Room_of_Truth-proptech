@@ -1,0 +1,13 @@
+OrdererOrgs:
+    - Name: orderer0
+      Domain: ordererorg
+      Specs:
+          - Hostname: orderer0
+
+PeerOrgs:
+    - Name: HFTeam1
+      Domain: HFTeam1
+      Template:
+          Count: 1
+      Users:
+          Count: 1

@@ -54,8 +54,7 @@ import KakaoLogin from 'vue-kakao-login'
 import { login } from "../../api/user.js";
 import {mapState} from 'vuex';
 let onFailure = (data) => {
-  //console.log(data)
-  //console.log("failure")
+
 }
 
 export default {
@@ -80,12 +79,12 @@ export default {
 				var a = response.data+""
 
                 if(a.length<20){
-						console.log("신규가입자");
+						
 						this.$router.push({name : 'AddInfo', query:{
 							num: response.data
 						}});
 				}else{
-					console.log("기존가입자");
+				
 
 					sessionStorage.setItem("access_token", response.data);
             		this.$store.dispatch('getMemberInfo');

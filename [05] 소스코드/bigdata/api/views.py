@@ -21,7 +21,7 @@ import json
 DICT_KEY = {'교통':'trans','마트/편의점':'comforts','교육시설':'education','의료시설':'medical','음식점/카페':'eatery','문화시설':'culture'}
 
 class SmallPagination(PageNumberPagination):
-    page_size = 20
+    page_size = 6
     page_size_query_param = "page_size"
     max_page_size = 50
 
@@ -34,7 +34,7 @@ class Contract(APIView, PaginationHandlerMixin):
         area = request.query_params.get("area",None)
       
         if area is not None:
-            instance = models.Contract.objects.filter(address__contains=area)
+            instance = models.Contract.objects.filter(around__address__contains=area)
         else:
             instance = models.Contract.objects.all()
 
@@ -45,6 +45,84 @@ class Contract(APIView, PaginationHandlerMixin):
         else:
             serializer = self.serializer_class(instance, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
+
+class SearchAround(APIView, PaginationHandlerMixin):
+    pagination_class = SmallPagination
+    serializer_class = serializers.AroundSerializer
+
+    def get(self, request, format=None, *args, **kwargs):
+        keyword = request.query_params.get("keyword",None)
+        # print(keyword)
+        # print('------------------------------')
+        if keyword is None:
+            results = {
+                "next":None,
+                "results":[]
+            }
+            return Response(results, status=status.HTTP_200_OK)
+        else:
+            instance = models.Around.objects.filter(address__contains=keyword)
+
+
+        page = self.paginate_queryset(instance)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(page,
+ many=True).data)
+            nxt = serializer.data.get('next')
+            if nxt is None:
+                nxt = None
+            else:
+                nxt = nxt.split("page=")[1]
+            results={
+                "next":nxt,
+                "results":[]
+            }
+            # print(serializer.data)
+            print('----------------------------------------------->>')
+            for item in serializer.data.get('results'):
+                b = models.Around.objects.get(pk=item.get('around_id')).contract_around.first()
+                # print(b)
+                if b is None:
+                    continue
+                results['results'].append({
+                "num":item.get('around_id'),
+                "name":item.get('address'),
+                "image":b.image,
+                "longitude":item.get('longitude'),
+                "latitude":item.get('latitude'),
+                "trans":item.get('trans'),
+                "comforts":item.get('comforts'),
+                "education":item.get('education'),
+                "medical":item.get('medical'),
+                "eatery":item.get('eatery'),
+                "culture":item.get('culture'),
+                })
+        else:
+            serializer = self.serializer_class(instance, many=True)
+            results={
+                'next':None,
+                'results':[]
+            }
+            for item in serializer.data:
+                b = models.Around.objects.get(pk=item.get('around_id')).contract_around.first()
+                if b in None:
+                    continue
+                results['results'].append({
+                "num":item.get('around_id'),
+                "name":item.get('address'),
+                "image":b.image,
+                "longitude":item.get('longitude'),
+                "latitude":item.get('latitude'),
+                "trans":item.get('trans'),
+                "comforts":item.get('comforts'),
+                "education":item.get('education'),
+                "medical":item.get('medical'),
+                "eatery":item.get('eatery'),
+                "culture":item.get('culture'),
+                })
+        return Response(results, status=status.HTTP_200_OK)
+
         
 
 class Favorites(APIView, PaginationHandlerMixin):
@@ -71,18 +149,17 @@ class Favorites(APIView, PaginationHandlerMixin):
         return Response(serializer.data, status=status.HTTP_200_OK)
         
 
-# TODO : 주소로 받아서 하는거
 class ContractChart(APIView):
 
     def getAgg(self, instance_addr, instance_emd, target,key):
-        label = {'2019-04':0,'2019-05':1,'2019-06':2,'2019-07':3,'2019-08':4,'2019-09':5,'2019-10':6,'2019-11':7,'2019-12':8,'2020-01':9,'2020-02':10,'2020-03':11,'2020-04':12}
+        label = {'2019-04':0,'2019-05':1,'2019-06':2,'2019-07':3,'2019-08':4,'2019-09':5,'2019-10':6,'2019-11':7,'2019-12':8,'2020-01':9,'2020-02':10,'2020-03':11,'2020-04':12,'2020-05':13,'2020-06':14}
         # --
         result_addr = (instance_addr.filter(detail=key)
         .values_list('contract_date__year', 'contract_date__month','detail')
         .annotate(Avg(target))
         .order_by('contract_date__year', 'contract_date__month'))
         # print(result_addr)
-        addrs = [None]*13
+        addrs = [None]*15
         for r in result_addr:
             m=str(r[1])
             if r[1]<10:
@@ -95,7 +172,7 @@ class ContractChart(APIView):
         .annotate(Avg(target))
         .order_by('contract_date__year', 'contract_date__month'))
         # print(result_emd)
-        emds = [None] * 13
+        emds = [None] * 15
         for r in result_emd:
             m=str(r[1])
             if r[1]<10:
@@ -116,26 +193,31 @@ class ContractChart(APIView):
         if detail is None:
             return Response("detail을 mm(매매),js(전세),ws(월세) 중 하나를 입력해주세요",status=status.HTTP_400_BAD_REQUEST)
         if address is not None and detail is not None: # 둘다 있는 값이라면
-            bd = models.Contract.objects.filter(address=address).first()
-            sd = bd.sd
-            sgg = bd.sgg # 시군구
-            emd = bd.emd # 읍면동
+            # print(address)
+            bd = models.Around.objects.filter(address=address).first()
+            # print(bd)
+            # print('-----------')
+            bd_address = bd.address.split(" ")
+            sd = bd_address[0]
+            sgg = bd_address[1]
             if sd=="세종특별자치시":
-                calc_address = sd+" "+emd
+                calc_address = sd
             else:
-                calc_address = sd+" "+sgg+" "+emd
-            instance_addr = models.Contract.objects.all().filter(address=address)
-            instance_emd = models.Contract.objects.all().filter(address__contains=calc_address)
+                calc_address = sd+" "+sgg
+
+            make_ids = models.Around.objects.filter(address__contains=sd).values_list('around_id', flat=True)
+            instance_sd = models.Contract.objects.filter(around__in=make_ids) # 검색 주소와 같은 시도에 위치하는 것
+            instance_addr = bd.contract_around.all() # 주소가 딱 같은거
             keywords = {"js":"전세", "ws":"월세","mm":"매매"}
             if detail in keywords:
                 key = keywords[detail] # 입력받은 타입
-                addrs, emds = self.getAgg(instance_addr, instance_emd, "cost", key)
+                addrs, emds = self.getAgg(instance_addr, instance_sd, "cost", key)
                 if key=='월세': # 월세의 경우 보증금도 같이 연산해서 줘야함
-                    m_addrs, m_emds = self.getAgg(instance_addr, instance_emd, "monthly", key)
+                    m_addrs, m_emds = self.getAgg(instance_addr, instance_sd, "monthly", key)
                     return_value = {
                         'road_address':address,
                         'dong_address':calc_address,
-                        'label' : ['2019-04','2019-05','2019-06','2019-07','2019-08','2019-09','2019-10','2019-11','2019-12','2020-01','2020-02','2020-03','2020-04'],
+                        'label' : ['2019-04','2019-05','2019-06','2019-07','2019-08','2019-09','2019-10','2019-11','2019-12','2020-01','2020-02','2020-03','2020-04','2020-05','2020-06'],
                         'datatype': key,
                         'dong_data' :emds,
                         'addr_data':addrs,
@@ -146,7 +228,7 @@ class ContractChart(APIView):
                     return_value = {
                         'road_address':address,
                         'dong_address':calc_address,
-                        'label' : ['2019-04','2019-05','2019-06','2019-07','2019-08','2019-09','2019-10','2019-11','2019-12','2020-01','2020-02','2020-03','2020-04'],
+                        'label' : ['2019-04','2019-05','2019-06','2019-07','2019-08','2019-09','2019-10','2019-11','2019-12','2020-01','2020-02','2020-03','2020-04','2020-05','2020-06'],
                         'datatype': key,
                         'dong_data' :emds,
                         'addr_data':addrs
@@ -163,8 +245,7 @@ class ContractAround(APIView):
     def get(self, request, pk):
         contract = get_object_or_404(models.Contract, pk=pk)
         # print(contract.address)
-        instance = models.Around.objects.get(address=contract.address)
-        serializer = serializers.AroundSerializer(instance)
+        serializer = serializers.AroundSerializer(contract.around)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 # 로그인 하지않은 유저에게 보여줄 전체 상위 9개의 이력
@@ -176,17 +257,18 @@ class TotalRank(APIView):
         # print(favs[:9])
         for idx, f in enumerate(favs):
             arnd = models.Around.objects.get(pk=f[0])
-            b = models.Contract.objects.filter(address=arnd.address).first()
+            b = arnd.contract_around.first()
             results.append({
                 "rank":idx+1,
                 "num" : arnd.around_id,
                 "name" : arnd.address,
                 "image": b.image,
-                "latitude":b.latitude,
-                "longitude":b.longitude
+                "latitude":arnd.latitude,
+                "longitude":arnd.longitude
             })
         return Response(results, status=status.HTTP_200_OK)
 
+## -----------------
 # 나이대,성별, 카테고리에 따른 첫 화면 3개 선정
 class Rank(APIView):
     def getResult(self, users,addr,pk,interest):
@@ -201,18 +283,17 @@ class Rank(APIView):
         queryset = instance.values_list('around').annotate(sc = Avg('score')).order_by('-sc')[:3]
         result = []
         if len(queryset) <3:
-            # TODO : 각 지역별로 관심해논게 3개 이하라면, 그냥 유저 선호도를 기반으로 상위 3개를 준다
             instance = models.Around.objects.filter(address__contains=addr).order_by('-'+DICT_KEY[interest.first],'-'+DICT_KEY[interest.second],'-'+DICT_KEY[interest.third])
             queryset = [[id.around_id] for id in instance[:3]]
         for q in  queryset:
             arnd = models.Around.objects.get(pk=q[0])
-            b = models.Contract.objects.filter(address=arnd.address).first()
+            b = arnd.contract_around.first()
             fav = len(models.Favorite.objects.filter(user=pk).filter(around=arnd))
             result.append({
                 "num" : q[0],
-                "name" : b.address,
-                "latitude":b.latitude,
-                "longitude":b.longitude,
+                "name" : arnd.address,
+                "latitude":arnd.latitude,
+                "longitude":arnd.longitude,
                 "image": b.image,
                 "isLike": True if fav ==1 else False
             })
@@ -251,19 +332,18 @@ class Rank(APIView):
             if idx==3:
                 break
             arnd = models.Around.objects.get(pk=item)
-            b = models.Contract.objects.filter(address=arnd.address).first()
+            b = arnd.contract_around.first()
             # print(models.Favorite.objects.filter(around=arnd).filter(user=user))
             fav = len(models.Favorite.objects.filter(around=arnd).filter(user=user))
             result_category.append({
             "num" : arnd.around_id,
             "name" : arnd.address,
             "image": b.image,
-            "latitude":b.latitude,
-            "longitude":b.longitude,
+            "latitude":arnd.latitude,
+            "longitude":arnd.longitude,
             "isLike": True if fav >=1 else False
             })
             idx+=1
-        print(time.time()-start_time)
         # --------------------------------------------------------
         # 연령대 분류
         curr_year = datetime.today().year
@@ -315,13 +395,13 @@ class Prefer(APIView):
         results = []
         for arnd in instance:
             addr = arnd.address
-            b = models.Contract.objects.filter(address=addr).first()
+            b = arnd.contract_around.first()
             data = {
                 "num":arnd.around_id,
                 "name":arnd.address,
                 "image":b.image,
-                "longitude":b.longitude,
-                "latitude":b.latitude,
+                "longitude":arnd.longitude,
+                "latitude":arnd.latitude,
                 "trans":arnd.trans,
                 "comforts":arnd.comforts,
                 "education":arnd.education,
@@ -333,7 +413,6 @@ class Prefer(APIView):
             
         return Response(results, status=status.HTTP_200_OK)
 
-    # TODO : 관심 지역에서 평가한 항목을 가지고 아이템(이력) 추천
 class Recommend(APIView):
 
     def get(self, request, pk):
@@ -354,18 +433,17 @@ class Recommend(APIView):
         if len(favs)==0:
             print("--0")
             # 평가 내린게 없다면 around를 관심도에 따라 정렬을 한 다음 걍 준다;;
-            # TODO : 평가가 없는 경우 관심도 9개에 따라 평가를 내리게끔 유도하면 어떨까
             sorted_around = models.Around.objects.filter(address__contains=addr).order_by('-'+DICT_KEY[interest.first],'-'+DICT_KEY[interest.second],'-'+DICT_KEY[interest.third])[:9]
             # print(str(sorted_around.query))
             results=[]
             for arnd in sorted_around:
-                cont = models.Contract.objects.filter(address=arnd.address).first()
+                cont = arnd.contract_around.first()
                 results.append({
                 "num" : arnd.around_id,
                 "name" : arnd.address,
                 "image": cont.image,
-                "latitude":cont.latitude,
-                "longitude":cont.longitude,
+                "latitude":arnd.latitude,
+                "longitude":arnd.longitude,
                 "isLike": False
                 })
             return Response(results, status=status.HTTP_200_OK)
@@ -395,14 +473,14 @@ class Recommend(APIView):
             # print(results_item_id)
             for id in results_item_id:
                 arnd = models.Around.objects.get(pk=id)
-                cont = models.Contract.objects.filter(address=arnd.address).first()
+                cont = arnd.contract_around.first()
                 # print(str(getattr(arnd,DICT_KEY[interest.first]))+"/"+str(getattr(arnd,DICT_KEY[interest.second]))+"/"+str(getattr(arnd,DICT_KEY[interest.third])))
                 results.append({
                 "num" : arnd.around_id,
                 "name" : arnd.address,
                 "image": cont.image,
-                "latitude":cont.latitude,
-                "longitude":cont.longitude,
+                "latitude":arnd.latitude,
+                "longitude":arnd.longitude,
                 "isLike": True if arnd.around_id in favs_idx else False
                 })
             return Response(results, status=status.HTTP_200_OK)
@@ -419,13 +497,13 @@ class Recommend(APIView):
             re = getUserBaseData(pk, addr,raw,9)
             for r in re:
                 arnd = models.Around.objects.get(pk=r)
-                cont = models.Contract.objects.filter(address=arnd.address).first()
+                cont =arnd.contract_around.first()
                 results.append({
                 "num" : arnd.around_id,
                 "name" : arnd.address,
                 "image": cont.image,
-                "latitude":cont.latitude,
-                "longitude":cont.longitude,
+                "latitude":arnd.latitude,
+                "longitude":arnd.longitude,
                 "isLike": False
                 })
             
@@ -445,18 +523,24 @@ class AddAround(APIView):
             try:
                 y =res['documents'][0]['address']['y']
                 x = res['documents'][0]['address']['x']
+                print(x,y)
                 return str(x)[:13], str(y)[:12]
             except:
-                print(res)
+                y =res['documents'][0]['road_address']['y']
+                x = res['documents'][0]['road_address']['x']
+                if x is not None and y is not None:
+                    return str(x)[:13], str(y)[:12]
                 return "ERROR","ERROR"
         else :
             return "NO","NO"
 
-    def get(self, request, format=None, *args, **kwargs):
-        addr = request.query_params.get("addr",None)
-      
-        if addr is None:
+    def post(self, request, format=None):
+        if 'addr' in request.data:
+            addr = request.data['addr']
+            pass
+        else:
             return Response("road address is required", status=status.HTTP_400_BAD_REQUEST)
+
         arnd = models.Around.objects.filter(address=addr).first()
         if arnd is None:
             apiKey = "KakaoAK d975a099d11c3a17c9bef6da9adef0ec"
@@ -477,26 +561,11 @@ class AddAround(APIView):
             # print(y)
             # print('-----')
             if x=="ERROR" or x=="NO":
-                try:
-                    results={}
-                    results['trans']=0
-                    results['comforts']=0
-                    results['education']=0
-                    results['medical']=0
-                    results['eatery']=0
-                    results['culture']=0
-                    results['address']=addr
-                    serializer = serializers.AroundSerializer(data=results)
-                    if serializer.is_valid():
-                        serializer.save()
-                        print("error saved")
-                except:
-                    pass
-                finally:
-                    return Response("no data & no Lat:Lon",status=status.HTTP_201_CREATED)
-                # return Response(x,status=status.HTTP_400_BAD_REQUEST)
+                return Response("-1",status=status.HTTP_400_BAD_REQUEST)
             
             results={}
+            results['longitude']=x
+            results['latitude']=y
             for c in category:
                 # print(c)
                 keyword = keywords[c]
@@ -513,31 +582,23 @@ class AddAround(APIView):
 
                         sum_count += count
                     except:
-                        print("API ERROR")
-                        break
+                        return Response("-2",status=status.HTTP_400_BAD_REQUEST)
                 results[c]=sum_count
             results['address']=addr
-            print(results)
+            # print(results)
             try:
                 serializer = serializers.AroundSerializer(data=results)
                 if serializer.is_valid():
                     serializer.save()
-                    print("new Around Saved !")
-                return Response("no data but 내가 만들어찌 ㅎㅋ",status=status.HTTP_201_CREATED)
+                return Response(serializer.data.get('around_id'),status=status.HTTP_201_CREATED)
             except:
-                results['trans']=0
-                results['comforts']=0
-                results['education']=0
-                results['medical']=0
-                results['eatery']=0
-                results['culture']=0
-                results['address']=addr
-                serializer = serializers.AroundSerializer(data=results)
-                if serializer.is_valid():
-                    serializer.save()
-                    print('category api')
-                return Response("no data & cate api error",status=status.HTTP_201_CREATED)
+                return Response("-3",status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response("already exists",status=status.HTTP_200_OK)
+            return Response(arnd.around_id,status=status.HTTP_200_OK)
 
 
+class DelAround(APIView):
+    def delete(self, request, pk, format=None):
+        arnd = get_object_or_404(models.Around,pk=pk)
+        arnd.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

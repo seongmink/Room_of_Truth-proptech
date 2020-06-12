@@ -105,7 +105,7 @@ export default {
    },
    watch:{
       number:function(hook){
-         //console.log(hook)
+     
          this.isgo = false;
       }
    },
@@ -145,10 +145,9 @@ export default {
          
       },
       check(){
-         //console.log("공인중개사번호 검사")
-         //console.log(this.number+" "+this.$store.state.userInfo.num)
+        
          checkAgentNum(this.$store.state.userInfo.num, this.number,responses => {
-                //console.log(responses.data)
+            
                if(responses.data=='success'){
                   alert("공인중개사 자격증 번호가 확인 되었습니다.")
                   this.isgo = true;

@@ -33,11 +33,12 @@
 								<option v-for="(item, index) in location" :value="item" :key="index">{{ item }}</option>
                             </select>
                         </div>
-                        <a href="#" @click="search()" v-b-modal.modal-4 class="btn btn-danger" style="background-color:#00c03f; float:left; border-color:#00c03f; margin-top:2px">주소검색</a>
+                        <a href="#" @click="search()"  class="btn btn-danger" style="background-color:#00c03f; float:left; border-color:#00c03f; margin-top:2px">주소검색</a>
                         <a href="#" @click="reset()" class="btn btn-danger" style="background-color:#00c03f; border-color:#00c03f; margin-left:40px; margin-top:2px">초기화</a>
                     </div>
-                    
-                    <search-recommendation :data = searchdata></search-recommendation>
+                    <b-overlay v-if="this.$store.state.userInfo!=null && this.searchdata==''" :show="show" rounded="sm" style="margin-bottom:70px;">
+                    </b-overlay>
+                    <search-recommendation v-if="ok" :data = searchdata></search-recommendation>
                     <div class="add-listing-headline" style="margin-bottom:-15px">
                         <div style="text-align:left; margin-top:-20px; margin-bottom:-10px;">
                             <span style="margin-left:50px; font-size:15px;">* 지도에는 건물에 등록된 이력을 표시해주고 있습니다.</span>
@@ -52,25 +53,26 @@
                      :mapTypeId="mapTypeId"
                      :libraries="libraries"
                      @load="onLoad"
-                     style="width:740px;height:600px;"/>
+                     style="width:775px;height:600px;"/>
                     </div>  
                 </div>
             </div>
         </div>
       </div>
-        <b-modal id="modal-3" title="상세보기" scrollable  size="lg" hide-footer>
+        <b-modal id="modal-5" title="상세보기" scrollable  size="lg" hide-footer>
+            
             <div class="row" style="margin-top:20px" >
                 <div class="col-lg-6 col-md-12 grid-layout-list mb-4" v-for="(list,index) in data" :key="index">
 			        <div class="list-cap" style="height:310px">
-				        <div class="list-cap-list mb-4" @click="detail(list.address,list.dong,list.ho)">        
-                            <div class="img-list">
-					            <img :src="url+list.image" alt="" style="width:353px; height:200px">
+				        <div class="list-cap-list mb-4" @click="detail(list.address,list.floor,list.ho)">        
+                            <div class="img-list" style="height:200px;">
+					            <img :src="url+list.image" alt="" style="width:353px; height:200px; max-height:initial;">
                             </div>
-					        <div class="list-cap-content list-cap-content--style">
-						        <h6 class="mt-2">{{list.address}}</h6>
+					        <div class="list-cap-content " style="margin-top:7px; height:100px;">
+						        <h6 style="font-size:14px;" class="mt-2">{{list.address}}</h6>
 						        <div class="address-bar"> 
-                                    <h6 v-if="list.dong!=''" style="float:left; margin-right:10px">{{list.dong}}동</h6><h6>{{list.ho}}호</h6>
-                            </div>
+                                    <h6 style="float:left; margin-right:10px;font-size:14px;">{{list.floor}}층 {{list.ho}}호</h6>
+                                </div>
 					        </div>
 				        </div>
 		            </div>
@@ -93,22 +95,23 @@ import { getLoginData } from "../../api/item.js";
 import SearchRecommendation from "../common/SearchRecommendation";
 
 import DaumPostcode from 'vuejs-daum-postcode';
+
 export default {
   created(){
 
       this.url = getUrl();
-      if(this.$route.query.search!=null){
-          this.getaddress = this.$route.query.search;
-      }
+
+    
 
       //로그인한 사용자만 광고데이터 받기
-      //if(this.$store.state.userInfo==null){
-			getLoginData(0,response => {
-				console.log("로그인을 한 상태의 서치추천데이터")
-				console.log(response)
-				this.searchdata = response;
+      if(this.$store.state.userInfo!=null){
+			getLoginData(this.$store.state.userInfo.num,response => {
+				
+                this.searchdata = response;
+                this.ok = true;
+                this.show = false;
 			});
-        //}
+        }
 
       
   },
@@ -119,6 +122,7 @@ export default {
   },
    data() {
       return {
+        show:true,
         searchdata:'',
         state : 'null',
         appKey: '4ad8ff4da9eb8b9507c5afaee2b238b4', // 테스트용 appkey
@@ -163,6 +167,7 @@ export default {
         		['반곡동','소담동','보람동','대평동','가람동','한솔동','나성동','새롬동','다정동','어진동','종촌동','고운동','아름동','도담동','조치원읍','연기면','연동면','부강면','금남면','장군면','연서면','전의면','전동명','소정면'],
                 ],
                 markers:[],
+                ok:false,
 
       }
             
@@ -175,7 +180,17 @@ export default {
    },
    watch:{
        userInfo:function(hook){
-   
+           if(hook!=null){
+               getLoginData(this.$store.state.userInfo.num,response => {
+			
+                this.searchdata = response;
+                this.ok = true;
+                this.show = false;
+			});
+           }else{
+               this.searchdata = null;
+               this.ok = false;
+           }
        },
        locationSelect:function(hook){
                
@@ -254,11 +269,11 @@ export default {
                   this.markers.push(this.marker);
               
                },
-               detail(address,dong,ho){
-                   (address+" "+dong+" "+ho)
-                   let route = this.$router.resolve({name : 'detailbuilding', query:{
+               detail(address,floor,ho){
+  
+                   let route = this.$router.resolve({name : 'Detail', query:{
                             address : address,
-                            dong : dong,
+                            floor : floor,
                             ho : ho
                     }});
                     window.open(route.href, '_blank');
@@ -301,7 +316,7 @@ export default {
                       if (status === kakao.maps.services.Status.OK) {
                       
                          var moveLatLon = new kakao.maps.LatLng(result[0].y, result[0].x);
-                  
+            
                             this.map.setCenter(moveLatLon)
                             var imageSrc = '/static/marker.png'; // 마커이미지의 주소입니다    
                             var imageSize = new kakao.maps.Size(50, 50); // 마커이미지의 크기입니다
@@ -319,8 +334,72 @@ export default {
 
                     //표시할 지도데이터 얻어오기(클러스터화)
                     getrecord(this.locationSelect,this.locationSelect2,response => {
-                            console.log(response)
-                            this.recode = response;
+             
+                        this.recode = response;
+
+                        var clusterer = new kakao.maps.MarkerClusterer({
+                        map: this.map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+                        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+                        minLevel: 1, // 클러스터 할 최소 지도 레벨
+                        disableClickZoom: true, // 클러스터 마커를 클릭했을 때 지도가 확대되지 않도록 설정한다
+                    
+                        }); 
+                        //호이스팅 문제해결
+                        for (var i = 0; i < this.recode.length; i ++) {
+
+                            var coords = new kakao.maps.LatLng(this.recode[i].latitude, this.recode[i].longitude);
+                            let marker = new kakao.maps.Marker({//호이스팅해결
+                                position : coords
+                            });
+
+                            clusterer.addMarker(marker);
+
+                            //마커 클릭 이벤트
+                    
+                            kakao.maps.event.addListener(marker, 'click', (markers)=> {
+                                this.$bvModal.show('modal-5');	
+                                this.send = [];
+                                this.data =null;
+                                
+                                this.send[0] = {latitude:marker.getPosition().Ha.toFixed(10),
+                                longitude:marker.getPosition().Ga.toFixed(10),
+                                sd:this.locationSelect,
+                                sgg:this.locationSelect2};
+                  
+                                //이력 미리보기
+                                getdetailrecord(this.send, response => {
+                                 
+                                    this.data = response;
+                           
+                           
+                                })
+                             });
+
+                        }
+                         //클러스터 클릭이벤트
+                        kakao.maps.event.addListener(clusterer, 'clusterclick', (cluster)=> {
+                            this.$bvModal.show('modal-5');	
+                      
+                            var markers = cluster.getMarkers();
+                            //("새로운마커 : "+cluster.getMarkers().length)
+                            this.send = [];
+                            this.data =null;
+                            for(var idx=0; idx<markers.length; idx++){
+                                this.send[idx] = {latitude:markers[idx].getPosition().Ha.toFixed(10),
+                                longitude:markers[idx].getPosition().Ga.toFixed(10),
+                                sd:this.locationSelect,
+                                sgg:this.locationSelect2};
+                            }
+                  
+
+                            this.dataImage = null;
+                            getdetailrecord(this.send, response => {
+                            
+                                this.data = response;
+                
+                            })
+        
+                        });
         
                     });
                 }
