@@ -42,7 +42,7 @@ urlpatterns = [
 # -------------------------------------------------------------------
    # get: 이름에 따른 around검색
    # params(선택) : keyword
-   path('search/', views.Around.as_view()),
+   path('search/', views.SearchAround.as_view()),
    # get [거래이력pk] : 거래 이력에 대한 가격 변동 그래프 출력
    # params(필수) : 
    # address=[검색할주소]
@@ -68,5 +68,7 @@ urlpatterns = [
    path('recommend/<int:pk>/', views.Recommend.as_view()),
 
    path('around/', views.AddAround.as_view()),
+   
+   path('around/<int:pk>', views.DelAround.as_view()),
 
 ]
