@@ -61,7 +61,7 @@ public class Contract {
         this.monthly = contractRecord.getMonthly();
         this.license = contractRecord.getLicense();
         this.image = contractRecord.getImage();
-        this.contractDate = LocalDate.parse(contractRecord.getContract_date(), DateTimeFormatter.BASIC_ISO_DATE);
+        this.contractDate = LocalDate.parse(contractRecord.getContract_date());
         this.createdAt = LocalDate.now();
         this.isExpired = "N";
     }

@@ -18,7 +18,6 @@ public class AroundService {
         return aroundRepository.findByAddressContaining(key);
     }
 
-
     public Long findByAddress(String addr){
         return aroundRepository.findByAddress(addr);
     }

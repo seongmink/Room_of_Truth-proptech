@@ -35,7 +35,7 @@ public class ContractController {
     private final FavoriteService favoriteService;
     private final AddressService addressService;
 
-    static long contract_idx = 200200207;
+    static long contract_idx = 200200209;
 
     /**
      *
@@ -87,8 +87,9 @@ public class ContractController {
         if (result == true) {
             System.out.println("원장 저장 성공");
             contractRecord.setContract_id(String.valueOf(contract_idx));
+            Contract saveContract = new Contract(contractRecord);
 
-            if(contractService.saveContract(contractRecord) == contract_idx){
+            if(contractService.saveContract(saveContract) == contract_idx){
                 System.out.println("DB 저장 성공");
                 contract_idx++;
                 agentService.pointUp(contractRecord.getLicense());
@@ -268,11 +269,11 @@ public class ContractController {
      * @param endIndex
      * @return DB -> BlockChain Data Transfer
      */
-//    @GetMapping("/dataTransfer")
-//    @ApiOperation("원장에 데이터 등록하기 startIndex ~ endIndex")
-//    public void dataTransfer(@RequestParam int startIndex, int endIndex) {
-//        contractService.dataTransfer(startIndex, endIndex);
-//    }
+    @GetMapping("/dataTransfer")
+    @ApiOperation("원장에 데이터 등록하기 startIndex ~ endIndex")
+    public void dataTransfer(@RequestParam int startIndex, int endIndex) {
+        contractService.dataTransfer(startIndex, endIndex);
+    }
 
 
 //    @PostMapping("/contract/confirm")

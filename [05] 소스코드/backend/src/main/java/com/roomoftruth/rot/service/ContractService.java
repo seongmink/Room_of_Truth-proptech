@@ -29,8 +29,7 @@ public class ContractService {
      * saveContract(ContractSaveRequestDto contractSaveRequestDto)
      */
     @Transactional
-    public long saveContract(ContractRecord contractRecord) {
-        Contract contract = new Contract(contractRecord);
+    public long saveContract(Contract contract) {
         return contractRepository.save(contract).getContractId();
     }
 
@@ -153,18 +152,16 @@ public class ContractService {
 //        return result;
 //    }
 
-//    public void dataTransfer(int start, int end){
-//        List<Contract> data = contractRepository.dataTransfer(start, end);
-//        System.out.println(data.size());
-//        for(int i = 0; i < data.size(); i++){
-//            Contract temp = data.get(i);
-//            if(temp.getSgg()==null || temp.getSgg() == ""){
-//                temp.setSgg("-");
-//            }
-//            FabricContractRecord record = new FabricContractRecord(temp);
-//            iFabricCCService.registerContract(record);
-//        }
-//    }
+    public void dataTransfer(int start, int end){
+        List<Contract> data = contractRepository.dataTransfer(start, end);
+        System.out.println(data.size());
+        for(int i = 0; i < data.size(); i++){
+            Contract temp = data.get(i);
+
+            ContractRecord contractRecord = new ContractRecord(temp);
+            iFabricCCService.registerContract(contractRecord);
+        }
+    }
 
 //    /**
 //     * @param user_id

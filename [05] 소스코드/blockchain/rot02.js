@@ -132,7 +132,7 @@ var Chaincode = class {
   }
 
   async registerStatus(stub, args) {
-    if (args.length != 17) {
+    if (args.length != 13) {
       throw new Error("Incorrect number of arguments." + args.length);
     }
 

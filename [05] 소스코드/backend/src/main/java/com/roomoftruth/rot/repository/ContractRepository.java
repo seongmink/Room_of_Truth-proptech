@@ -22,10 +22,10 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 //    String getContractImage(String address, String floor, String ho);
 //
 //    List<Contract> findAllByAddressContaining(String key);
-//
-//    @Query(value = "select * from contract where contract_id >= ?1 AND contract_id <= ?2", nativeQuery = true)
-//    List<Contract> dataTransfer(int start, int end);
-//
+
+    @Query(value = "select * from contract where contract_id >= ?1 AND contract_id <= ?2", nativeQuery = true)
+    List<Contract> dataTransfer(int start, int end);
+
 //    @Query(value = "select license from agent where user_num = ?1", nativeQuery = true)
 //    String getAgentLicense(Long user_id);
 }
