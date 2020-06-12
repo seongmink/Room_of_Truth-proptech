@@ -6,6 +6,7 @@ import com.roomoftruth.rot.dto.*;
 import com.roomoftruth.rot.dto.fabric.ContractSaveRequestDto;
 import com.roomoftruth.rot.fabric.ContractRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
+import com.roomoftruth.rot.fabric.StatusRecord;
 import com.roomoftruth.rot.service.*;
 import com.roomoftruth.rot.util.AddressChangeUtil;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +36,7 @@ public class ContractController {
     private final FavoriteService favoriteService;
     private final AddressService addressService;
 
-    static long contract_idx = 200200209;
+    static long contract_idx = 1;
 
     /**
      *
@@ -146,11 +147,11 @@ public class ContractController {
      * @param num
      * @return agent_license
      */
-//    @GetMapping("/agent/{num}")
-//    @ApiOperation("이력 작성시 공인중개사 번호 가져오기")
-//    public String getAgentLicense(@PathVariable Long num){
-//        return contractService.getAgentLicense(num);
-//    }
+    @GetMapping("/agent/{num}")
+    @ApiOperation("이력 작성시 공인중개사 번호 가져오기")
+    public String getAgentLicense(@PathVariable Long num){
+        return contractService.getAgentLicense(num);
+    }
 
     /**
      *
@@ -276,22 +277,20 @@ public class ContractController {
     }
 
 
-//    @PostMapping("/contract/confirm")
-//    @ApiOperation("계약 이력 상세 정보 확인")
-//    public Object getBuildingDetail(@RequestParam("type") int type, @RequestParam("num") long num) throws IOException {
-//        System.out.println("POST : /api/contract/confirm ");
-//        if (type == 0) {
-//            FabricContractRecord fabricContractRecord = new FabricContractRecord();
-//            fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + num);
-//            System.out.println(fabricContractRecord.toString());
-//            return fabricContractRecord;
-//        } else {
-//            FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();
-//            fabricStatusRecord = iFabricCCService.queryStatus("STATUS" + num);
-//            StatusConfirmDto statusConfirmDto = new StatusConfirmDto(fabricStatusRecord);
-//            return statusConfirmDto;
-//        }
-//    }
+    @PostMapping("/contract/confirm")
+    @ApiOperation("계약 이력 상세 정보 확인")
+    public Object getBuildingDetail(@RequestParam("type") int type, @RequestParam("num") long num) throws IOException {
+        System.out.println("POST : /api/contract/confirm ");
+        if (type == 0) {
+            System.out.println("type 0 :: Contract 상세 조회 ");
+            ContractRecord contractRecord = iFabricCCService.queryContract("TEST_C" + num);
+            return contractRecord;
+        } else {
+            System.out.println("type 1 :: Status 상세 조회 ");
+            StatusRecord statusRecord = iFabricCCService.queryStatus("TEST_S" + num);
+            return statusRecord;
+        }
+    }
 
     /**
      *

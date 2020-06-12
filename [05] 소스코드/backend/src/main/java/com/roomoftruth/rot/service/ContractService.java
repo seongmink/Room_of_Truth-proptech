@@ -163,13 +163,13 @@ public class ContractService {
         }
     }
 
-//    /**
-//     * @param user_id
-//     * @return Agent.License
-//     */
-//    public String getAgentLicense(Long user_id) {
-//        return contractRepository.getAgentLicense(user_id);
-//    }
+    /**
+     * @param user_id
+     * @return Agent.License
+     */
+    public String getAgentLicense(Long user_id) {
+        return contractRepository.getAgentLicense(user_id);
+    }
 
 //    @Data
 //    public class Location {
