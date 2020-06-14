@@ -1,14 +1,10 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Status;
-import com.roomoftruth.rot.fabric.StatusRecord;
 import com.roomoftruth.rot.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)

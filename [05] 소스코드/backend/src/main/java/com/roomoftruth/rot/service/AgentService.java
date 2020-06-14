@@ -2,18 +2,18 @@ package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Agent;
 import com.roomoftruth.rot.domain.Contract;
+import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.AgentDetailResponseDto;
 import com.roomoftruth.rot.dto.AgentRankingResponseDto;
 import com.roomoftruth.rot.dto.AgentSaveRequestDto;
-import com.roomoftruth.rot.dto.ContributionResponseDto;
 import com.roomoftruth.rot.repository.AgentRepository;
 import com.roomoftruth.rot.repository.ContractRepository;
+import com.roomoftruth.rot.repository.StatusRepository;
 import com.roomoftruth.rot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ public class AgentService {
 	private final AgentRepository agentRepository;
 	private final UserRepository userRepository;
 	private final ContractRepository contractRepository;
-//	private final StatusRepository statusRepository;
+	private final StatusRepository statusRepository;
 
 	public String checkAgentLicense(String license) {
 
@@ -92,31 +92,23 @@ public class AgentService {
 		return result;
 	}
 
-//	public List<ContributionResponseDto> getAgentContribution(long num) {
-//
-//		String license = agentRepository.getAgentByUserNum(num).getLicense();
-//
-//		List<ContributionResponseDto> result = new ArrayList<>();
-//
-//		List<Contract> contractList = contractRepository.findTop1000AllByLicenseOrderByContractDate(license);
-//		List<Status> statusList = statusRepository.findTop1000AllByLicenseOrderByStartDate(license);
-//
-//		for (Contract c : contractList) {
-//			result.add(new ContributionResponseDto(c));
-//		}
-//
-//		for (Status s : statusList) {
-//			result.add(new ContributionResponseDto(s));
-//		}
-//
-//		Collections.sort(result, new Comparator<ContributionResponseDto>() {
-//			@Override
-//			public int compare(ContributionResponseDto o1, ContributionResponseDto o2) {
-//				return o2.getDate().compareTo(o1.getDate());
-//			}
-//		});
-//
-//		return result;
-//	}
+	public List<Object> getAgentContribution(long num) {
+		String license = agentRepository.getAgentByUserNum(num).getLicense();
+
+		List<Object> result = new ArrayList<>();
+
+		List<Contract> contracts = contractRepository.findTop100AllByLicenseOrderByContractDate(license);
+		List<Status> statuses = statusRepository.findTop100AllByLicenseOrderByStartDate(license);
+
+		for (Contract c : contracts) {
+			result.add(c);
+		}
+
+		for (Status s : statuses) {
+			result.add(s);
+		}
+
+		return result;
+	}
 
 }

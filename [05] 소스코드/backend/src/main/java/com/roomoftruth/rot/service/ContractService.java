@@ -5,7 +5,6 @@ import com.roomoftruth.rot.dto.*;
 import com.roomoftruth.rot.fabric.ContractRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.repository.ContractRepository;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +17,7 @@ import java.util.*;
 public class ContractService {
 
     private final ContractRepository contractRepository;
-//    private final ContractDetailsResponseDtoRepository contractDetailsResponseDtoRepository;
-//    private final ContractFindResponseRepository contractFindResponseRepository;
-//    private final ContractFindLocationDtoRepository contractFindLocationDtoRepository;
-//    private final StatusService statusService;
+    private final StatusService statusService;
     private final IFabricCCService iFabricCCService;
 
     /**
@@ -32,14 +28,6 @@ public class ContractService {
     public long saveContract(Contract contract) {
         return contractRepository.save(contract).getContractId();
     }
-
-    /**
-     * 2. 모든 빌딩 찾아오기
-     * public List<Contract> findAll()
-     */
-//    public List<Contract> findAll() {
-//        return contractRepository.findAll();
-//    }
 
     /**
      * 3. ID로 이력 검색
@@ -102,9 +90,9 @@ public class ContractService {
      *
      * @return all address, latitude, longitude
      */
-//    public List<ContractFindLocationDto> findContractLocations(String key) {
-//        return contractFindLocationDtoRepository.findContractLocations(key);
-//    }
+    public List<Contract> findAllContractByCity(String key) {
+        return contractRepository.findAllContractByCity(key);
+    }
 
     /**
      * 시도,시군구 포함된 이력 리턴
@@ -171,18 +159,4 @@ public class ContractService {
         return contractRepository.getAgentLicense(user_id);
     }
 
-//    @Data
-//    public class Location {
-//        private String latitude;
-//        private String longitude;
-//        private String floor;
-//        private String ho;
-//
-//        public Location(String la, String lo, String fl, String ho) {
-//            this.latitude = la;
-//            this.longitude = lo;
-//            this.floor = fl;
-//            this.ho = ho;
-//        }
-//    }
 }

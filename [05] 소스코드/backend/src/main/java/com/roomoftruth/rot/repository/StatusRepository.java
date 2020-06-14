@@ -10,8 +10,8 @@ public interface StatusRepository extends JpaRepository<Status, Long> {
 //    List<Status> findDistinctByLatitudeAndLongitude(String latitude, String longitude);
 //    List<Status> findAllByAddressAndFloorAndHo(String address, String floor, String ho);
 //    List<Status> findAllByLicense(String license);
-//    List<Status> findTop1000AllByLicenseOrderByStartDate(String license);
-//
+    List<Status> findTop100AllByLicenseOrderByStartDate(String license);
+
 //    @Query(value = "select image " +
 //            "from status " +
 //            "where address= ?1 and floor= ?2 and ho= ?3 " +

@@ -14,11 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -110,15 +107,17 @@ public class ContractController {
      * @param local
      * @return List<Contracts, Statuses> findAll by city
      */
-//    @GetMapping("/contract/search")
-//    @ApiOperation("조회하기에 모든 이력 뿌려주기")
-//    public List<ContractFindLocationDto> getAllContracts(@RequestParam String city, @RequestParam String local) {
-//        String key = city + " " + local;
-//        List<Around> allAddress = aroundService.findAllAddress(key);
-//
-//        List<ContractFindLocationDto> result = contractService.findContractLocations(key);
-//        return result;
-//    }
+    @GetMapping("/contract/search")
+    @ApiOperation("조회하기에 모든 이력 뿌려주기")
+    public List<Object> getAllContracts(@RequestParam String city, @RequestParam String local) {
+        String key = city + " " + local;
+        List<Around> allAddress = aroundService.findAllAddress(key);
+
+        List<Object> result = new ArrayList<>();
+        List<Contract> contracts = contractService.findAllContractByCity(key);
+        result.addAll(contracts);
+        return result;
+    }
 
     /**
      *

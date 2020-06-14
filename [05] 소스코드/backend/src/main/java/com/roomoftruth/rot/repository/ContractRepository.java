@@ -7,21 +7,21 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ContractRepository extends JpaRepository<Contract, Long> {
-//    List<Contract> findDistinctByLatitudeAndLongitude(String latitude, String longitude);
-//    List<Contract> findAllByAddressAndFloorAndHo(String address, String floor, String ho);
-//
-//    List<Contract> findAllByLicense(String license);
-//    List<Contract> findTop1000AllByLicenseOrderByContractDate(String license);
-//
-//    Contract getTop1AllByAddressOrderByContractDateDesc(String address);
-//
+
+    List<Contract> findTop100AllByLicenseOrderByContractDate(String license);
+
 //    @Query(value = "select image " +
 //            "from contract " +
 //            "where address= ?1 and floor= ?2 and ho= ?3 " +
 //            "order by contract_id desc limit 1", nativeQuery = true)
 //    String getContractImage(String address, String floor, String ho);
-//
-//    List<Contract> findAllByAddressContaining(String key);
+
+    @Query(value = "select * " +
+            "from contract " +
+            "where around_around_id IN (" +
+            "select around_id from around " +
+            "where address like ?1%)", nativeQuery = true)
+    List<Contract> findAllContractByCity(String key);
 
     @Query(value = "select * from contract where contract_id >= ?1 AND contract_id <= ?2", nativeQuery = true)
     List<Contract> dataTransfer(int start, int end);

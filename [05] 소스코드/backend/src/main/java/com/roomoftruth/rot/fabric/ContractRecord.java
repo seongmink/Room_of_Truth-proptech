@@ -54,7 +54,7 @@ public class ContractRecord {
 	}
 
 	public ContractRecord(Contract contract){
-    	this.contract_id = "TEST_C" + contract.getContractId();
+    	this.contract_id = "CONTRACT" + contract.getContractId();
     	this.around_around_id = String.valueOf(contract.getAroundId());
     	this.exclusive = contract.getExclusive();
     	this.floor = contract.getFloor();
