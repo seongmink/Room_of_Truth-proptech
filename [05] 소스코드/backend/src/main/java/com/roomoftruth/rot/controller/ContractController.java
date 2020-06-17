@@ -29,8 +29,6 @@ public class ContractController {
     private final AroundService aroundService;
     private final IFabricCCService iFabricCCService;
     private final AgentService agentService;
-    private final FavoriteService favoriteService;
-    private final AddressService addressService;
     private final StatusService statusService;
 
     static long contract_idx = 1;
@@ -136,8 +134,8 @@ public class ContractController {
     }
 
     /**
-     * @param contractDetailRequestDto (address, floor, ho)
-     * @return List<FabricConstract, FabricStatus>
+     * @param contractDetailRequestDto
+     * @return List<All>
      * @throws IOException
      */
     @PostMapping("/contract/detail")
@@ -157,8 +155,6 @@ public class ContractController {
 
         List<Object> result = new ArrayList<>();
 
-        // contracts, statuses 정렬
-        System.out.println("===== 정렬 시작 ========");
         Map<Object, LocalDate> sortMap = new TreeMap<Object, LocalDate>();
 
         for (Contract contract : contracts) {
@@ -170,12 +166,11 @@ public class ContractController {
         }
 
         Iterator<Object> iter = sortMap.keySet().iterator();
-        while(iter.hasNext()){
+        while (iter.hasNext()) {
             Object o = iter.next();
             result.add(o);
         }
 
-        System.out.println("result Size :  " + result.size());
         return result;
     }
 
@@ -196,17 +191,15 @@ public class ContractController {
         System.out.println("POST : /api/contract/confirm ");
         if (type == 0) {
             System.out.println("type 0 :: Contract 상세 조회 ");
-            ContractRecord contractRecord = iFabricCCService.queryContract("TEST_C" + num);
-            return contractRecord;
+            return contractService.findById(num);
         } else {
             System.out.println("type 1 :: Status 상세 조회 ");
-            StatusRecord statusRecord = iFabricCCService.queryStatus("TEST_S" + num);
-            return statusRecord;
+            return statusService.findById(num);
         }
     }
 
     /**
-     * @return loadChannel
+     * @return
      * @throws IOException
      */
     @GetMapping("/loadchannel")

@@ -30,15 +30,16 @@ public class ContractService {
     }
 
     /**
-     * 3. ID로 이력 검색
-     * Building getBuildingByNum(long num);
+     *
+     * @param num
+     * @return
      */
-//    public ContractResponseDto getContractById(long id) {
-//        Contract contract = contractRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 이력이 없습니다. contractId =" + id));
-//
-//        return new ContractResponseDto(contract);
-//    }
+    public Contract findById(long num) {
+        Contract contract = contractRepository.findById(num)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이력이 없습니다. contractId =" + num));
+
+        return contract;
+    }
 
     /**
      * 4. latitude, longitude로 건물 정보 찾기 -> 군집 해당하는 목록 모두 (1개씩)
