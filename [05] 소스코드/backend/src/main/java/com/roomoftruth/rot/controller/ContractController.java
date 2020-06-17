@@ -25,7 +25,6 @@ import java.util.List;
 public class ContractController {
 
     private final ContractService contractService;
-    //    private final StatusService statusService;
     private final AroundService aroundService;
     private final IFabricCCService iFabricCCService;
     private final AgentService agentService;
@@ -94,11 +93,10 @@ public class ContractController {
      */
     @GetMapping("/contract/search")
     @ApiOperation("조회하기에 모든 이력 뿌려주기")
-    public List<Object> getAllContracts(@RequestParam String city, @RequestParam String local) {
+    public List<Contract> getAllContracts(@RequestParam String city, @RequestParam String local) {
         String key = city + " " + local;
-        List<Around> allAddress = aroundService.findAllAddress(key);
 
-        List<Object> result = new ArrayList<>();
+        List<Contract> result = new ArrayList<>();
         List<Contract> contracts = contractService.findAllContractByCity(key);
         result.addAll(contracts);
         return result;

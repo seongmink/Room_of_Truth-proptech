@@ -18,9 +18,9 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     @Query(value = "select * " +
             "from contract " +
-            "where around_around_id IN (" +
-            "select around_id from around " +
-            "where address like ?1%)", nativeQuery = true)
+            "where around_around_id IN (select around_id from around " +
+            "where address like ?1% ) " +
+            "group by around_around_id", nativeQuery = true)
     List<Contract> findAllContractByCity(String key);
 
     @Query(value = "select * from contract where contract_id >= ?1 AND contract_id <= ?2", nativeQuery = true)
