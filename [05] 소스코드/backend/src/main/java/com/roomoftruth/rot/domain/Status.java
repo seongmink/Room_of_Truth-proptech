@@ -1,6 +1,7 @@
 package com.roomoftruth.rot.domain;
 
-import com.roomoftruth.rot.fabric.StatusRecord;
+import com.roomoftruth.rot.dto.record.StatusSaveRequestDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -46,18 +47,19 @@ public class Status {
         this.image = image;
     }
 
-    public Status(StatusRecord statusRecord) {
-        this.statusId = Long.parseLong(statusRecord.getStatus_id());
-        this.aroundId = Long.parseLong(statusRecord.getAround_around_id());
-        this.floor = statusRecord.getFloor();
-        this.ho = statusRecord.getHo();
-        this.category = statusRecord.getCategory();
-        this.detail = statusRecord.getDetail();
-        this.cost = Long.parseLong(statusRecord.getCost());
-        this.license = statusRecord.getLicense();
-        this.image = statusRecord.getImage();
-        this.startDate = LocalDate.parse(statusRecord.getStart_date());
-        this.endDate = LocalDate.parse(statusRecord.getEnd_date());
+    @Builder
+    public Status(long statusId, long aroundId, StatusSaveRequestDto statusSaveRequestDto) {
+        this.statusId = statusId;
+        this.aroundId = aroundId;
+        this.floor = statusSaveRequestDto.getFloor();
+        this.ho = statusSaveRequestDto.getHo();
+        this.category = statusSaveRequestDto.getCategory();
+        this.detail = statusSaveRequestDto.getDetail();
+        this.cost = statusSaveRequestDto.getCost();
+        this.license = statusSaveRequestDto.getLicense();
+        this.image = statusSaveRequestDto.getImage();
+        this.startDate = statusSaveRequestDto.getStartDate();
+        this.endDate = statusSaveRequestDto.getEndDate();
         this.createdAt = LocalDate.now();
         this.isExpired = "N";
     }
