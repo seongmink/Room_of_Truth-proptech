@@ -1,5 +1,6 @@
 package com.roomoftruth.rot.domain;
 
+import com.roomoftruth.rot.dto.record.ContractSaveRequestDto;
 import com.roomoftruth.rot.fabric.ContractRecord;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,19 +50,20 @@ public class Contract {
         this.image = image;
     }
 
-    public Contract(ContractRecord contractRecord) {
-        this.contractId = Long.parseLong(contractRecord.getContract_id());
-        this.aroundId = Long.parseLong(contractRecord.getAround_around_id());
-        this.exclusive = contractRecord.getExclusive();
-        this.floor = contractRecord.getFloor();
-        this.ho = contractRecord.getHo();
-        this.kind = contractRecord.getKind();
-        this.detail = contractRecord.getDetail();
-        this.cost = Long.parseLong(contractRecord.getCost());
-        this.monthly = contractRecord.getMonthly();
-        this.license = contractRecord.getLicense();
-        this.image = contractRecord.getImage();
-        this.contractDate = LocalDate.parse(contractRecord.getContract_date());
+    @Builder
+    public Contract(long contractId, long aroundId, ContractSaveRequestDto contractSaveRequestDto) {
+        this.contractId = contractId;
+        this.aroundId = aroundId;
+        this.exclusive = contractSaveRequestDto.getExclusive();
+        this.floor = contractSaveRequestDto.getFloor();
+        this.ho = contractSaveRequestDto.getHo();
+        this.kind = contractSaveRequestDto.getKind();
+        this.detail = contractSaveRequestDto.getDetail();
+        this.cost = contractSaveRequestDto.getCost();
+        this.monthly = contractSaveRequestDto.getMonthly();
+        this.license = contractSaveRequestDto.getLicense();
+        this.image = contractSaveRequestDto.getImage();
+        this.contractDate = contractSaveRequestDto.getContract_date();
         this.createdAt = LocalDate.now();
         this.isExpired = "N";
     }

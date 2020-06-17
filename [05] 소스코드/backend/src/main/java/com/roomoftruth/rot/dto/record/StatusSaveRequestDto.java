@@ -1,4 +1,4 @@
-package com.roomoftruth.rot.dto.fabric;
+package com.roomoftruth.rot.dto.record;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

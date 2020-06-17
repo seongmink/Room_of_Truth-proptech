@@ -2,8 +2,7 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.Around;
 import com.roomoftruth.rot.domain.Contract;
-import com.roomoftruth.rot.dto.*;
-import com.roomoftruth.rot.dto.fabric.ContractSaveRequestDto;
+import com.roomoftruth.rot.dto.record.ContractSaveRequestDto;
 import com.roomoftruth.rot.fabric.ContractRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.fabric.StatusRecord;
@@ -26,7 +25,7 @@ import java.util.List;
 public class ContractController {
 
     private final ContractService contractService;
-//    private final StatusService statusService;
+    //    private final StatusService statusService;
     private final AroundService aroundService;
     private final IFabricCCService iFabricCCService;
     private final AgentService agentService;
@@ -36,7 +35,6 @@ public class ContractController {
     static long contract_idx = 1;
 
     /**
-     *
      * @param contractSaveRequestDto
      * @return contractID
      * @throws IOException
@@ -45,14 +43,15 @@ public class ContractController {
     @ApiOperation("계약 이력 등록하기")
     public String save(@RequestBody ContractSaveRequestDto contractSaveRequestDto) throws Exception {
         System.out.println("Request :: " + contractSaveRequestDto.toString());
-        // 시도 Address Util Change
+
+        // Address Util Change
         String[] addr = contractSaveRequestDto.getAddress().split(" ");
         AddressChangeUtil addressChangeUtil = new AddressChangeUtil();
         addr[0] = addressChangeUtil.addressChange(addr[0]);
 
         StringBuilder sb = new StringBuilder();
-        for(int i= 0; i < addr.length; i++){
-            sb.append(addr[i]+" ");
+        for (int i = 0; i < addr.length; i++) {
+            sb.append(addr[i] + " ");
         }
 
         contractSaveRequestDto.setAddress(sb.toString().trim());
@@ -63,13 +62,10 @@ public class ContractController {
             contractSaveRequestDto.setMonthly("0");
         }
 
-        String PK = "TEST_C" + contract_idx;
-
         // 주소로 address_id 값 찾아오기
         long aroundId = 0;
 
-        if(aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()) == null){
-            // 1. AddressID -1 설정 후 반환
+        if (aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()) == null) {
             System.out.println("Around 정보가 없는 데이터 입니다.");
             aroundId = -1;
             return String.valueOf(aroundId);
@@ -77,32 +73,21 @@ public class ContractController {
             aroundId = aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()).getAroundId();
         }
 
-        // 블록체인에 넣을 ContractRecord 만들어서 요청 날리자
-        ContractRecord contractRecord = new ContractRecord(PK, aroundId, contractSaveRequestDto);
+        Contract contract = new Contract(contract_idx, aroundId, contractSaveRequestDto);
 
-        System.out.println("-- 넣기 직전 : " + contractRecord);
-        boolean result = iFabricCCService.registerContract(contractRecord);
-        if (result == true) {
-            System.out.println("원장 저장 성공");
-            contractRecord.setContract_id(String.valueOf(contract_idx));
-            Contract saveContract = new Contract(contractRecord);
-
-            if(contractService.saveContract(saveContract) == contract_idx){
-                System.out.println("DB 저장 성공");
-                contract_idx++;
-                agentService.pointUp(contractRecord.getLicense());
-                System.out.println("point Up 성공");
-                return String.valueOf(contract_idx - 1);
-            } else {
-                return "DB 저장 실패";
-            }
+        // DB에 이력 저장 시작
+        if (contractService.saveContract(contract) == contract_idx) {
+            System.out.println("DB 저장 성공");
+            contract_idx++;
+            agentService.pointUp(contract.getLicense());
+            System.out.println("point Up 성공");
+            return String.valueOf(contract_idx - 1);
         } else {
-            return "실패";
+            return "DB 저장 실패";
         }
     }
 
     /**
-     *
      * @param city
      * @param local
      * @return List<Contracts, Statuses> findAll by city
@@ -120,9 +105,8 @@ public class ContractController {
     }
 
     /**
-     *
      * @param requestDto (address, floor, ho)
-     * @return List<Contracts,Statuses> by building
+     * @return List<Contracts, Statuses> by building
      */
 //    @PostMapping("/contract/lists")
 //    @ApiOperation("군집에 해당하는 이력 LIST 조회하기")
@@ -142,13 +126,12 @@ public class ContractController {
 //    }
 
     /**
-     *
      * @param num
      * @return agent_license
      */
     @GetMapping("/agent/{num}")
     @ApiOperation("이력 작성시 공인중개사 번호 가져오기")
-    public String getAgentLicense(@PathVariable Long num){
+    public String getAgentLicense(@PathVariable Long num) {
         return contractService.getAgentLicense(num);
     }
 
@@ -264,7 +247,6 @@ public class ContractController {
 //    }
 
     /**
-     *
      * @param startIndex
      * @param endIndex
      * @return DB -> BlockChain Data Transfer
@@ -292,7 +274,6 @@ public class ContractController {
     }
 
     /**
-     *
      * @return loadChannel
      * @throws IOException
      */

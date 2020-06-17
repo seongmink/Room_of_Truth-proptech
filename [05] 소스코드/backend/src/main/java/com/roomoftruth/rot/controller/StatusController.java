@@ -1,7 +1,7 @@
 package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.Status;
-import com.roomoftruth.rot.dto.fabric.StatusSaveRequestDto;
+import com.roomoftruth.rot.dto.record.StatusSaveRequestDto;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.fabric.StatusRecord;
 import com.roomoftruth.rot.service.AgentService;
