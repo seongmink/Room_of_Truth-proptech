@@ -1,7 +1,8 @@
 package com.roomoftruth.rot.controller;
 
-import com.roomoftruth.rot.domain.Around;
 import com.roomoftruth.rot.domain.Contract;
+import com.roomoftruth.rot.domain.Status;
+import com.roomoftruth.rot.dto.record.ContractDetailRequestDto;
 import com.roomoftruth.rot.dto.record.ContractSaveRequestDto;
 import com.roomoftruth.rot.fabric.ContractRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
@@ -14,8 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -30,6 +31,7 @@ public class ContractController {
     private final AgentService agentService;
     private final FavoriteService favoriteService;
     private final AddressService addressService;
+    private final StatusService statusService;
 
     static long contract_idx = 1;
 
@@ -134,115 +136,48 @@ public class ContractController {
     }
 
     /**
-     *
-     * @param request (address, floor, ho)
+     * @param contractDetailRequestDto (address, floor, ho)
      * @return List<FabricConstract, FabricStatus>
      * @throws IOException
      */
-//    @PostMapping("/contract/detail")
-//    @ApiOperation("계약 이력 상세 정보 확인")
-//    public List<FabricResponseDto> getBuildingDetail(@RequestBody FabricResponseDto request) throws IOException {
-//        System.out.println("POST : /api/contract/detail");
-//
-//        List<Contract> contracts = new ArrayList<Contract>();
-//        List<Status> statuses = new ArrayList<Status>();
-//
-//        String address = request.getAddress();
-//        String floor = request.getFloor();
-//        String ho = request.getHo();
-//
-//        contracts = contractService.findAllByAddressAndFloorAndHo(address, floor, ho);
-//        statuses = statusService.findAllByAddressAndFloorAndHo(address, floor, ho);
-//
-//        List<FabricResponseDto> result = new ArrayList<>();
-//
-//        for (int i = 0; i < contracts.size(); i++) {
-//            FabricContractRecord fabricContractRecord = new FabricContractRecord();
-//            FabricResponseDto contractOne = new FabricResponseDto();
-//
-//            fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + contracts.get(i).getContractId());
-//
-//            System.out.println(fabricContractRecord.toString());
-//
-//            contractOne.setContractId(fabricContractRecord.getContract_id());
-//            contractOne.setAddress(fabricContractRecord.getAddress());
-//            contractOne.setLongitude(fabricContractRecord.getLongitude());
-//            contractOne.setLatitude(fabricContractRecord.getLatitude());
-//            contractOne.setExclusive(fabricContractRecord.getExclusive());
-//            contractOne.setFloor(fabricContractRecord.getFloor());
-//            contractOne.setHo(fabricContractRecord.getHo());
-//            contractOne.setKind(fabricContractRecord.getKind());
-//            contractOne.setDetail(fabricContractRecord.getDetail());
-//            contractOne.setCost(fabricContractRecord.getCost());
-//            contractOne.setMonthly(fabricContractRecord.getMonthly());
-//            contractOne.setLicense(fabricContractRecord.getLicense());
-//            contractOne.setImage(fabricContractRecord.getImage());
-//            contractOne.setContractDate(fabricContractRecord.getContract_date());
-//
-//            result.add(contractOne);
-//        }
-//
-//        for (int i = 0; i < statuses.size(); i++) {
-//            FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();
-//            FabricResponseDto statusOne = new FabricResponseDto();
-//
-//            fabricStatusRecord = iFabricCCService.queryStatus("STATUS" + statuses.get(i).getStatusId());
-//
-//            System.out.println(fabricStatusRecord.toString());
-//
-//            statusOne.setContractId(fabricStatusRecord.getStatus_id());
-//            statusOne.setAddress(fabricStatusRecord.getAddress());
-//            statusOne.setLongitude(fabricStatusRecord.getLongitude());
-//            statusOne.setLatitude(fabricStatusRecord.getLatitude());
-//            statusOne.setFloor(fabricStatusRecord.getFloor());
-//            statusOne.setHo(fabricStatusRecord.getHo());
-//            statusOne.setKind(fabricStatusRecord.getCategory());
-//            statusOne.setDetail(fabricStatusRecord.getDetail());
-//            statusOne.setCost(fabricStatusRecord.getCost());
-//            statusOne.setLicense(fabricStatusRecord.getLicense());
-//            statusOne.setImage(fabricStatusRecord.getImage());
-//            statusOne.setExclusive(fabricStatusRecord.getExclusive());
-//            statusOne.setContractDate(fabricStatusRecord.getStart_date());
-//            statusOne.setEndDate(fabricStatusRecord.getEnd_date());
-//
-//            result.add(statusOne);
-//        }
-//
-//
-//        for (int i = 0; i < result.size(); i++){
-//            long temp = 0;
-//            String addr = result.get(i).getAddress();
-//            System.out.println("========== 시작 =============");
-//            Long aroundId = aroundService.findByAddress(addr);
-//            System.out.println("ID : " + aroundId);
-//            System.out.println("around clear !!!");
-//
-//            long score = 0;
-//            if(favoriteService.findByAroundIdInFavorite(aroundId) != null){
-//                score = favoriteService.findByAroundId(aroundId);
-//                System.out.println(" ------- favorie clear !!! --------");
-//            }
-//
-//            if(score > 0)
-//                temp = score;
-//            result.get(i).setIsLike(String.valueOf(temp));
-//        }
-//
-//        System.out.println("--- sort 시작 ----");
-//        Collections.sort(result, new Comparator<FabricResponseDto>() {
-//
-//            @Override
-//            public int compare(FabricResponseDto o1, FabricResponseDto o2) {
-//                return o2.getContractDate().compareTo(o1.getContractDate());
-//            }
-//        });
-//
-//        for (int i = 0; i < result.size(); i++) {
-//            System.out.println(result.get(i).toString());
-//        }
-//        System.out.println("result Size :  " + result.size());
-//        return result;
-//    }
+    @PostMapping("/contract/detail")
+    @ApiOperation("계약 이력 상세 정보 확인")
+    public List<Object> getBuildingDetail(@RequestBody ContractDetailRequestDto contractDetailRequestDto) throws IOException {
+        System.out.println("POST : /api/contract/detail");
+
+        List<Contract> contracts = new ArrayList<>();
+        List<Status> statuses = new ArrayList<>();
+
+        long aroundId = contractDetailRequestDto.getAroundId();
+        String floor = contractDetailRequestDto.getFloor();
+        String ho = contractDetailRequestDto.getHo();
+
+        contracts = contractService.findAllByAddressAndFloorAndHo(aroundId, floor, ho);
+        statuses = statusService.findAllByAroundIdAndFloorAndHo(aroundId, floor, ho);
+
+        List<Object> result = new ArrayList<>();
+
+        // contracts, statuses 정렬
+        System.out.println("===== 정렬 시작 ========");
+        Map<Object, LocalDate> sortMap = new TreeMap<Object, LocalDate>();
+
+        for (Contract contract : contracts) {
+            sortMap.put(contract, contract.getContractDate());
+        }
+
+        for (Status status : statuses) {
+            sortMap.put(status, status.getStartDate());
+        }
+
+        Iterator<Object> iter = sortMap.keySet().iterator();
+        while(iter.hasNext()){
+            Object o = iter.next();
+            result.add(o);
+        }
+
+        System.out.println("result Size :  " + result.size());
+        return result;
+    }
 
     /**
      * @param startIndex
@@ -254,7 +189,6 @@ public class ContractController {
     public void dataTransfer(@RequestParam int startIndex, int endIndex) {
         contractService.dataTransfer(startIndex, endIndex);
     }
-
 
     @PostMapping("/contract/confirm")
     @ApiOperation("계약 이력 상세 정보 확인")

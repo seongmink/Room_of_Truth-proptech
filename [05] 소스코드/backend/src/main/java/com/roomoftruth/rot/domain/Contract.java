@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @NoArgsConstructor
 @Table(name = "contract")
-public class Contract {
+public class Contract implements Comparable<Contract>{
 
     @Id
     @Column(name = "contract_id")
@@ -66,5 +66,10 @@ public class Contract {
         this.contractDate = contractSaveRequestDto.getContract_date();
         this.createdAt = LocalDate.now();
         this.isExpired = "N";
+    }
+
+    @Override
+    public int compareTo(Contract o) {
+        return o.contractDate.compareTo(this.contractDate);
     }
 }

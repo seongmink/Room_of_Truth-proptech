@@ -8,13 +8,9 @@ import java.util.List;
 
 public interface ContractRepository extends JpaRepository<Contract, Long> {
 
-    List<Contract> findTop100AllByLicenseOrderByContractDate(String license);
+    List<Contract> findAllByAroundIdAndFloorAndHo(long aroundId, String floor, String ho);
 
-//    @Query(value = "select image " +
-//            "from contract " +
-//            "where address= ?1 and floor= ?2 and ho= ?3 " +
-//            "order by contract_id desc limit 1", nativeQuery = true)
-//    String getContractImage(String address, String floor, String ho);
+    List<Contract> findTop100AllByLicenseOrderByContractDate(String license);
 
     @Query(value = "select * " +
             "from contract " +

@@ -56,12 +56,14 @@ public class ContractService {
 //    }
 
     /**
-     * 5. 해당 주소의 계약이력 모두 조회 -> 원장으로 보내기 위해
-     * List<Building> getBuildingNum(Building building);
+     * @param aroundId
+     * @param floor
+     * @param ho
+     * @return List<Contract>
      */
-//    public List<Contract> findAllByAddressAndFloorAndHo(String address, String floor, String ho) {
-//        return contractRepository.findAllByAddressAndFloorAndHo(address, floor, ho);
-//    }
+    public List<Contract> findAllByAddressAndFloorAndHo(long aroundId, String floor, String ho) {
+        return contractRepository.findAllByAroundIdAndFloorAndHo(aroundId, floor, ho);
+    }
 
     /**
      * 6. contract 테이블에서 주소(address, floor, ho)로 이미지 1개 가져오기

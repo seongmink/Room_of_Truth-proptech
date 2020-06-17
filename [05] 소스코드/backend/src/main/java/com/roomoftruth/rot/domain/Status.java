@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @Table(name = "status")
-public class Status {
+public class Status implements Comparable<Status>{
 
     @Id
     @Column(name = "status_id")
@@ -62,5 +62,10 @@ public class Status {
         this.endDate = statusSaveRequestDto.getEndDate();
         this.createdAt = LocalDate.now();
         this.isExpired = "N";
+    }
+
+    @Override
+    public int compareTo(Status o) {
+        return o.getStartDate().compareTo(this.startDate);
     }
 }

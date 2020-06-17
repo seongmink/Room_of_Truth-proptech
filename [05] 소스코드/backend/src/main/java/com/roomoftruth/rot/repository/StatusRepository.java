@@ -7,10 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface StatusRepository extends JpaRepository<Status, Long> {
-//    List<Status> findDistinctByLatitudeAndLongitude(String latitude, String longitude);
-//    List<Status> findAllByAddressAndFloorAndHo(String address, String floor, String ho);
-//    List<Status> findAllByLicense(String license);
     List<Status> findTop100AllByLicenseOrderByStartDate(String license);
+    List<Status> findAllByAroundIdAndFloorAndHo(long aroundId, String floor, String ho);
 
 //    @Query(value = "select image " +
 //            "from status " +

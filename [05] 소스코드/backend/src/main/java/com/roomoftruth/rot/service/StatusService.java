@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -40,13 +42,15 @@ public class StatusService {
 //    }
 
     /**
-     * 5. 해당 주소의 상태 이력 모두 조회 -> 원장으로 보내기 위해
-     * List<Status> findByAddress(Status status);
      *
+     * @param aroundId
+     * @param floor
+     * @param ho
+     * @return
      */
-//    public List<Status> findAllByAddressAndFloorAndHo(String address, String floor, String ho){
-//        return statusRespository.findAllByAddressAndFloorAndHo(address, floor, ho);
-//    }
+    public List<Status> findAllByAroundIdAndFloorAndHo(long aroundId, String floor, String ho){
+        return statusRespository.findAllByAroundIdAndFloorAndHo(aroundId, floor, ho);
+    }
 
     /**
      *  6. status 테이블에서 ID로 이미지 가져오기
