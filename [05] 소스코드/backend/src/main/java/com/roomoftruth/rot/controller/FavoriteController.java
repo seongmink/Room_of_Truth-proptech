@@ -18,12 +18,6 @@ public class FavoriteController {
 
 	private final FavoriteService favoriteService;
 
-	/**
-	 *
-	 * @param  address, num, isLike
-	 * @return
-	 */
-
 	@PostMapping("/favorite")
 	@ApiOperation("찜하기")
 	public Long saveFavorite(@RequestBody SaveFavoriteDto saveFavoriteDto) {
