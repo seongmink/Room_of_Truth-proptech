@@ -57,7 +57,6 @@ var Chaincode = class {
     let compositeKey = stub.createCompositeKey("Asset.", [args[0]]);
 
     /** Duplicated asset checking */
-
     let dupCheck = await stub.getState(compositeKey);
 
     var isExist = function (value) {
