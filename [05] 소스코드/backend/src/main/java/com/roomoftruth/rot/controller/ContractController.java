@@ -4,9 +4,7 @@ import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.dto.record.ContractDetailRequestDto;
 import com.roomoftruth.rot.dto.record.ContractSaveRequestDto;
-import com.roomoftruth.rot.fabric.ContractRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
-import com.roomoftruth.rot.fabric.StatusRecord;
 import com.roomoftruth.rot.service.*;
 import com.roomoftruth.rot.util.AddressChangeUtil;
 import io.swagger.annotations.ApiOperation;
@@ -93,12 +91,26 @@ public class ContractController {
      */
     @GetMapping("/contract/search")
     @ApiOperation("조회하기에 모든 이력 뿌려주기")
-    public List<Contract> getAllContracts(@RequestParam String city, @RequestParam String local) {
+    public List<Object> getAllContracts(@RequestParam String city, @RequestParam String local) {
         String key = city + " " + local;
 
-        List<Contract> result = new ArrayList<>();
+        List<Object> result = new ArrayList<>();
         List<Contract> contracts = contractService.findAllContractByCity(key);
-        result.addAll(contracts);
+        List<Status> statuses = statusService.findAllStatusByCity(key);
+
+        while(contracts.size() > 0 && statuses.size() > 0){
+            if(contracts.get(0).getContractDate().compareTo(statuses.get(0).getStartDate()) > 0){
+                result.add(contracts.remove(0));
+            } else {
+                result.add(statuses.remove(0));
+            }
+        }
+
+        if(contracts.size() > 0){
+            result.addAll(contracts);
+        } else if(statuses.size() > 0)
+            result.addAll(statuses);
+
         return result;
     }
 
@@ -155,21 +167,18 @@ public class ContractController {
 
         List<Object> result = new ArrayList<>();
 
-        Map<Object, LocalDate> sortMap = new TreeMap<Object, LocalDate>();
-
-        for (Contract contract : contracts) {
-            sortMap.put(contract, contract.getContractDate());
+        while(contracts.size() > 0 && statuses.size() > 0){
+            if(contracts.get(0).getContractDate().compareTo(statuses.get(0).getStartDate()) > 0){
+                result.add(contracts.remove(0));
+            } else {
+                result.add(statuses.remove(0));
+            }
         }
 
-        for (Status status : statuses) {
-            sortMap.put(status, status.getStartDate());
-        }
-
-        Iterator<Object> iter = sortMap.keySet().iterator();
-        while (iter.hasNext()) {
-            Object o = iter.next();
-            result.add(o);
-        }
+        if(contracts.size() > 0){
+            result.addAll(contracts);
+        } else if(statuses.size() > 0)
+            result.addAll(statuses);
 
         return result;
     }

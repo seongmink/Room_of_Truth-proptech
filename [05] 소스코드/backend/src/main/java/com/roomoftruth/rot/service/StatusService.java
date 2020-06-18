@@ -1,6 +1,5 @@
 package com.roomoftruth.rot.service;
 
-import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +35,10 @@ public class StatusService {
         Status status = statusRespository.findById(num)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이력이 없습니다. statusId =" + num));
         return status;
+    }
+
+    public List<Status> findAllStatusByCity(String key){
+        return statusRespository.findAllStatusByCity(key);
     }
 
     /**
