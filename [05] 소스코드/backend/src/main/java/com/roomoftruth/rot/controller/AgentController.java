@@ -25,13 +25,13 @@ public class AgentController {
     private final JwtService jwtService;
     private final IFabricCCService iFabricCCService;
 
-@PostMapping("/agent/check")
-@ApiOperation("공인중개사 존재 여부 확인")
-public String checkAgentLicense(@RequestParam String license) {
-    log.info("AgentController : checkAgentLicense / {}", license);
+    @PostMapping("/agent/check")
+    @ApiOperation("공인중개사 존재 여부 확인")
+    public String checkAgentLicense(@RequestParam String license) {
+        log.info("AgentController : checkAgentLicense / {}", license);
 
-    return agentService.checkAgentLicense(license);
-}
+        return agentService.checkAgentLicense(license);
+    }
 
     @PostMapping("/agent")
     @ApiOperation("공인중개사 등록")
@@ -65,30 +65,4 @@ public String checkAgentLicense(@RequestParam String license) {
 
         return agentService.getAgentDetail(num);
     }
-
-
-//    @GetMapping("/agent/contribution/{num}")
-//    @ApiOperation("공인중개사가 등록한 건물 조회")
-//    public List<ContributionResponseDto> getAgentContribution(@PathVariable long num) {
-//        log.info("AgentController : getAgentContribution");
-//
-//        return agentService.getAgentContribution(num);
-//    }
-
-//    @GetMapping("/agent/contribution/detail/{type}/{num}")
-//    @ApiOperation("공인중개사가 등록한 건물 조회")
-//    public Object getAgentContributionDetail(@PathVariable(value = "type") int type, @PathVariable long num) {
-//        System.out.println("POST : /api/agent/contribution/detail/{type}/{num}");
-//        // 계약 = 0, 상태 = 1
-//
-//        if (type == 0) {
-//            FabricContractRecord fabricContractRecord = new FabricContractRecord();
-//            fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + num);
-//            return fabricContractRecord;
-//        } else {
-//            FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();
-//            fabricStatusRecord = iFabricCCService.queryStatus("STATUS" + num);
-//            return fabricStatusRecord;
-//        }
-//    }
 }

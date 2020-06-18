@@ -30,12 +30,8 @@ public class AgentService {
 
 		Agent agent = agentRepository.findByLicense(license);
 
-		if(agent != null) { // 없으면 등록 가능
-			if(license.equals("SSAFY-대전-006")) {
-				return "success";
-			}
-			return "failed";
-//			return "success";
+		if(agent != null) {
+			return "success";
 		}
 
 		return "failed";
