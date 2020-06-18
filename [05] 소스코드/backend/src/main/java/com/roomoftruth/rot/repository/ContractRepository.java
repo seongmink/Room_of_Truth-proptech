@@ -12,16 +12,15 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     List<Contract> findTop100AllByLicenseOrderByContractDate(String license);
 
-    @Query(value = "select * " +
-            "from contract " +
-            "where around_around_id IN (select around_id from around " +
-            "where address like ?1% ) " +
-            "group by around_around_id", nativeQuery = true)
-    List<Contract> findAllContractByCity(String key);
-
     @Query(value = "select * from contract where contract_id >= ?1 AND contract_id <= ?2", nativeQuery = true)
     List<Contract> dataTransfer(int start, int end);
 
     @Query(value = "select license from agent where user_num = ?1", nativeQuery = true)
     String getAgentLicense(Long user_id);
+
+    @Query(value = "SELECT * " +
+            "FROM contract " +
+            "WHERE around_around_id = ?1 " +
+            "order by contract_date desc limit 1 ", nativeQuery = true)
+    Contract findOneByAround(Long aroundId);
 }

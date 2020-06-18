@@ -2,8 +2,7 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.domain.Status;
-import com.roomoftruth.rot.dto.record.ContractDetailRequestDto;
-import com.roomoftruth.rot.dto.record.ContractSaveRequestDto;
+import com.roomoftruth.rot.dto.record.*;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.service.*;
 import com.roomoftruth.rot.util.AddressChangeUtil;
@@ -73,10 +72,8 @@ public class ContractController {
 
         // DB에 이력 저장 시작
         if (contractService.saveContract(contract) == contract_idx) {
-            System.out.println("DB 저장 성공");
             contract_idx++;
             agentService.pointUp(contract.getLicense());
-            System.out.println("point Up 성공");
             return String.valueOf(contract_idx - 1);
         } else {
             return "DB 저장 실패";
@@ -94,45 +91,62 @@ public class ContractController {
         String key = city + " " + local;
 
         List<Object> result = new ArrayList<>();
-        List<Contract> contracts = contractService.findAllContractByCity(key);
-        List<Status> statuses = statusService.findAllStatusByCity(key);
+        List<ContractSearchResponseDto> contracts = contractService.findAllContractByCity(key);
+        List<ContractSearchResponseDto> statuses = statusService.findAllStatusByCity(key);
 
-        while(contracts.size() > 0 && statuses.size() > 0){
-            if(contracts.get(0).getContractDate().compareTo(statuses.get(0).getStartDate()) > 0){
-                result.add(contracts.remove(0));
-            } else {
-                result.add(statuses.remove(0));
-            }
+        for (int i = 0; i < contracts.size(); i++){
+            System.out.println(contracts.get(i));
         }
-
-        if(contracts.size() > 0){
-            result.addAll(contracts);
-        } else if(statuses.size() > 0)
-            result.addAll(statuses);
+        result.addAll(contracts);
+        result.addAll(statuses);
 
         return result;
     }
 
     /**
-     * @param requestDto (address, floor, ho)
-     * @return List<Contracts, Statuses> by building
+     * @param arounds
+     * @return findAllLists
      */
-//    @PostMapping("/contract/lists")
-//    @ApiOperation("군집에 해당하는 이력 LIST 조회하기")
-//    public List<Contract> getAllDetails(@RequestBody ContractFindRequestDto[] requestDto) {
-//        System.out.println("====== POST : api/details");
-//        String sd = requestDto[0].getSd();
-//        String sgg = requestDto[0].getSgg();
-//        String key = sd + " " + sgg;
-//
-//        List<Contract> searchData = contractService.findAllByAddressContaining(key);
-//
-//        List<Contract> result = new ArrayList<>();
-//
-//        result = contractService.getAllDetails(requestDto, searchData);
-//
-//        return result;
-//    }
+    @PostMapping("/contract/lists")
+    @ApiOperation("군집에 해당하는 이력 LIST 조회하기")
+    public List<ContractListImageResponseDto> getAllDetails(@RequestBody ContractListRequestDto[] arounds) {
+        System.out.println("====== POST : api/details");
+
+        // 해당 시도, 시군구의 모든 이력 저장
+        String key = arounds[0].getSd() + " " + arounds[0].getSgg();
+        List<ContractListResponseDto> contracts = contractService.findAllContractsList(key);
+
+        List<ContractListImageResponseDto> result = new ArrayList<>();
+
+        for (ContractListRequestDto request : arounds) {
+            for (ContractListResponseDto dto : contracts) {
+
+                if(Long.parseLong(request.getAroundId()) == dto.getAroundId()){
+                    result.add(new ContractListImageResponseDto(dto));
+                }
+            }
+        }
+
+        System.out.println("result Size 1 :  "+ result.size());
+        // 모든 이미지들 imageMap에 저장
+        List<ContractImageRequestDto> contractImages = contractService.findContractImages(key);
+        List<ContractImageRequestDto> statusImages = statusService.findStatusImages(key);
+
+        contractImages.addAll(statusImages);
+
+        for (ContractListImageResponseDto dto: result) {
+            for (ContractImageRequestDto imageDto : contractImages) {
+                if(Integer.parseInt(imageDto.getContractId()+"") == Integer.parseInt(dto.getContractId()+"")){
+                    dto.setImage(imageDto.getImage());
+                    break;
+                }
+            }
+        }
+
+        System.out.println("result Size : " + result.size());
+
+        return result;
+    }
 
     /**
      * @param num
@@ -174,9 +188,9 @@ public class ContractController {
             }
         }
 
-        if(contracts.size() > 0){
+        if(contracts.size() > 0)
             result.addAll(contracts);
-        } else if(statuses.size() > 0)
+        if(statuses.size() > 0)
             result.addAll(statuses);
 
         return result;
@@ -198,10 +212,8 @@ public class ContractController {
     public Object getBuildingDetail(@RequestParam("type") int type, @RequestParam("num") long num) throws IOException {
         System.out.println("POST : /api/contract/confirm ");
         if (type == 0) {
-            System.out.println("type 0 :: Contract 상세 조회 ");
             return contractService.findById(num);
         } else {
-            System.out.println("type 1 :: Status 상세 조회 ");
             return statusService.findById(num);
         }
     }

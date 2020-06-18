@@ -1,6 +1,10 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Status;
+import com.roomoftruth.rot.dto.record.ContractImageRequestDto;
+import com.roomoftruth.rot.dto.record.ContractSearchResponseDto;
+import com.roomoftruth.rot.repository.ContractImageRepository;
+import com.roomoftruth.rot.repository.ContractSearchRepository;
 import com.roomoftruth.rot.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,8 @@ import java.util.List;
 public class StatusService {
 
     private final StatusRepository statusRespository;
+    private final ContractSearchRepository contractSearchRepository;
+    private final ContractImageRepository contractImageRepository;
 
     /**
      *  1. 상태 이력 등록하기
@@ -37,8 +43,16 @@ public class StatusService {
         return status;
     }
 
-    public List<Status> findAllStatusByCity(String key){
-        return statusRespository.findAllStatusByCity(key);
+    public List<ContractSearchResponseDto> findAllStatusByCity(String key){
+        return contractSearchRepository.findAllStatusByCity(key);
+    }
+
+    public Status findOneByAround(String aroundId){
+        return statusRespository.findOneByAround(Long.parseLong(aroundId));
+    }
+
+    public List<ContractImageRequestDto> findStatusImages(String key){
+        return contractImageRepository.findAllStatusImages(key);
     }
 
     /**

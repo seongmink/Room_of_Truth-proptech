@@ -2,9 +2,15 @@ package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.dto.*;
+import com.roomoftruth.rot.dto.record.ContractImageRequestDto;
+import com.roomoftruth.rot.dto.record.ContractListResponseDto;
+import com.roomoftruth.rot.dto.record.ContractSearchResponseDto;
 import com.roomoftruth.rot.fabric.ContractRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
+import com.roomoftruth.rot.repository.ContractImageRepository;
+import com.roomoftruth.rot.repository.ContractListRepository;
 import com.roomoftruth.rot.repository.ContractRepository;
+import com.roomoftruth.rot.repository.ContractSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +25,9 @@ public class ContractService {
     private final ContractRepository contractRepository;
     private final StatusService statusService;
     private final IFabricCCService iFabricCCService;
+    private final ContractSearchRepository contractSearchRepository;
+    private final ContractListRepository contractListRepository;
+    private final ContractImageRepository contractImageRepository;
 
     /**
      * 1. 계약 이력 등록하기
@@ -66,6 +75,18 @@ public class ContractService {
         return contractRepository.findAllByAroundIdAndFloorAndHo(aroundId, floor, ho);
     }
 
+    public Contract findOneByAround(String aroundId){
+        return contractRepository.findOneByAround(Long.parseLong(aroundId));
+    }
+
+    public List<ContractListResponseDto> findAllContractsList(String key){
+        return contractListRepository.findAllContractsList(key);
+    }
+
+    public List<ContractImageRequestDto> findContractImages(String key){
+        return contractImageRepository.findAllContractImages(key);
+    }
+
     /**
      * 6. contract 테이블에서 주소(address, floor, ho)로 이미지 1개 가져오기
      * String getContractImage(ContractRequestDto);
@@ -93,8 +114,8 @@ public class ContractService {
      *
      * @return all address, latitude, longitude
      */
-    public List<Contract> findAllContractByCity(String key) {
-        return contractRepository.findAllContractByCity(key);
+    public List<ContractSearchResponseDto> findAllContractByCity(String key) {
+        return contractSearchRepository.findAllContractByCity(key);
     }
 
     /**
