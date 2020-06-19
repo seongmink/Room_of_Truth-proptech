@@ -29,8 +29,8 @@ public class StatusService {
      * 	saveStatus(StatusSaveRequestDto statusSaveRequestDto)
      */
     @Transactional
-    public long saveStatus(Status status) {
-        return statusRespository.save(status).getStatusId();
+    public Status saveStatus(Status status) {
+        return statusRespository.save(status);
     }
 
 

@@ -4,21 +4,21 @@ import com.roomoftruth.rot.dto.contracts.ContractSaveRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@ToString
 @Table(name = "contract")
 public class Contract implements Comparable<Contract>{
 
     @Id
     @Column(name = "contract_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long contractId;
 
     @Column(name = "around_around_id", nullable = false)
@@ -49,8 +49,7 @@ public class Contract implements Comparable<Contract>{
     }
 
     @Builder
-    public Contract(long contractId, long aroundId, ContractSaveRequestDto contractSaveRequestDto) {
-        this.contractId = contractId;
+    public Contract(long aroundId, ContractSaveRequestDto contractSaveRequestDto) {
         this.aroundId = aroundId;
         this.exclusive = contractSaveRequestDto.getExclusive();
         this.floor = contractSaveRequestDto.getFloor();
@@ -61,7 +60,7 @@ public class Contract implements Comparable<Contract>{
         this.monthly = contractSaveRequestDto.getMonthly();
         this.license = contractSaveRequestDto.getLicense();
         this.image = contractSaveRequestDto.getImage();
-        this.contractDate = contractSaveRequestDto.getContract_date();
+        this.contractDate = contractSaveRequestDto.getContractDate();
         this.createdAt = LocalDate.now();
         this.isExpired = "N";
     }

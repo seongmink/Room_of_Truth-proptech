@@ -19,6 +19,8 @@ public class StatusDetailResponseDto {
     @Column(name = "around_id")
     private Long aroundId;
     private String address;
+    private String longitude;
+    private String latitude;
     private String floor;
     private String ho;
     private String category;
@@ -26,6 +28,8 @@ public class StatusDetailResponseDto {
     private Long cost;
     private String license;
     private String image;
+    @Column(name = "is_like")
+    private long isLike;
     @Column(name = "start_date")
     private LocalDate startDate;
     @Column(name = "end_date")
@@ -34,6 +38,4 @@ public class StatusDetailResponseDto {
     private LocalDate createdAt;
     @Column(name = "is_expired")
     private String isExpired;
-    @Column(name = "is_like")
-    private long isLike;
 }

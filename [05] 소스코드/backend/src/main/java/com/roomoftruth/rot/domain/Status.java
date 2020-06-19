@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -17,7 +14,7 @@ import java.time.LocalDate;
 @Table(name = "status")
 public class Status implements Comparable<Status>{
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "status_id")
     private long statusId;
 
@@ -48,8 +45,7 @@ public class Status implements Comparable<Status>{
     }
 
     @Builder
-    public Status(long statusId, long aroundId, StatusSaveRequestDto statusSaveRequestDto) {
-        this.statusId = statusId;
+    public Status(long aroundId, StatusSaveRequestDto statusSaveRequestDto) {
         this.aroundId = aroundId;
         this.floor = statusSaveRequestDto.getFloor();
         this.ho = statusSaveRequestDto.getHo();

@@ -31,8 +31,8 @@ public class ContractService {
      * saveContract(ContractSaveRequestDto contractSaveRequestDto)
      */
     @Transactional
-    public long saveContract(Contract contract) {
-        return contractRepository.save(contract).getContractId();
+    public Contract saveContract(Contract contract) {
+        return contractRepository.save(contract);
     }
 
     /**

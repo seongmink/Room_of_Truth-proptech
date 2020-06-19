@@ -16,6 +16,8 @@ public class ContractListResponseDto {
     Long contractId;
     @Column(name = "around_id")
     Long aroundId;
+    String longitude;
+    String latitude;
     String address;
     String floor;
     String ho;

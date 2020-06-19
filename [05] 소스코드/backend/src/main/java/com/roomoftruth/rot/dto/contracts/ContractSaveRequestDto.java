@@ -21,5 +21,5 @@ public class ContractSaveRequestDto {
     private String license;
     private String image;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDate contract_date;
+    private LocalDate contractDate;
 }

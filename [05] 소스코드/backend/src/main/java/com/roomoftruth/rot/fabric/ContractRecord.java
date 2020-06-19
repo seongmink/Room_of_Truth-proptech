@@ -48,7 +48,7 @@ public class ContractRecord {
     	this.monthly = contractSaveRequestDto.getMonthly();
     	this.license = contractSaveRequestDto.getLicense();
     	this.image = contractSaveRequestDto.getImage();
-    	this.contract_date = String.valueOf(contractSaveRequestDto.getContract_date());
+    	this.contract_date = String.valueOf(contractSaveRequestDto.getContractDate());
     	this.created_at = String.valueOf(LocalDate.now());
     	this.is_expired = "N";
 	}

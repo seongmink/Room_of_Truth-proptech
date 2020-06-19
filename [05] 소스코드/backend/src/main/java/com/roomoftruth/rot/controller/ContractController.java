@@ -4,7 +4,6 @@ import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.dto.contracts.*;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.service.*;
-import com.roomoftruth.rot.util.AddressChangeUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +25,6 @@ public class ContractController {
     private final AgentService agentService;
     private final StatusService statusService;
 
-    static long contract_idx = 1;
-
     /**
      * @param contractSaveRequestDto
      * @return contractID
@@ -38,45 +35,19 @@ public class ContractController {
     public String save(@RequestBody ContractSaveRequestDto contractSaveRequestDto) throws Exception {
         System.out.println("====== POST : api/contract/save");
 
-        // Address Util Change
-        String[] addr = contractSaveRequestDto.getAddress().split(" ");
-        AddressChangeUtil addressChangeUtil = new AddressChangeUtil();
-        addr[0] = addressChangeUtil.addressChange(addr[0]);
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < addr.length; i++) {
-            sb.append(addr[i] + " ");
-        }
-
-        contractSaveRequestDto.setAddress(sb.toString().trim());
-
         // 전세나 매매의 경우 월세가 없다
         if (contractSaveRequestDto.getMonthly() == "" ||
                 contractSaveRequestDto.getMonthly().equals("")) {
             contractSaveRequestDto.setMonthly("0");
         }
 
-        // 주소로 address_id 값 찾아오기
-        long aroundId = 0;
+        long aroundId = aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()).getAroundId();
 
-        if (aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()) == null) {
-            System.out.println("Around 정보가 없는 데이터 입니다.");
-            aroundId = -1;
-            return String.valueOf(aroundId);
-        } else {
-            aroundId = aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()).getAroundId();
-        }
-
-        Contract contract = new Contract(contract_idx, aroundId, contractSaveRequestDto);
-
-        // DB에 이력 저장 시작
-        if (contractService.saveContract(contract) == contract_idx) {
-            contract_idx++;
-            agentService.pointUp(contract.getLicense());
-            return String.valueOf(contract_idx - 1);
-        } else {
-            return "DB 저장 실패";
-        }
+        Contract contract = new Contract(aroundId, contractSaveRequestDto);
+        System.out.println("Before : " + contract);
+        Contract result = contractService.saveContract(contract);
+        agentService.pointUp(contract.getLicense());
+        return String.valueOf(result.getContractId());
     }
 
     /**
@@ -94,9 +65,6 @@ public class ContractController {
         List<ContractSearchResponseDto> contracts = contractService.findAllContractByCity(key);
         List<ContractSearchResponseDto> statuses = statusService.findAllStatusByCity(key);
 
-        for (int i = 0; i < contracts.size(); i++) {
-            System.out.println(contracts.get(i));
-        }
         result.addAll(contracts);
         result.addAll(statuses);
 
@@ -118,16 +86,21 @@ public class ContractController {
 
         List<ContractListImageResponseDto> result = new ArrayList<>();
 
+        System.out.println("contracts Size : " + contracts.size());
+
         for (ContractListRequestDto request : arounds) {
             for (ContractListResponseDto dto : contracts) {
-
-                if (Long.parseLong(request.getAroundId()) == dto.getAroundId()) {
+                System.out.println("longitude : " + dto.getLongitude() + ", latitude : " + dto.getLatitude());
+                System.out.println("Request : " + request.getLongitude() + ", " + request.getLatitude());
+                if (dto.getLongitude().contains(request.getLongitude()) &&
+                        dto.getLatitude().contains(request.getLatitude())) {
                     result.add(new ContractListImageResponseDto(dto));
                 }
             }
         }
 
-        System.out.println("result Size 1 :  " + result.size());
+        System.out.println("result Size :  "+ result.size());
+
         // 모든 이미지들 imageMap에 저장
         List<ContractImageRequestDto> contractImages = contractService.findContractImages(key);
         List<ContractImageRequestDto> statusImages = statusService.findStatusImages(key);
@@ -142,8 +115,6 @@ public class ContractController {
                 }
             }
         }
-
-        System.out.println("result Size : " + result.size());
 
         return result;
     }

@@ -19,6 +19,8 @@ public class ContractDetailResponseDto {
     @Column(name = "around_id")
     private Long aroundId;
     private String address;
+    private String longitude;
+    private String latitude;
     private String exclusive;
     private String floor;
     private String ho;
@@ -28,12 +30,12 @@ public class ContractDetailResponseDto {
     private String monthly;
     private String license;
     private String image;
+    @Column(name = "is_like")
+    private long isLike;
     @Column(name = "contract_date")
     private LocalDate contractDate;
     @Column(name = "created_at")
     private LocalDate createdAt;
     @Column(name = "is_expired")
     private String isExpired;
-    @Column(name = "is_like")
-    private long isLike;
 }

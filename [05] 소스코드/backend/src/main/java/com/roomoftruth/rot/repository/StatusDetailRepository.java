@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface StatusDetailRepository extends JpaRepository<StatusDetailResponseDto, Long> {
 
-    @Query(nativeQuery = true, value = "select status_id, around_around_id as around_id, address, " +
-            "floor, ho, category, detail, cost, license, image, start_date, end_date, created_at, is_expired, IFNULL((select AVG(score) as score from favorite where around_around_id = ?1), 0) as is_like from ( " +
-            "select (select address from around where around_id=around_around_id) as address, status_id, around_around_id, floor, ho, category, detail, cost, license, " +
-            "image, start_date, end_date, created_at, is_expired from status " +
-            ")as mm " +
-            "where around_around_id = ?1 AND floor = ?2 AND ho = ?3 ")
+    @Query(nativeQuery = true, value = "SELECT status_id, around_around_id as around_id, address, longitude, latitude, floor, ho, category, detail, cost, license, image, " +
+            "ifnull((select AVG(score) as score from favorite where around_around_id = ?1), 0) as is_like, " +
+            "start_date, end_date, created_at, is_expired " +
+            "FROM status s " +
+            "JOIN around a ON s.around_around_id = a.around_id " +
+            "WHERE around_id = ?1 AND floor = ?2 AND ho = ?3 ")
     List<StatusDetailResponseDto> findAllStatusByAroundAndFloorAndHo(long aroundId, String floor, String ho);
 }

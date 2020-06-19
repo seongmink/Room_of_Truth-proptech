@@ -2,9 +2,7 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.*;
-import com.roomoftruth.rot.fabric.ContractRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
-import com.roomoftruth.rot.fabric.StatusRecord;
 import com.roomoftruth.rot.jwt.JwtService;
 import com.roomoftruth.rot.service.AgentService;
 import com.roomoftruth.rot.service.UserService;
@@ -67,4 +65,18 @@ public class AgentController {
 
         return agentService.getAgentDetail(num);
     }
+
+    /**
+     * license 1개를 입력받아서 ---> 등록한 모든 이력 보여주기 ( 주소, 층, 호, image, type, date )
+     * @param num
+     * @return
+     */
+//    @GetMapping("/agent/contribution/{num}")
+//    @ApiOperation("공인중개사가 등록한 건물 조회")
+//    public List<ContributionResponseDto> getAgentContribution(@PathVariable long num) {
+//        log.info("AgentController : getAgentContribution");
+//
+//        return agentService.getAgentContribution(num);
+//    }
+
 }

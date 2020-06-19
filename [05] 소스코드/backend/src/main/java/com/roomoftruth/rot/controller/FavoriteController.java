@@ -2,6 +2,7 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.dto.*;
 import com.roomoftruth.rot.service.FavoriteService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,17 @@ public class FavoriteController {
 		log.info("FavoriteController : getFavorite");
 
 		return favoriteService.getFavorite(num);
+	}
+
+	@GetMapping("/favorite/read/{aroundId}/{num}")
+	@ApiOperation("내가 찜한 점수 가져오기")
+	public int getFavoriteScore(@PathVariable long aroundId, @PathVariable long num){
+		log.info("GET : api/favorite/read/{aroundId}/{num}");
+		String result =  favoriteService.getFavoriteScore(aroundId, num);
+		if(result == null)
+			return 0;
+		System.out.println(result);
+		return Integer.parseInt(result);
 	}
 
 }

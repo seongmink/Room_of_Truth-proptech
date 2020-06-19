@@ -84,4 +84,8 @@ public class FavoriteService {
 		return result;
 	}
 
+	public String getFavoriteScore(long aroundId, long num){
+		return favoriteRepository.findByNum(aroundId, num);
+	}
+
 }

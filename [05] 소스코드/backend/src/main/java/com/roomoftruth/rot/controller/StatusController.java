@@ -24,8 +24,6 @@ public class StatusController {
     private final AgentService agentService;
     private final AroundService aroundService;
 
-    static int status_idx = 1;
-
     /**
      * @param statusSaveRequestDto
      * @return statusID
@@ -35,39 +33,12 @@ public class StatusController {
     public String save(@RequestBody @Valid StatusSaveRequestDto statusSaveRequestDto) {
         System.out.println("====== POST : api/status/save");
 
-        // 시도 Address Util Change
-        String[] addr = statusSaveRequestDto.getAddress().split(" ");
-        AddressChangeUtil addressChangeUtil = new AddressChangeUtil();
-        addr[0] = addressChangeUtil.addressChange(addr[0]);
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < addr.length; i++) {
-            sb.append(addr[i] + " ");
-        }
-
-        statusSaveRequestDto.setAddress(sb.toString().trim());
-
         // 주소로 address_id 값 찾아오기
-        long aroundId = 0;
+        long aroundId = aroundService.findTop1ByAddress(statusSaveRequestDto.getAddress()).getAroundId();
 
-        if (aroundService.findTop1ByAddress(statusSaveRequestDto.getAddress()) == null) {
-            System.out.println("Around 정보가 없는 데이터 입니다.");
-            aroundId = -1;
-            return String.valueOf(aroundId);
-        } else {
-            aroundId = aroundService.findTop1ByAddress(statusSaveRequestDto.getAddress()).getAroundId();
-        }
-
-        Status status = new Status(status_idx, aroundId, statusSaveRequestDto);
-
-        if (statusService.saveStatus(status) == status_idx) {
-            System.out.println("DB 저장 성공");
-            status_idx++;
-            agentService.pointUp(status.getLicense());
-            System.out.println("point Up 성공");
-            return String.valueOf(status_idx - 1);
-        } else {
-            return "DB 저장 실패";
-        }
+        Status status = new Status(aroundId, statusSaveRequestDto);
+        Status result = statusService.saveStatus(status);
+        agentService.pointUp(status.getLicense());
+        return String.valueOf(result.getAroundId());
     }
 }

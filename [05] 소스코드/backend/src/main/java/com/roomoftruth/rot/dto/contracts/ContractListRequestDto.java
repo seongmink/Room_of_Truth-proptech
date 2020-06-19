@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ContractListRequestDto {
-    String aroundId;
+    String longitude;
+    String latitude;
     String sd;
     String sgg;
 }
