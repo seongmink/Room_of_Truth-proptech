@@ -31,6 +31,7 @@ urlpatterns = [
    # get : 거래 이력 조회
    # params(선택) : area=검색할주소 -> area로 검색한 거래이력 리스트 페이지네이션으로 전달
    path('contracts/', views.Contract.as_view()),
+   path('test/', views.Test.as_view()),
 
 
    # get [거래이력pk] : 거래이력의 주소를 가지고 around값을 받아옴
