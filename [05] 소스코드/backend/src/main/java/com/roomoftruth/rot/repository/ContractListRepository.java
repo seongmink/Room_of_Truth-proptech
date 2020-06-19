@@ -1,6 +1,6 @@
 package com.roomoftruth.rot.repository;
 
-import com.roomoftruth.rot.dto.record.ContractListResponseDto;
+import com.roomoftruth.rot.dto.contracts.ContractListResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;

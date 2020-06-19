@@ -1,4 +1,4 @@
-package com.roomoftruth.rot.dto.record;
+package com.roomoftruth.rot.dto.contracts;
 
 import lombok.*;
 

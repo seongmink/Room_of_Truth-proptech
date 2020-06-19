@@ -1,7 +1,7 @@
 package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.Status;
-import com.roomoftruth.rot.dto.record.StatusSaveRequestDto;
+import com.roomoftruth.rot.dto.contracts.StatusSaveRequestDto;
 import com.roomoftruth.rot.service.AgentService;
 import com.roomoftruth.rot.service.AroundService;
 import com.roomoftruth.rot.service.StatusService;
@@ -24,7 +24,7 @@ public class StatusController {
     private final AgentService agentService;
     private final AroundService aroundService;
 
-    static int status_idx = 2;
+    static int status_idx = 1;
 
     /**
      * @param statusSaveRequestDto
@@ -33,7 +33,8 @@ public class StatusController {
     @PostMapping("/status/save")
     @ApiOperation("패브릭과 DB에 유지보수 이력 저장")
     public String save(@RequestBody @Valid StatusSaveRequestDto statusSaveRequestDto) {
-        System.out.println("Request :: " + statusSaveRequestDto.toString());
+        System.out.println("====== POST : api/status/save");
+
         // 시도 Address Util Change
         String[] addr = statusSaveRequestDto.getAddress().split(" ");
         AddressChangeUtil addressChangeUtil = new AddressChangeUtil();

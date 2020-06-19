@@ -1,7 +1,6 @@
 package com.roomoftruth.rot.domain;
 
-import com.roomoftruth.rot.dto.record.ContractSaveRequestDto;
-import com.roomoftruth.rot.fabric.ContractRecord;
+import com.roomoftruth.rot.dto.contracts.ContractSaveRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter

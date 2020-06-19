@@ -1,10 +1,12 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Status;
-import com.roomoftruth.rot.dto.record.ContractImageRequestDto;
-import com.roomoftruth.rot.dto.record.ContractSearchResponseDto;
+import com.roomoftruth.rot.dto.contracts.ContractImageRequestDto;
+import com.roomoftruth.rot.dto.contracts.ContractSearchResponseDto;
+import com.roomoftruth.rot.dto.contracts.StatusDetailResponseDto;
 import com.roomoftruth.rot.repository.ContractImageRepository;
 import com.roomoftruth.rot.repository.ContractSearchRepository;
+import com.roomoftruth.rot.repository.StatusDetailRepository;
 import com.roomoftruth.rot.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,11 +22,11 @@ public class StatusService {
     private final StatusRepository statusRespository;
     private final ContractSearchRepository contractSearchRepository;
     private final ContractImageRepository contractImageRepository;
+    private final StatusDetailRepository statusDetailRepository;
 
     /**
      *  1. 상태 이력 등록하기
      * 	saveStatus(StatusSaveRequestDto statusSaveRequestDto)
-     *
      */
     @Transactional
     public long saveStatus(Status status) {
@@ -33,7 +35,7 @@ public class StatusService {
 
 
     /**
-     *
+     * 2. ID로 Status 찾기
      * @param num
      * @return
      */
@@ -43,66 +45,33 @@ public class StatusService {
         return status;
     }
 
+    /**
+     * 3. 도시의 모든 건물당 이력 찾기
+     * @param key
+     * @return
+     */
     public List<ContractSearchResponseDto> findAllStatusByCity(String key){
         return contractSearchRepository.findAllStatusByCity(key);
     }
 
-    public Status findOneByAround(String aroundId){
-        return statusRespository.findOneByAround(Long.parseLong(aroundId));
-    }
-
+    /**
+     * 4. 도시의 모든 사진 찾아오기
+     * @param key
+     * @return
+     */
     public List<ContractImageRequestDto> findStatusImages(String key){
         return contractImageRepository.findAllStatusImages(key);
     }
 
     /**
-     *  4. latitude, longitude로 건물 정보 찾기 -> 군집 해당하는 목록 모두 (1개씩)
-     *  List<Building> getBuildingDetail(Building building);
-     *
-     */
-//    public List<StatusResponseDto> findDistinctByLatitudeAndLongitude(String latitude, String longitude){
-//        List<Status> data = statusRespository.findDistinctByLatitudeAndLongitude(latitude, longitude);
-//        List<StatusResponseDto> result = new ArrayList<>();
-//
-//        for (Status status: data) {
-//            result.add(new StatusResponseDto(status));
-//        }
-//
-//        return result;
-//    }
-
-    /**
-     *
+     * 5. 상세 이력 찾기
      * @param aroundId
      * @param floor
      * @param ho
      * @return
      */
-    public List<Status> findAllByAroundIdAndFloorAndHo(long aroundId, String floor, String ho){
-        return statusRespository.findAllByAroundIdAndFloorAndHo(aroundId, floor, ho);
+    public List<StatusDetailResponseDto> findAllStatusByAroundAndFloorAndHo(long aroundId, String floor, String ho){
+        return statusDetailRepository.findAllStatusByAroundAndFloorAndHo(aroundId, floor, ho);
     }
 
-    /**
-     *  6. status 테이블에서 ID로 이미지 가져오기
-     *  String getStatusImage(long statusId);
-     *
-     */
-//    public String getStatusImage(ContractFindResponseDto contractFindResponseDto){
-//        return statusRespository.getStatusImage(contractFindResponseDto.getAddress(), contractFindResponseDto.getFloor(), contractFindResponseDto.getHo());
-//    }
-
-    /**
-     *  7. 공인중개사가 등록한 상태 이력 모두 출력
-     *  List<Building> findAllByLicense(String license);
-     *
-     */
-//    public List<StatusResponseDto> findAllByLicense(String license){
-//        List<Status> data = statusRespository.findAllByLicense(license);
-//        List<StatusResponseDto> result = new ArrayList<>();
-//
-//        for (Status status : data) {
-//            result.add(new StatusResponseDto(status));
-//        }
-//        return result;
-//    }
 }
