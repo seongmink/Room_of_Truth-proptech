@@ -25,6 +25,22 @@ class SmallPagination(PageNumberPagination):
     page_size_query_param = "page_size"
     max_page_size = 50
 
+class Test(APIView, PaginationHandlerMixin):
+    pagination_class = SmallPagination
+    serializer_class = serializers.AroundSerializer
+    def get(self, request, format=None, *args, **kwargs):
+        area = request.query_params.get("area",None)
+        if area is None:
+            instance = models.Around.objects.all()
+        else:
+            instance = models.Around.objects.filter(address__contains=area)
+        page = self.paginate_queryset(instance)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(page,
+ many=True).data)
+        else:
+            serializer = self.serializer_class(instance, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class Contract(APIView, PaginationHandlerMixin):
     pagination_class = SmallPagination
@@ -32,7 +48,6 @@ class Contract(APIView, PaginationHandlerMixin):
 
     def get(self, request, format=None, *args, **kwargs):
         area = request.query_params.get("area",None)
-      
         if area is not None:
             instance = models.Contract.objects.filter(around__address__contains=area)
         else:
@@ -523,7 +538,7 @@ class AddAround(APIView):
             try:
                 y =res['documents'][0]['address']['y']
                 x = res['documents'][0]['address']['x']
-                print(x,y)
+                # print(x,y)
                 return str(x)[:13], str(y)[:12]
             except:
                 y =res['documents'][0]['road_address']['y']
@@ -556,11 +571,7 @@ class AddAround(APIView):
             'culture':['CT1','PO3']}
             # 먼저 위도,경도 찾아야함
             x, y = self.getLatLong(addr)
-            # print('-----')
-            # print(x)
-            # print(y)
-            # print('-----')
-            if x=="ERROR" or x=="NO":
+            if x=="ERROR" or x=="NO": # kakao api에 위도경도 못찾음
                 return Response("-1",status=status.HTTP_400_BAD_REQUEST)
             
             results={}
@@ -576,12 +587,10 @@ class AddAround(APIView):
                             'y':y,'radius':1000,'page':1}
 
                         response = requests.get('https://dapi.kakao.com/v2/local/search/category.json', headers=headers, params=params)
-                        # print(k)
-                        # print(response.json()['meta'])
                         count = response.json()['meta']['total_count']
 
                         sum_count += count
-                    except:
+                    except: # 카테고리가 없는경우
                         return Response("-2",status=status.HTTP_400_BAD_REQUEST)
                 results[c]=sum_count
             results['address']=addr
@@ -591,7 +600,7 @@ class AddAround(APIView):
                 if serializer.is_valid():
                     serializer.save()
                 return Response(serializer.data.get('around_id'),status=status.HTTP_201_CREATED)
-            except:
+            except: # 저장에 오류
                 return Response("-3",status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(arnd.around_id,status=status.HTTP_200_OK)
@@ -600,5 +609,8 @@ class AddAround(APIView):
 class DelAround(APIView):
     def delete(self, request, pk, format=None):
         arnd = get_object_or_404(models.Around,pk=pk)
-        arnd.delete()
+        # 삭제할때 around아이디를 가진 거래이력이 없는 경우 지우고
+        # 아니면 지우지마 !
+        if arnd.contract_around.first() is None:
+            arnd.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
