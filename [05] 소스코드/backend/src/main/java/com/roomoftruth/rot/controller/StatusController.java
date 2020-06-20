@@ -5,7 +5,6 @@ import com.roomoftruth.rot.dto.contracts.StatusSaveRequestDto;
 import com.roomoftruth.rot.service.AgentService;
 import com.roomoftruth.rot.service.AroundService;
 import com.roomoftruth.rot.service.StatusService;
-import com.roomoftruth.rot.util.AddressChangeUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,7 @@ public class StatusController {
      * @return statusID
      */
     @PostMapping("/status/save")
-    @ApiOperation("패브릭과 DB에 유지보수 이력 저장")
+    @ApiOperation("DB에 유지보수 이력 저장")
     public String save(@RequestBody @Valid StatusSaveRequestDto statusSaveRequestDto) {
         System.out.println("====== POST : api/status/save");
 
@@ -39,6 +38,6 @@ public class StatusController {
         Status status = new Status(aroundId, statusSaveRequestDto);
         Status result = statusService.saveStatus(status);
         agentService.pointUp(status.getLicense());
-        return String.valueOf(result.getAroundId());
+        return String.valueOf(result.getStatusId());
     }
 }

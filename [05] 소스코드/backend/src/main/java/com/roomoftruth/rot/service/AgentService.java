@@ -4,13 +4,8 @@ import com.roomoftruth.rot.domain.Agent;
 import com.roomoftruth.rot.domain.Contract;
 import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.domain.User;
-import com.roomoftruth.rot.dto.AgentDetailResponseDto;
-import com.roomoftruth.rot.dto.AgentRankingResponseDto;
-import com.roomoftruth.rot.dto.AgentSaveRequestDto;
-import com.roomoftruth.rot.repository.AgentRepository;
-import com.roomoftruth.rot.repository.ContractRepository;
-import com.roomoftruth.rot.repository.StatusRepository;
-import com.roomoftruth.rot.repository.UserRepository;
+import com.roomoftruth.rot.dto.*;
+import com.roomoftruth.rot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +18,8 @@ public class AgentService {
 
 	private final AgentRepository agentRepository;
 	private final UserRepository userRepository;
-	private final ContractRepository contractRepository;
-	private final StatusRepository statusRepository;
+	private final ContractContributionRepository contractContributionRepository;
+	private final StatusContributionRepository statusContributionRepository;
 
 	public String checkAgentLicense(String license) {
 
@@ -88,22 +83,21 @@ public class AgentService {
 		return result;
 	}
 
-	public List<Object> getAgentContribution(long num) {
-		String license = agentRepository.getAgentByUserNum(num).getLicense();
-
+	public List<Object> getAgentContribution(long userNum) {
 		List<Object> result = new ArrayList<>();
 
-		List<Contract> contracts = contractRepository.findTop100AllByLicenseOrderByContractDate(license);
-		List<Status> statuses = statusRepository.findTop100AllByLicenseOrderByStartDate(license);
+		List<ContributionContractResponseDto> contracts = contractContributionRepository.findByLicense(userNum);
+		List<ContributionStatusResponseDto> statuses = statusContributionRepository.findByLicense(userNum);
 
-		for (Contract c : contracts) {
+		for (ContributionContractResponseDto c : contracts) {
 			result.add(c);
 		}
 
-		for (Status s : statuses) {
+		for (ContributionStatusResponseDto s : statuses) {
 			result.add(s);
 		}
 
+		System.out.println(result.size());
 		return result;
 	}
 

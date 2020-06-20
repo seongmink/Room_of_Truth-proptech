@@ -44,7 +44,6 @@ public class ContractController {
         long aroundId = aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()).getAroundId();
 
         Contract contract = new Contract(aroundId, contractSaveRequestDto);
-        System.out.println("Before : " + contract);
         Contract result = contractService.saveContract(contract);
         agentService.pointUp(contract.getLicense());
         return String.valueOf(result.getContractId());
@@ -86,8 +85,6 @@ public class ContractController {
 
         List<ContractListImageResponseDto> result = new ArrayList<>();
 
-        System.out.println("contracts Size : " + contracts.size());
-
         for (ContractListRequestDto request : arounds) {
             for (ContractListResponseDto dto : contracts) {
                 System.out.println("longitude : " + dto.getLongitude() + ", latitude : " + dto.getLatitude());
@@ -98,8 +95,6 @@ public class ContractController {
                 }
             }
         }
-
-        System.out.println("result Size :  "+ result.size());
 
         // 모든 이미지들 imageMap에 저장
         List<ContractImageRequestDto> contractImages = contractService.findContractImages(key);
@@ -191,8 +186,10 @@ public class ContractController {
     public Object getBuildingDetail(@RequestParam("type") int type, @RequestParam("num") long num) throws IOException {
         System.out.println("POST : /api/contract/confirm ");
         if (type == 0) {
+            // address 추가
             return contractService.findById(num);
         } else {
+            // address 추가
             return statusService.findById(num);
         }
     }

@@ -50,7 +50,6 @@ public class FavoriteController {
 		String result =  favoriteService.getFavoriteScore(aroundId, num);
 		if(result == null)
 			return 0;
-		System.out.println(result);
 		return Integer.parseInt(result);
 	}
 

@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface ContractRepository extends JpaRepository<Contract, Long> {
 
-    List<Contract> findTop100AllByLicenseOrderByContractDate(String license);
-
     @Query(value = "select license from agent where user_num = ?1", nativeQuery = true)
     String getAgentLicense(Long user_id);
 
