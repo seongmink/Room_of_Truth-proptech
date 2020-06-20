@@ -16,7 +16,7 @@ public interface AgentRepository extends JpaRepository<Agent, Long>{
             "created_at, updated_at, address, count, license, representative FROM agent ORDER BY point DESC")
     List<Agent> getRankingTop9();
 
-    @Query(nativeQuery = true, value = "SELECT * FROM agent WHERE user_num = :num")
+    @Query(nativeQuery = true, value = "SELECT * FROM agent WHERE user_num = ?1")
     Agent getAgentByUserNum(long num);
 
     @Modifying

@@ -11,8 +11,6 @@ public interface AroundRepository extends JpaRepository<Around, Long> {
 
     List<Around> findByAddressContaining(String key);
 
-    List<String> findAddressByAroundId(long id);
-
     @Query(value = "select around_id from around where address = ?1", nativeQuery = true)
     Long findByAddress(String addr);
 

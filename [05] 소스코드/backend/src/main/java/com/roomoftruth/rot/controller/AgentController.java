@@ -2,7 +2,6 @@ package com.roomoftruth.rot.controller;
 
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.*;
-import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.jwt.JwtService;
 import com.roomoftruth.rot.service.AgentService;
 import com.roomoftruth.rot.service.UserService;
@@ -23,7 +22,6 @@ public class AgentController {
     private final UserService userService;
     private final AgentService agentService;
     private final JwtService jwtService;
-    private final IFabricCCService iFabricCCService;
 
     @PostMapping("/agent/check")
     @ApiOperation("공인중개사 존재 여부 확인")
@@ -65,4 +63,13 @@ public class AgentController {
 
         return agentService.getAgentDetail(num);
     }
+
+    @GetMapping("/agent/contribution/{userNum}")
+    @ApiOperation("공인중개사가 등록한 건물 조회")
+    public List<Object> getAgentContribution(@PathVariable long userNum) {
+        log.info("AgentController : getAgentContribution");
+
+        return agentService.getAgentContribution(userNum);
+    }
+
 }

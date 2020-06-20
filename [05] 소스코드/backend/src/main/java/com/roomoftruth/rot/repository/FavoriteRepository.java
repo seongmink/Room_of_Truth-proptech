@@ -28,4 +28,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long>{
 
     @Query(nativeQuery = true, value = "select score from favorite where around_around_id = ?1 limit 1")
     String findByAroundIdInFavorite(long aroundId);
+
+    @Query(nativeQuery = true, value = "select ifnull(score, 0) from favorite where around_around_id = ?1 AND user_num = ?2 ")
+    String findByNum(long aroundId, long num);
 }

@@ -3,8 +3,10 @@ package com.roomoftruth.rot.dto;
 import com.roomoftruth.rot.domain.Agent;
 import com.roomoftruth.rot.domain.User;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class AgentDetailResponseDto {
 
     private Long agentId;

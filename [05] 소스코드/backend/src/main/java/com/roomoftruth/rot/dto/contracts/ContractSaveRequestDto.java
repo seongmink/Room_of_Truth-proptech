@@ -1,8 +1,7 @@
-package com.roomoftruth.rot.dto.fabric;
+package com.roomoftruth.rot.dto.contracts;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -22,6 +21,5 @@ public class ContractSaveRequestDto {
     private String license;
     private String image;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDate contract_date;
-
+    private LocalDate contractDate;
 }

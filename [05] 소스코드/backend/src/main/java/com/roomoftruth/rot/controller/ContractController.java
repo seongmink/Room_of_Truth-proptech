@@ -1,24 +1,16 @@
 package com.roomoftruth.rot.controller;
 
-import com.roomoftruth.rot.domain.Around;
 import com.roomoftruth.rot.domain.Contract;
-import com.roomoftruth.rot.dto.*;
-import com.roomoftruth.rot.dto.fabric.ContractSaveRequestDto;
-import com.roomoftruth.rot.fabric.ContractRecord;
+import com.roomoftruth.rot.dto.contracts.*;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.service.*;
-import com.roomoftruth.rot.util.AddressChangeUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -28,17 +20,12 @@ import java.util.List;
 public class ContractController {
 
     private final ContractService contractService;
-//    private final StatusService statusService;
     private final AroundService aroundService;
     private final IFabricCCService iFabricCCService;
     private final AgentService agentService;
-    private final FavoriteService favoriteService;
-    private final AddressService addressService;
-
-    static long contract_idx = 200200207;
+    private final StatusService statusService;
 
     /**
-     *
      * @param contractSaveRequestDto
      * @return contractID
      * @throws IOException
@@ -46,18 +33,7 @@ public class ContractController {
     @PostMapping("/contract/save")
     @ApiOperation("계약 이력 등록하기")
     public String save(@RequestBody ContractSaveRequestDto contractSaveRequestDto) throws Exception {
-        System.out.println("Request :: " + contractSaveRequestDto.toString());
-        // 시도 Address Util Change
-        String[] addr = contractSaveRequestDto.getAddress().split(" ");
-        AddressChangeUtil addressChangeUtil = new AddressChangeUtil();
-        addr[0] = addressChangeUtil.addressChange(addr[0]);
-
-        StringBuilder sb = new StringBuilder();
-        for(int i= 0; i < addr.length; i++){
-            sb.append(addr[i]+" ");
-        }
-
-        contractSaveRequestDto.setAddress(sb.toString().trim());
+        System.out.println("====== POST : api/contract/save");
 
         // 전세나 매매의 경우 월세가 없다
         if (contractSaveRequestDto.getMonthly() == "" ||
@@ -65,236 +41,159 @@ public class ContractController {
             contractSaveRequestDto.setMonthly("0");
         }
 
-        String PK = "TEST_C" + contract_idx;
+        long aroundId = aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()).getAroundId();
 
-        // 주소로 address_id 값 찾아오기
-        long aroundId = 0;
-
-        if(aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()) == null){
-            // 1. AddressID -1 설정 후 반환
-            System.out.println("Around 정보가 없는 데이터 입니다.");
-            aroundId = -1;
-            return String.valueOf(aroundId);
-        } else {
-            aroundId = aroundService.findTop1ByAddress(contractSaveRequestDto.getAddress()).getAroundId();
-        }
-
-        // 블록체인에 넣을 ContractRecord 만들어서 요청 날리자
-        ContractRecord contractRecord = new ContractRecord(PK, aroundId, contractSaveRequestDto);
-
-        System.out.println("-- 넣기 직전 : " + contractRecord);
-        boolean result = iFabricCCService.registerContract(contractRecord);
-        if (result == true) {
-            System.out.println("원장 저장 성공");
-            contractRecord.setContract_id(String.valueOf(contract_idx));
-
-            if(contractService.saveContract(contractRecord) == contract_idx){
-                System.out.println("DB 저장 성공");
-                contract_idx++;
-                agentService.pointUp(contractRecord.getLicense());
-                System.out.println("point Up 성공");
-                return String.valueOf(contract_idx - 1);
-            } else {
-                return "DB 저장 실패";
-            }
-        } else {
-            return "실패";
-        }
+        Contract contract = new Contract(aroundId, contractSaveRequestDto);
+        Contract result = contractService.saveContract(contract);
+        agentService.pointUp(contract.getLicense());
+        return String.valueOf(result.getContractId());
     }
 
     /**
-     *
      * @param city
      * @param local
      * @return List<Contracts, Statuses> findAll by city
      */
-//    @GetMapping("/contract/search")
-//    @ApiOperation("조회하기에 모든 이력 뿌려주기")
-//    public List<ContractFindLocationDto> getAllContracts(@RequestParam String city, @RequestParam String local) {
-//        String key = city + " " + local;
-//        List<Around> allAddress = aroundService.findAllAddress(key);
-//
-//        List<ContractFindLocationDto> result = contractService.findContractLocations(key);
-//        return result;
-//    }
+    @GetMapping("/contract/search")
+    @ApiOperation("조회하기에 모든 이력 뿌려주기")
+    public List<Object> getAllContracts(@RequestParam String city, @RequestParam String local) {
+        System.out.println("====== GET : api/contract/search");
+        String key = city + " " + local;
+
+        List<Object> result = new ArrayList<>();
+        List<ContractSearchResponseDto> contracts = contractService.findAllContractByCity(key);
+        List<ContractSearchResponseDto> statuses = statusService.findAllStatusByCity(key);
+
+        result.addAll(contracts);
+        result.addAll(statuses);
+
+        return result;
+    }
 
     /**
-     *
-     * @param requestDto (address, floor, ho)
-     * @return List<Contracts,Statuses> by building
+     * @param arounds
+     * @return findAllLists
      */
-//    @PostMapping("/contract/lists")
-//    @ApiOperation("군집에 해당하는 이력 LIST 조회하기")
-//    public List<Contract> getAllDetails(@RequestBody ContractFindRequestDto[] requestDto) {
-//        System.out.println("====== POST : api/details");
-//        String sd = requestDto[0].getSd();
-//        String sgg = requestDto[0].getSgg();
-//        String key = sd + " " + sgg;
-//
-//        List<Contract> searchData = contractService.findAllByAddressContaining(key);
-//
-//        List<Contract> result = new ArrayList<>();
-//
-//        result = contractService.getAllDetails(requestDto, searchData);
-//
-//        return result;
-//    }
+    @PostMapping("/contract/lists")
+    @ApiOperation("군집에 해당하는 이력 LIST 조회하기")
+    public List<ContractListImageResponseDto> getAllDetails(@RequestBody ContractListRequestDto[] arounds) {
+        System.out.println("====== POST : api/contract/lists");
+
+        // 해당 시도, 시군구의 모든 이력 저장
+        String key = arounds[0].getSd() + " " + arounds[0].getSgg();
+        List<ContractListResponseDto> contracts = contractService.findAllContractsList(key);
+
+        List<ContractListImageResponseDto> result = new ArrayList<>();
+
+        for (ContractListRequestDto request : arounds) {
+            for (ContractListResponseDto dto : contracts) {
+                System.out.println("longitude : " + dto.getLongitude() + ", latitude : " + dto.getLatitude());
+                System.out.println("Request : " + request.getLongitude() + ", " + request.getLatitude());
+                if (dto.getLongitude().contains(request.getLongitude()) &&
+                        dto.getLatitude().contains(request.getLatitude())) {
+                    result.add(new ContractListImageResponseDto(dto));
+                }
+            }
+        }
+
+        // 모든 이미지들 imageMap에 저장
+        List<ContractImageRequestDto> contractImages = contractService.findContractImages(key);
+        List<ContractImageRequestDto> statusImages = statusService.findStatusImages(key);
+
+        contractImages.addAll(statusImages);
+
+        for (ContractListImageResponseDto dto : result) {
+            for (ContractImageRequestDto imageDto : contractImages) {
+                if (Integer.parseInt(imageDto.getContractId() + "") == Integer.parseInt(dto.getContractId() + "")) {
+                    dto.setImage(imageDto.getImage());
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
 
     /**
-     *
      * @param num
      * @return agent_license
      */
-//    @GetMapping("/agent/{num}")
-//    @ApiOperation("이력 작성시 공인중개사 번호 가져오기")
-//    public String getAgentLicense(@PathVariable Long num){
-//        return contractService.getAgentLicense(num);
-//    }
+    @GetMapping("/agent/{num}")
+    @ApiOperation("이력 작성시 공인중개사 번호 가져오기")
+    public String getAgentLicense(@PathVariable Long num) {
+        System.out.println("====== GET : api/agent/{num}");
+        return contractService.getAgentLicense(num);
+    }
 
     /**
-     *
-     * @param request (address, floor, ho)
-     * @return List<FabricConstract, FabricStatus>
+     * @param contractDetailRequestDto
+     * @return List<All>
      * @throws IOException
      */
-//    @PostMapping("/contract/detail")
-//    @ApiOperation("계약 이력 상세 정보 확인")
-//    public List<FabricResponseDto> getBuildingDetail(@RequestBody FabricResponseDto request) throws IOException {
-//        System.out.println("POST : /api/contract/detail");
-//
-//        List<Contract> contracts = new ArrayList<Contract>();
-//        List<Status> statuses = new ArrayList<Status>();
-//
-//        String address = request.getAddress();
-//        String floor = request.getFloor();
-//        String ho = request.getHo();
-//
-//        contracts = contractService.findAllByAddressAndFloorAndHo(address, floor, ho);
-//        statuses = statusService.findAllByAddressAndFloorAndHo(address, floor, ho);
-//
-//        List<FabricResponseDto> result = new ArrayList<>();
-//
-//        for (int i = 0; i < contracts.size(); i++) {
-//            FabricContractRecord fabricContractRecord = new FabricContractRecord();
-//            FabricResponseDto contractOne = new FabricResponseDto();
-//
-//            fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + contracts.get(i).getContractId());
-//
-//            System.out.println(fabricContractRecord.toString());
-//
-//            contractOne.setContractId(fabricContractRecord.getContract_id());
-//            contractOne.setAddress(fabricContractRecord.getAddress());
-//            contractOne.setLongitude(fabricContractRecord.getLongitude());
-//            contractOne.setLatitude(fabricContractRecord.getLatitude());
-//            contractOne.setExclusive(fabricContractRecord.getExclusive());
-//            contractOne.setFloor(fabricContractRecord.getFloor());
-//            contractOne.setHo(fabricContractRecord.getHo());
-//            contractOne.setKind(fabricContractRecord.getKind());
-//            contractOne.setDetail(fabricContractRecord.getDetail());
-//            contractOne.setCost(fabricContractRecord.getCost());
-//            contractOne.setMonthly(fabricContractRecord.getMonthly());
-//            contractOne.setLicense(fabricContractRecord.getLicense());
-//            contractOne.setImage(fabricContractRecord.getImage());
-//            contractOne.setContractDate(fabricContractRecord.getContract_date());
-//
-//            result.add(contractOne);
-//        }
-//
-//        for (int i = 0; i < statuses.size(); i++) {
-//            FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();
-//            FabricResponseDto statusOne = new FabricResponseDto();
-//
-//            fabricStatusRecord = iFabricCCService.queryStatus("STATUS" + statuses.get(i).getStatusId());
-//
-//            System.out.println(fabricStatusRecord.toString());
-//
-//            statusOne.setContractId(fabricStatusRecord.getStatus_id());
-//            statusOne.setAddress(fabricStatusRecord.getAddress());
-//            statusOne.setLongitude(fabricStatusRecord.getLongitude());
-//            statusOne.setLatitude(fabricStatusRecord.getLatitude());
-//            statusOne.setFloor(fabricStatusRecord.getFloor());
-//            statusOne.setHo(fabricStatusRecord.getHo());
-//            statusOne.setKind(fabricStatusRecord.getCategory());
-//            statusOne.setDetail(fabricStatusRecord.getDetail());
-//            statusOne.setCost(fabricStatusRecord.getCost());
-//            statusOne.setLicense(fabricStatusRecord.getLicense());
-//            statusOne.setImage(fabricStatusRecord.getImage());
-//            statusOne.setExclusive(fabricStatusRecord.getExclusive());
-//            statusOne.setContractDate(fabricStatusRecord.getStart_date());
-//            statusOne.setEndDate(fabricStatusRecord.getEnd_date());
-//
-//            result.add(statusOne);
-//        }
-//
-//
-//        for (int i = 0; i < result.size(); i++){
-//            long temp = 0;
-//            String addr = result.get(i).getAddress();
-//            System.out.println("========== 시작 =============");
-//            Long aroundId = aroundService.findByAddress(addr);
-//            System.out.println("ID : " + aroundId);
-//            System.out.println("around clear !!!");
-//
-//            long score = 0;
-//            if(favoriteService.findByAroundIdInFavorite(aroundId) != null){
-//                score = favoriteService.findByAroundId(aroundId);
-//                System.out.println(" ------- favorie clear !!! --------");
-//            }
-//
-//            if(score > 0)
-//                temp = score;
-//            result.get(i).setIsLike(String.valueOf(temp));
-//        }
-//
-//        System.out.println("--- sort 시작 ----");
-//        Collections.sort(result, new Comparator<FabricResponseDto>() {
-//
-//            @Override
-//            public int compare(FabricResponseDto o1, FabricResponseDto o2) {
-//                return o2.getContractDate().compareTo(o1.getContractDate());
-//            }
-//        });
-//
-//        for (int i = 0; i < result.size(); i++) {
-//            System.out.println(result.get(i).toString());
-//        }
-//        System.out.println("result Size :  " + result.size());
-//        return result;
-//    }
+    @PostMapping("/contract/detail")
+    @ApiOperation("계약 이력 상세 정보 확인")
+    public List<Object> getBuildingDetail(@RequestBody ContractDetailRequestDto contractDetailRequestDto) throws IOException {
+        System.out.println("POST : /api/contract/detail");
+
+        List<ContractDetailResponseDto> contracts = new ArrayList<>();
+        List<StatusDetailResponseDto> statuses = new ArrayList<>();
+
+        long aroundId = contractDetailRequestDto.getAroundId();
+        String floor = contractDetailRequestDto.getFloor();
+        String ho = contractDetailRequestDto.getHo();
+
+        contracts.addAll(contractService.findAllContractsByAroundAndFloorAndHo(aroundId, floor, ho));
+        statuses.addAll(statusService.findAllStatusByAroundAndFloorAndHo(aroundId, floor, ho));
+
+        List<Object> result = new ArrayList<>();
+
+        while (contracts.size() > 0 && statuses.size() > 0) {
+            if (contracts.get(0).getContractDate().compareTo(statuses.get(0).getStartDate()) > 0) {
+                result.add(contracts.remove(0));
+            } else {
+                result.add(statuses.remove(0));
+            }
+        }
+
+        if (contracts.size() > 0){
+            while(contracts.size() > 0){
+                result.add(contracts.remove(contracts.size() - 1));
+            }
+        }
+
+        if (statuses.size() > 0) {
+            while (statuses.size() > 0) {
+                result.add(statuses.remove(statuses.size() - 1));
+            }
+        }
+
+        return result;
+    }
 
     /**
-     *
      * @param startIndex
      * @param endIndex
      * @return DB -> BlockChain Data Transfer
      */
-//    @GetMapping("/dataTransfer")
-//    @ApiOperation("원장에 데이터 등록하기 startIndex ~ endIndex")
-//    public void dataTransfer(@RequestParam int startIndex, int endIndex) {
-//        contractService.dataTransfer(startIndex, endIndex);
-//    }
+    @GetMapping("/dataTransfer")
+    @ApiOperation("원장에 데이터 등록하기 startIndex ~ endIndex")
+    public void dataTransfer(@RequestParam int startIndex, int endIndex) {
+        contractService.dataTransfer(startIndex, endIndex);
+    }
 
-
-//    @PostMapping("/contract/confirm")
-//    @ApiOperation("계약 이력 상세 정보 확인")
-//    public Object getBuildingDetail(@RequestParam("type") int type, @RequestParam("num") long num) throws IOException {
-//        System.out.println("POST : /api/contract/confirm ");
-//        if (type == 0) {
-//            FabricContractRecord fabricContractRecord = new FabricContractRecord();
-//            fabricContractRecord = iFabricCCService.queryContract("CONTRACT" + num);
-//            System.out.println(fabricContractRecord.toString());
-//            return fabricContractRecord;
-//        } else {
-//            FabricStatusRecord fabricStatusRecord = new FabricStatusRecord();
-//            fabricStatusRecord = iFabricCCService.queryStatus("STATUS" + num);
-//            StatusConfirmDto statusConfirmDto = new StatusConfirmDto(fabricStatusRecord);
-//            return statusConfirmDto;
-//        }
-//    }
+    @PostMapping("/contract/confirm")
+    @ApiOperation("계약 이력 상세 정보 확인")
+    public Object getBuildingDetail(@RequestParam("type") int type, @RequestParam("num") long num) throws IOException {
+        System.out.println("POST : /api/contract/confirm ");
+        if (type == 0) {
+            return contractService.findConfirmById(num);
+        } else {
+            return statusService.findConfirmById(num);
+        }
+    }
 
     /**
-     *
-     * @return loadChannel
+     * @return
      * @throws IOException
      */
     @GetMapping("/loadchannel")

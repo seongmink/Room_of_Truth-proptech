@@ -1,25 +1,24 @@
 package com.roomoftruth.rot.domain;
 
-import com.roomoftruth.rot.fabric.ContractRecord;
+import com.roomoftruth.rot.dto.contracts.ContractSaveRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@ToString
 @Table(name = "contract")
-public class Contract {
+public class Contract implements Comparable<Contract>{
 
     @Id
     @Column(name = "contract_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long contractId;
 
     @Column(name = "around_around_id", nullable = false)
@@ -49,20 +48,25 @@ public class Contract {
         this.image = image;
     }
 
-    public Contract(ContractRecord contractRecord) {
-        this.contractId = Long.parseLong(contractRecord.getContract_id());
-        this.aroundId = Long.parseLong(contractRecord.getAround_around_id());
-        this.exclusive = contractRecord.getExclusive();
-        this.floor = contractRecord.getFloor();
-        this.ho = contractRecord.getHo();
-        this.kind = contractRecord.getKind();
-        this.detail = contractRecord.getDetail();
-        this.cost = Long.parseLong(contractRecord.getCost());
-        this.monthly = contractRecord.getMonthly();
-        this.license = contractRecord.getLicense();
-        this.image = contractRecord.getImage();
-        this.contractDate = LocalDate.parse(contractRecord.getContract_date(), DateTimeFormatter.BASIC_ISO_DATE);
+    @Builder
+    public Contract(long aroundId, ContractSaveRequestDto contractSaveRequestDto) {
+        this.aroundId = aroundId;
+        this.exclusive = contractSaveRequestDto.getExclusive();
+        this.floor = contractSaveRequestDto.getFloor();
+        this.ho = contractSaveRequestDto.getHo();
+        this.kind = contractSaveRequestDto.getKind();
+        this.detail = contractSaveRequestDto.getDetail();
+        this.cost = contractSaveRequestDto.getCost();
+        this.monthly = contractSaveRequestDto.getMonthly();
+        this.license = contractSaveRequestDto.getLicense();
+        this.image = contractSaveRequestDto.getImage();
+        this.contractDate = contractSaveRequestDto.getContractDate();
         this.createdAt = LocalDate.now();
         this.isExpired = "N";
+    }
+
+    @Override
+    public int compareTo(Contract o) {
+        return o.contractDate.compareTo(this.contractDate);
     }
 }
