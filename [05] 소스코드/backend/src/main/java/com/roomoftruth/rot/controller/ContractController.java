@@ -186,11 +186,9 @@ public class ContractController {
     public Object getBuildingDetail(@RequestParam("type") int type, @RequestParam("num") long num) throws IOException {
         System.out.println("POST : /api/contract/confirm ");
         if (type == 0) {
-            // address 추가
-            return contractService.findById(num);
+            return contractService.findConfirmById(num);
         } else {
-            // address 추가
-            return statusService.findById(num);
+            return statusService.findConfirmById(num);
         }
     }
 

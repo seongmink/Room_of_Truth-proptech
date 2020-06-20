@@ -3,11 +3,9 @@ package com.roomoftruth.rot.service;
 import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.dto.contracts.ContractImageRequestDto;
 import com.roomoftruth.rot.dto.contracts.ContractSearchResponseDto;
+import com.roomoftruth.rot.dto.contracts.StatusConfirmResponseDto;
 import com.roomoftruth.rot.dto.contracts.StatusDetailResponseDto;
-import com.roomoftruth.rot.repository.ContractImageRepository;
-import com.roomoftruth.rot.repository.ContractSearchRepository;
-import com.roomoftruth.rot.repository.StatusDetailRepository;
-import com.roomoftruth.rot.repository.StatusRepository;
+import com.roomoftruth.rot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +21,7 @@ public class StatusService {
     private final ContractSearchRepository contractSearchRepository;
     private final ContractImageRepository contractImageRepository;
     private final StatusDetailRepository statusDetailRepository;
+    private final StatusConfirmRepository statusConfirmRepository;
 
     /**
      *  1. 상태 이력 등록하기
@@ -39,9 +38,8 @@ public class StatusService {
      * @param num
      * @return
      */
-    public Status findById(long num) {
-        Status status = statusRespository.findById(num)
-                .orElseThrow(() -> new IllegalArgumentException("해당 이력이 없습니다. statusId =" + num));
+    public StatusConfirmResponseDto findConfirmById(long num) {
+        StatusConfirmResponseDto status = statusConfirmRepository.findConfirmById(num);
         return status;
     }
 

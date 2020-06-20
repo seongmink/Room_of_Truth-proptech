@@ -1,8 +1,6 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Agent;
-import com.roomoftruth.rot.domain.Contract;
-import com.roomoftruth.rot.domain.Status;
 import com.roomoftruth.rot.domain.User;
 import com.roomoftruth.rot.dto.*;
 import com.roomoftruth.rot.repository.*;
@@ -89,15 +87,20 @@ public class AgentService {
 		List<ContributionContractResponseDto> contracts = contractContributionRepository.findByLicense(userNum);
 		List<ContributionStatusResponseDto> statuses = statusContributionRepository.findByLicense(userNum);
 
-		for (ContributionContractResponseDto c : contracts) {
-			result.add(c);
+		while (contracts.size() > 0 && statuses.size() > 0) {
+			if (contracts.get(0).getCreated_at().compareTo(statuses.get(0).getCreated_at()) > 0) {
+				result.add(contracts.remove(0));
+			} else {
+				result.add(statuses.remove(0));
+			}
 		}
 
-		for (ContributionStatusResponseDto s : statuses) {
-			result.add(s);
-		}
+		if (contracts.size() > 0)
+			result.addAll(contracts);
 
-		System.out.println(result.size());
+		if (statuses.size() > 0)
+			result.addAll(statuses);
+
 		return result;
 	}
 

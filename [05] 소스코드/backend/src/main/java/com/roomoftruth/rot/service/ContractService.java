@@ -1,10 +1,7 @@
 package com.roomoftruth.rot.service;
 
 import com.roomoftruth.rot.domain.Contract;
-import com.roomoftruth.rot.dto.contracts.ContractDetailResponseDto;
-import com.roomoftruth.rot.dto.contracts.ContractImageRequestDto;
-import com.roomoftruth.rot.dto.contracts.ContractListResponseDto;
-import com.roomoftruth.rot.dto.contracts.ContractSearchResponseDto;
+import com.roomoftruth.rot.dto.contracts.*;
 import com.roomoftruth.rot.fabric.ContractRecord;
 import com.roomoftruth.rot.fabric.IFabricCCService;
 import com.roomoftruth.rot.repository.*;
@@ -25,6 +22,7 @@ public class ContractService {
     private final ContractListRepository contractListRepository;
     private final ContractImageRepository contractImageRepository;
     private final ContractDetailRepository contractDetailRepository;
+    private final ContractConfirmRepository contractConfirmRepository;
 
     /**
      * 1. 계약 이력 등록하기
@@ -40,9 +38,8 @@ public class ContractService {
      * @param num
      * @return
      */
-    public Contract findById(long num) {
-        Contract contract = contractRepository.findById(num)
-                .orElseThrow(() -> new IllegalArgumentException("해당 이력이 없습니다. contractId =" + num));
+    public ContractConfirmResponseDto findConfirmById(long num) {
+        ContractConfirmResponseDto contract = contractConfirmRepository.findConfirmById(num);
 
         return contract;
     }
