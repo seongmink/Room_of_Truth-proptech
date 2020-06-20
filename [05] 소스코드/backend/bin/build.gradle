@@ -8,6 +8,10 @@ group = 'com.roomoftruth'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+bootJar {
+	mainClassName(com.roomoftruth.rot.RotApplication)
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
