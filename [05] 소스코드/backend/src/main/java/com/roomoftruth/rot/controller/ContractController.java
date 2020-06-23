@@ -35,7 +35,6 @@ public class ContractController {
     public String save(@RequestBody ContractSaveRequestDto contractSaveRequestDto) throws Exception {
         System.out.println("====== POST : api/contract/save");
 
-        // 전세나 매매의 경우 월세가 없다
         if (contractSaveRequestDto.getMonthly() == "" ||
                 contractSaveRequestDto.getMonthly().equals("")) {
             contractSaveRequestDto.setMonthly("0");
@@ -79,7 +78,6 @@ public class ContractController {
     public List<ContractListImageResponseDto> getAllDetails(@RequestBody ContractListRequestDto[] arounds) {
         System.out.println("====== POST : api/contract/lists");
 
-        // 해당 시도, 시군구의 모든 이력 저장
         String key = arounds[0].getSd() + " " + arounds[0].getSgg();
         List<ContractListResponseDto> contracts = contractService.findAllContractsList(key);
 
@@ -94,7 +92,6 @@ public class ContractController {
             }
         }
 
-        // 모든 이미지들 imageMap에 저장
         List<ContractImageRequestDto> contractImages = contractService.findContractImages(key);
         List<ContractImageRequestDto> statusImages = statusService.findStatusImages(key);
 
