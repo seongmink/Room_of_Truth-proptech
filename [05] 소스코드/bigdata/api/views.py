@@ -549,6 +549,44 @@ class AddAround(APIView):
         else :
             return "NO","NO"
 
+    def change_sd(self, addr_list):
+        sd = addr_list[0]
+        if "서울" in sd:
+            addr_list[0]="서울특별시"
+        elif "인천" in sd:
+            addr_list[0]="인천광역시"
+        elif "부산" in sd:
+            addr_list[0]="부산광역시"
+        elif "대구" in sd:
+            addr_list[0]="대구광역시"
+        elif "대전" in sd:
+            addr_list[0]="대전광역시"
+        elif "광주" in sd:
+            addr_list[0]="광주광역시"
+        elif "울산" in sd:
+            addr_list[0]="울산광역시"
+        elif "강원" in sd:
+            addr_list[0]="강원도"
+        elif "경기" in sd:
+            addr_list[0]="경기도"
+        elif "경남" in sd:
+            addr_list[0]="경상남도"
+        elif "경북" in sd:
+            addr_list[0]="경상북도"
+        elif "전북" in sd:
+            addr_list[0]="전라북도"
+        elif "전남" in sd:
+            addr_list[0]="전라남도"
+        elif "충남" in sd:
+            addr_list[0]="충청남도"
+        elif "충북" in sd:
+            addr_list[0]="충청북도"
+        elif "세종특별자치시" in sd:
+            addr_list[0]="세종특별자치시"
+        else:
+            addr_list[0]= "제주특별자치도"
+        return " ".join(addr_list)
+
     def post(self, request, format=None):
         if 'addr' in request.data:
             addr = request.data['addr']
@@ -556,7 +594,12 @@ class AddAround(APIView):
         else:
             return Response("road address is required", status=status.HTTP_400_BAD_REQUEST)
 
-        arnd = models.Around.objects.filter(address=addr).first()
+        # 주소
+        addr_list = addr.split(" ")
+        new_addr = self.change_sd(addr_list)
+        print('-----------------------')
+        print(new_addr)
+        arnd = models.Around.objects.filter(address=new_addr).first()
         if arnd is None:
             apiKey = "KakaoAK d975a099d11c3a17c9bef6da9adef0ec"
             headers = {
