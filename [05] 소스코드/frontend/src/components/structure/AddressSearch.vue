@@ -50,7 +50,7 @@
             <div class="row" style="margin-top:20px" >
                 <div class="col-lg-6 col-md-12 grid-layout-list mb-4" v-for="(list,index) in detail" :key="index">
 			        <div class="list-cap" style="height:310px">
-				        <div class="list-cap-list mb-4" @click="details(list.address,list.floor,list.ho)">        
+				        <div class="list-cap-list mb-4" @click="details(list.aroundId,list.floor,list.ho)">        
                             <div class="img-list" style="height:200px;">
 					            <img :src="url+list.image" alt="" style="width:353px; height:200px; max-height:initial;">
                             </div>
