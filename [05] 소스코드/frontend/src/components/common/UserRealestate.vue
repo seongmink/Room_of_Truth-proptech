@@ -73,11 +73,11 @@
                         </div>
                         <div class="row p-4" >
                                 <div class="col-md-6 mb-4" v-for="(lists, index) in list" :key="index">
-                                    <div class="listing-item-container " @click="detail(lists.address,lists.floor,lists.ho)">
+                                    <div class="listing-item-container " @click="detail(lists.aroundId,lists.floor,lists.ho)">
                                         <div class="listing-item">
                                         <div style="text-align:right;">
                                             <img :src="url+lists.image" alt="" style="width:100%; height:250px; ">
-                                            <a v-if="lists.type=='계약'" href="#" style=" background-color:#00c03f; border-color:#00c03f; margin-top:-460px; margin-right:17px " class="btn btn-sm btn-info ">계약이력</a>
+                                            <a v-if="lists.type==0" href="#" style=" background-color:#00c03f; border-color:#00c03f; margin-top:-460px; margin-right:17px " class="btn btn-sm btn-info ">계약이력</a>
                                             <a v-else href="#" style=" background-color:rgb(20, 40, 160); border-color:rgb(20, 40, 160);margin-top:-460px; margin-right:17px" class="btn btn-sm btn-info ">상태이력</a>  
                                         </div>
                                         
@@ -145,7 +145,7 @@ export default {
                     rnk: responses.data.rnk,
                     point: responses.data.point,
                     block: responses.data.count,
-                    picture: responses.data.picture
+                    picture: responses.data.user.picture
                 }
             }),
 

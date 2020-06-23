@@ -12,6 +12,7 @@ import javax.persistence.Id;
 public class ContributionContractResponseDto {
     @Id
     private long contract_id;
+    private String aroundId;
     private String address;
     private String floor;
     private String ho;

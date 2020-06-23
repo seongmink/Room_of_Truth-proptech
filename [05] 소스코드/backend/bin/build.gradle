@@ -9,7 +9,9 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 bootJar {
-	mainClassName(com.roomoftruth.rot.RotApplication)
+	manifest{
+		attributes 'Start-Class' : 'com.roomoftruth.rot.RotApplication'
+	}
 }
 
 configurations {

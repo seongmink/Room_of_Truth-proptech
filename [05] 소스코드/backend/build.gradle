@@ -10,7 +10,7 @@ sourceCompatibility = '1.8'
 
 bootJar {
 	archiveBaseName = 'rot'
-	archiveFileName = 'RoomOfTruth.jar'
+	archiveFileName = "rot-start.jar"
 	archiveVersion = "1.0.0"
 }
 

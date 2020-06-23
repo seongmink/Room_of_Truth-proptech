@@ -32,10 +32,9 @@ public class ContractController {
      */
     @PostMapping("/contract/save")
     @ApiOperation("계약 이력 등록하기")
-    public String save(@RequestBody ContractSaveRequestDto contractSaveRequestDto) throws Exception {
+    public Long save(@RequestBody ContractSaveRequestDto contractSaveRequestDto) throws Exception {
         System.out.println("====== POST : api/contract/save");
 
-        // 전세나 매매의 경우 월세가 없다
         if (contractSaveRequestDto.getMonthly() == "" ||
                 contractSaveRequestDto.getMonthly().equals("")) {
             contractSaveRequestDto.setMonthly("0");
@@ -46,7 +45,7 @@ public class ContractController {
         Contract contract = new Contract(aroundId, contractSaveRequestDto);
         Contract result = contractService.saveContract(contract);
         agentService.pointUp(contract.getLicense());
-        return String.valueOf(result.getContractId());
+        return result.getContractId();
     }
 
     /**
@@ -79,7 +78,6 @@ public class ContractController {
     public List<ContractListImageResponseDto> getAllDetails(@RequestBody ContractListRequestDto[] arounds) {
         System.out.println("====== POST : api/contract/lists");
 
-        // 해당 시도, 시군구의 모든 이력 저장
         String key = arounds[0].getSd() + " " + arounds[0].getSgg();
         List<ContractListResponseDto> contracts = contractService.findAllContractsList(key);
 
@@ -87,8 +85,6 @@ public class ContractController {
 
         for (ContractListRequestDto request : arounds) {
             for (ContractListResponseDto dto : contracts) {
-                System.out.println("longitude : " + dto.getLongitude() + ", latitude : " + dto.getLatitude());
-                System.out.println("Request : " + request.getLongitude() + ", " + request.getLatitude());
                 if (dto.getLongitude().contains(request.getLongitude()) &&
                         dto.getLatitude().contains(request.getLatitude())) {
                     result.add(new ContractListImageResponseDto(dto));
@@ -96,7 +92,6 @@ public class ContractController {
             }
         }
 
-        // 모든 이미지들 imageMap에 저장
         List<ContractImageRequestDto> contractImages = contractService.findContractImages(key);
         List<ContractImageRequestDto> statusImages = statusService.findStatusImages(key);
 

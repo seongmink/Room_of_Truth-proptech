@@ -15,7 +15,7 @@
                     <div style="margin-top:60px;">
                         <div v-if="datadetail!=null&&datadetail.category==null" style="border:1px solid #EAEAEA">
                         <div style="margin-top:30px;">
-                            <h4 class="mb-3">{{datadetail.contract_date}}</h4>
+                            <h4 class="mb-3">{{datadetail.contractDate}}</h4>
                             <div style="margin-top:-20px; margin-bottom:50px">
                                 <h3><span style="background-color:#B7F0B1; color:#00c03f;" class="badge badge-pill badge-danger text-uppercase">계약이력</span> </h3>
                             </div>
@@ -134,7 +134,9 @@
 import {getUserBlockDetails} from "../../api/item.js";
 import { getUrl } from "../../api/index.js";
 import TitleBar from '../common/TitleBar';
-import { addAround } from "../../api/item.js";
+
+import { deletAround } from "../../api/item.js";
+
 export default {
    
   components:{
@@ -156,6 +158,12 @@ export default {
              
    },
    created(){
+        // // addAround("세종특별자치시 마음로 67", responses=>{
+               
+        // //         })
+        //           deletAround(94360, responses=>{
+               
+        //         })
       this.url = getUrl();
       this.num = this.$route.query.num;
       this.type = this.$route.query.type;
@@ -163,13 +171,9 @@ export default {
          this.type=null;
       }
       getUserBlockDetails(this.num, this.type, responses=>{
-
+     
          this.datadetail = responses.data;  
-          
-                addAround(this.datadetail.address, responses=>{
-               
-                })
-                
+    
       })
     
    },

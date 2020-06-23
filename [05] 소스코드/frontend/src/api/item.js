@@ -12,18 +12,19 @@ function addBuliding(info, success) {
     formData.append('flag', 0);
     formData.append('num', -1);
     if(info.file==null){
+       
          //이미지전송
          instance
          .post("/api/uploadNull/", formData)
          .then(Response => {
            
-
              info.image = Response.data
         
 
              instance
              .post("/api/contract/save", info)
              .then(function (Response)  {
+      
                      success(Response);
                      formData.append('num', Response.data);
                      formData.append('flag', 0);
@@ -145,8 +146,7 @@ function getrecord(city,local,success) {
     instance
         .get("/api/contract/search/?city="+city+"&local="+local)
         .then(function (response) {
-            console.log("조회하기시 모든이력")
-            console.log(response.data)
+        
             success(response.data)
         })
         .catch(error => {
@@ -156,11 +156,13 @@ function getrecord(city,local,success) {
 
 //클러스터 클릭시 미리보기 정보 불러오기
 function getdetailrecord(building, success) {
-
+ 
     instance
         .post("/api/contract/lists/", building)
         .then(function (response) {
+            
             success(response.data)
+            
 
         })
         .catch(error => {
@@ -170,14 +172,15 @@ function getdetailrecord(building, success) {
 
 
 function getblockDetail(address, floor, ho, success) {
-
+  
     instance
         .post("/api/contract/detail", {
-            address: address,
+            aroundId: address,
             floor: floor,
             ho: ho
         })
         .then(function (response) {
+     
             success(response.data)
         })
         .catch(error => {
@@ -388,11 +391,29 @@ function getUserBlockDetail(num, type, success) {
             })
         }
 
-        function addAround(address,success) {
+        function addAround(addr,success) {
+            var info={
+                addr : addr
+            }
+
+            instancepython
+                .post("/around/", info)
+                .then(function (response) {
+             
+                    //-1이면 위도경도가없는것, -2면 카테코기를 ap에서 못불러온것 -3면 arrond저장할때 오류가난것 성공하면 aroudid를준다
+                    success(response.data)
+                })
+                .catch(error => {
+                    console.log(error);
+            })
+        }
+        function deletAround(address,success) {
        
             instancepython
-                .get("/around/?addr="+address)
+                .delete("/around/"+address)
                 .then(function (response) {
+                 
+                   
                     success(response.data)
                 })
                 .catch(error => {
@@ -415,6 +436,18 @@ function getUserBlockDetail(num, type, success) {
             instancepython
             .get("/search/?keyword="+keyword+"&page="+page)
             .then(function (response) {
+                success(response.data)
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        }
+        function getUserLike(addressId, num, success) {
+         
+        instance
+            .get("/api/favorite/read/"+addressId+"/"+num)
+            .then(function (response) {
+            
                 success(response.data)
             })
             .catch(error => {
@@ -445,5 +478,7 @@ export {
     getUserBlockDetails,
     getAddressSearch,
     plusAddressSearch,
+    getUserLike,
+    deletAround
     
 };
