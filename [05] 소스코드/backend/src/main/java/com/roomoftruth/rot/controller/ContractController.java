@@ -32,7 +32,7 @@ public class ContractController {
      */
     @PostMapping("/contract/save")
     @ApiOperation("계약 이력 등록하기")
-    public String save(@RequestBody ContractSaveRequestDto contractSaveRequestDto) throws Exception {
+    public Long save(@RequestBody ContractSaveRequestDto contractSaveRequestDto) throws Exception {
         System.out.println("====== POST : api/contract/save");
 
         if (contractSaveRequestDto.getMonthly() == "" ||
@@ -45,7 +45,7 @@ public class ContractController {
         Contract contract = new Contract(aroundId, contractSaveRequestDto);
         Contract result = contractService.saveContract(contract);
         agentService.pointUp(contract.getLicense());
-        return String.valueOf(result.getContractId());
+        return result.getContractId();
     }
 
     /**
