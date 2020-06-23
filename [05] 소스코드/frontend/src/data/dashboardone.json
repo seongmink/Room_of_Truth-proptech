@@ -1,0 +1,66 @@
+{
+	"data": {
+			"bannerTitle": "Find Nearby Attractions",
+			"bannerDesc" : "Expolore top-rated attractions, activities and more",
+			"bannerImage": "/static/images/main-search-background-01.jpg",
+
+
+			"categories":[
+								{
+									"title": "군산시 서수면 동군산로 1142",
+									"subTitle" : "1층",
+									"image": "/static/b1.jpg",
+									"icon": "fa-2x fa fa-bed"
+								},
+								{
+									"title": "군산시 서수면 동군산로 1142",
+									"subTitle" : "1층",
+									"image": "/static/b1.jpg",
+									"icon": "fa-2x fa fa-shopping-bag"
+								},
+								{
+									"title": "군산시 서수면 동군산로 1142",
+									"subTitle" : "1층",
+									"image": "/static/b1.jpg",
+									"icon": "fa-2x fa fa-calendar"
+								},
+								{
+									"title": "군산시 서수면 동군산로 1142",
+									"subTitle" : "1층",
+									"image": "/static/b2.jpg",
+									"icon": "fa-2x fa fa-glass"
+								},
+								{
+									"title": "군산시 서수면 동군산로 1142",
+									"subTitle" : "1층",
+									"image": "/static/b2.jpg",
+									"icon": "fa-2x fa fa-glass"
+								},
+								{
+									"title": "군산시 서수면 동군산로 1142",
+									"subTitle" : "1층",
+									"image": "/static/b2.jpg",
+									"icon":"fa-2x fa fa-glass"
+								},
+								{
+									"title": "군산시 서수면 동군산로 1142",
+									"subTitle" : "1층",
+									"image": "/static/b3.jpg",
+									"icon": "fa-2x fa fa-glass"
+								},
+								{
+									"title": "군산시 서수면 동군산로 1142",
+									"subTitle" : "1층",
+									"image": "/static/b3.jpg",
+									"icon": "fa-2x fa fa-glass"
+								},
+								{
+									"title": "군산시 서수면 동군산로 1142",
+									"subTitle" : "1층",
+									"image": "/static/b3.jpg",
+									"icon":"fa-2x fa fa-glass"
+								}
+							]
+			
+	}
+}

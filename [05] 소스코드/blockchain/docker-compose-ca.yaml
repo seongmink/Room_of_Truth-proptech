@@ -1,0 +1,19 @@
+version: "2"
+networks:
+  rot:
+
+services:
+  ca.estate1.rot.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.estate1.rot.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.estate1.rot.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/3b561903262f39b99d9e18f24d197817fa9a0ca3af3c832866b34989b07a0409_sk
+
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpwd -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/estate1.rot.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.estate1.rot.com

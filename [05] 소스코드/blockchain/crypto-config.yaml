@@ -1,0 +1,20 @@
+OrdererOrgs: #정렬 노드의 조직 정의
+  - Name: Orderer #정렬 노드 이름
+    Domain: rot.com # 정렬 노드의 루트
+    Specs:
+      - Hostname: orderer
+
+PeerOrgs: #피어 노드의 조직 정의
+  - Name: Estate1 #피어 노드의 조직1의 이름
+    Domain: estate1.rot.com # 피어 노드의 조직1의 도메인
+    Template:
+      Count: 2 #조직의 노드 수
+    Users:
+      Count: 1 #조직의 사용자 수
+  - Name: Estate2
+    Domain: estate2.rot.com
+    # EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1

@@ -1,0 +1,60 @@
+Organizations:
+
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererOrg
+        MSPDir: crypto-config/ordererOrganizations/rot.com/msp
+
+    - &Estate1Org
+        Name: Estate1Org
+        ID: Estate1Org
+        MSPDir: crypto-config/peerOrganizations/estate1.rot.com/msp  
+        AnchorPeers:
+            - Host: peer0.estate1.rot.com
+              Port: 7051
+    - &Estate2Org
+        Name: Estate2Org
+        ID: Estate2Org
+        MSPDir: crypto-config/peerOrganizations/estate2.rot.com/msp  
+        AnchorPeers:
+            - Host: peer0.estate2.rot.com
+              Port: 7051
+              
+
+Orderer: &OrdererDefaults
+
+    OrdererType: solo
+    Addresses:
+        - orderer.rot.com:7050
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Kafka:
+        Brokers:
+            - 127.0.0.1:9092
+    Organizations:
+
+Application: &ApplicationDefaults
+    Organizations:
+
+Profiles:
+
+    OrdererGenesis:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Estate1Org
+                    - *Estate2Org
+    Channel1:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Estate1Org
+                - *Estate2Org

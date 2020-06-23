@@ -1,0 +1,42 @@
+{
+	"data" : [
+		{
+			"address"  : "군산시 서수면 동군산로 1142",
+			"image"    : "/static/b1.jpg",
+			"dong"   : "103",
+			"ho"   : "204"
+		},
+		{
+			"address"  : "부산 강서구 가달1로 7",
+			"image"    : "/static/b6.jpg",
+			"dong"   : "",
+			"ho"   : "204"
+		},
+		{
+			"address"  : "대구 남구 경상길 10",
+			"image"    : "/static/b3.jpg",
+			"dong"   : "102",
+			"ho"   : "205"
+		},
+		{
+			"address"  : "서울특별시 남구 경상길 동군산로10",
+			"image"    : "/static/b4.jpg",
+			"dong"   : "302",
+			"ho"   : "202"
+		},
+		{
+			"address"  : "전북 군산시 서수면 동군산로 861",
+			"image"    : "/static/b5.jpg",
+			"dong"   : "",
+			"ho"   : "203"
+		},
+		{
+			"address"  : "전라북도 남구 경상길 10",
+			"image"    : "/static/b6.jpg",
+			"dong"   : "103",
+			"ho"   : "208"
+		}
+
+
+	]
+}

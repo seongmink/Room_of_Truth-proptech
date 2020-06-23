@@ -1,0 +1,52 @@
+{
+	"data": {
+			
+			"places":[
+						{
+							"point"    : "890",
+							"rnk" : "1",
+							"agentName"    : "우동이중개사무소",
+							"name"  : "장우영",
+							"apicture"    : "/static/b1.jpg"
+
+						},
+						{
+							"point"    : "890",
+							"rnk" : "2",
+							"agentName"    : "우동이중개사무소2",
+							"name"  : "장우영",
+							"apicture"    : "/static/b2.jpg"
+
+						},
+						{
+							"point"    : "890",
+							"rnk" : "3",
+							"agentName"    : "우동이중개사무소3",
+							"name"  : "장우영",
+							"apicture"    : "/static/b3.jpg"
+
+						},
+						{
+							"point"    : "890",
+							"rnk" : "4",
+							"agentName"    : "우동이중개사무소4",
+							"name"  : "장우영",
+							"apicture"    : "/static/b1.jpg"
+
+						},
+						{
+							"point"    : "890",
+							"rnk" : "5",
+							"agentName"    : "우동이중개사무소5",
+							"name"  : "장우영",
+							"apicture"    : "/static/b2.jpg"
+
+						}
+						
+						
+						
+					]
+
+		
+	}
+}
