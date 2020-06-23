@@ -77,12 +77,12 @@
                         </div>
                         <div class="row p-4" >
                                 <div class="col-md-6 mb-4" v-for="(list, index) in list" :key="index">
-                                    <div class="listing-item-container " @click="detail(list.address,list.floor,list.ho)">
+                                    <div class="listing-item-container " @click="detail(list.aroundId,list.floor,list.ho)">
                                         <div class="listing-item">
                                         <div style="text-align:right;">
                                         
                                         <img :src="url+list.image" alt="" style="width:100%; height:250px">
-                                        <a v-if="list.type=='계약'" href="#" style=" background-color:#00c03f; border-color:#00c03f; margin-top:-460px; margin-right:17px " class="btn btn-sm btn-info ">계약이력</a>
+                                        <a v-if="list.type==0" href="#" style=" background-color:#00c03f; border-color:#00c03f; margin-top:-460px; margin-right:17px " class="btn btn-sm btn-info ">계약이력</a>
                                         <a v-else href="#" style=" background-color:rgb(20, 40, 160); border-color:rgb(20, 40, 160);margin-top:-460px; margin-right:17px" class="btn btn-sm btn-info ">상태이력</a>   
                                         </div>
                                         <div class="listing-item-content" style="height:100px;">
@@ -217,8 +217,8 @@ export default {
                     picture: responses.data.picture
                 }
             })
+        
             getUserBlock(this.$store.state.userInfo.num, responses=>{
-           
         
                 this.data = responses.data
                 if(this.data.length==0){

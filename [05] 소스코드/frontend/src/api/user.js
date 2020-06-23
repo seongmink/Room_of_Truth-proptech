@@ -125,7 +125,7 @@ function getRealestateInfo(num, success) {
     instance
         .get("/api/agent/detail/" + num)
         .then(function (response) {
-
+        
             success(response)
 
         })

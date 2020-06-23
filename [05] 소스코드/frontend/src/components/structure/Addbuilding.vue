@@ -247,7 +247,7 @@ import { addStateBuliding } from "../../api/item.js";
 import {mapState} from 'vuex';
 import VueGoogleAutocomplete from 'vue-google-autocomplete'
 import TitleBar from '../common/TitleBar';
-
+import { addAround } from "../../api/item.js";
 
 export default {
    
@@ -432,22 +432,24 @@ export default {
                      info.image = this.file.name;
                   }
                   var n = '';
+                  addAround(this.address, responses=>{
+                
                   addBuliding(info,responses => {
-                     
-                    
+                     console.log(responses)
                      n = responses.data
+                     this.show = true;
+                     setTimeout(() => {
+                        alert("등록이 완료되었습니다.")
+                           this.$router.push({name : 'ConfirmBuilding', query:{
+                              num: n,
+                              type:0
+                           }});
+                     }, 2000);  
                 
                   });
            
-                  
-                  this.show = true;
-                   setTimeout(() => {
-                      alert("등록이 완료되었습니다.")
-                        this.$router.push({name : 'ConfirmBuilding', query:{
-                           num: n,
-                           type:0
-			               }});
-                  }, 2000);  
+                  })
+                
                },
 
                statesubmit(){
@@ -459,8 +461,8 @@ export default {
                   "ho" : this.address3,
                   "category" : this.stateselecteds,
                   "cost" : this.cost,
-                  "start_date" : this.statedate,
-                  "end_date" : this.statedate,
+                  "startDate" : this.statedate,
+                  "endDate" : this.statedate,
                   "detail" : this.detail,
                   "file" :  this.file,
                   "image" :  this.file,
@@ -473,22 +475,24 @@ export default {
                   }
                  
                    var n = '';
-                  
+                  addAround(this.address, responses=>{
+                   
                    addStateBuliding(info,responses => {
-                      
+                 
                        n = responses.data
+                        this.show = true;
+                        setTimeout(() => {
+                           alert("등록이 완료되었습니다.")
+                              this.$router.push({name : 'ConfirmBuilding', query:{
+                                 num: n,
+                                 type:1
+                              }});
+                        }, 2000);
                       
                   });
+                  })
 
                   
-                  this.show = true;
-                   setTimeout(() => {
-                      alert("등록이 완료되었습니다.")
-                        this.$router.push({name : 'ConfirmBuilding', query:{
-                           num: n,
-                           type:1
-			               }});
-                   }, 2000);
                },
                togle(){
                   this.address = '';

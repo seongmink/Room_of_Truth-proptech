@@ -126,7 +126,7 @@
                         </div>
                         <div v-else style="border:1px solid #EAEAEA">
                             <div style="margin-top:30px;">
-                            <h4 class="mb-3">{{datadetail.contractDate}} ~ {{datadetail.endDate}}</h4>
+                            <h4 class="mb-3">{{datadetail.startDate}} ~ {{datadetail.endDate}}</h4>
                             <div style="margin-top:-20px;margin-bottom:50px;">
                                <h3><span style="background-color:#B2CCFF; color:#1428A0;" class="badge badge-pill badge-danger text-uppercase">상태이력</span> </h3>
                             </div>
@@ -217,6 +217,7 @@ import { getblockDetail } from "../../api/item.js";
 import { getUrl } from "../../api/index.js";
 import { analysis } from "../../api/item.js";
 import { getEvaluation } from "../../api/item.js";
+import { getUserLike } from "../../api/item.js";
 
 import Chart from 'chart.js'
 import TitleBar from '../common/TitleBar';
@@ -226,11 +227,11 @@ export default {
         this.url = getUrl();
         getblockDetail(this.$route.query.address, this.$route.query.floor, this.$route.query.ho, response => {    
          
-           
+       
             this.blist = response;
             this.center = {lat:this.blist[0].latitude, lng:this.blist[0].longitude}        
             
-    
+            
             var moveLatLon = new kakao.maps.LatLng(this.blist[0].latitude, this.blist[0].longitude);
   
             var imageSrc = '/static/marker.png'; // 마커이미지의 주소입니다    
@@ -607,6 +608,10 @@ export default {
                     if(this.$store.state.userInfo==null){
                         alert("로그인을 해주세요!")
                     }else{
+
+                        getUserLike(this.blist[0].aroundId, this.$store.state.userInfo.num ,response=>{
+                            this.mylike = response;
+                        })
                         this.$bvModal.show('modal-7')	
                     }
                 }

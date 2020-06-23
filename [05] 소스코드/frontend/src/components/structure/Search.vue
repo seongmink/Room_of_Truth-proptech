@@ -64,7 +64,7 @@
             <div class="row" style="margin-top:20px" >
                 <div class="col-lg-6 col-md-12 grid-layout-list mb-4" v-for="(list,index) in data" :key="index">
 			        <div class="list-cap" style="height:310px">
-				        <div class="list-cap-list mb-4" @click="detail(list.address,list.floor,list.ho)">        
+				        <div class="list-cap-list mb-4" @click="detail(list.aroundId,list.floor,list.ho)">        
                             <div class="img-list" style="height:200px;">
 					            <img :src="url+list.image" alt="" style="width:353px; height:200px; max-height:initial;">
                             </div>
@@ -311,7 +311,7 @@ export default {
                     //센터 좌표 구하고 마커표시
                     var geocoder = new kakao.maps.services.Geocoder()
                     geocoder.addressSearch(this.locationSelect+" "+this.locationSelect2, (result, status)=> {
-    
+                        
                       // 위도 경도 불러오기
                       if (status === kakao.maps.services.Status.OK) {
                       
@@ -345,7 +345,7 @@ export default {
                     
                         }); 
                         //호이스팅 문제해결
-                        for (var i = 0; i < this.recode.length; i ++) {
+                        for (let i = 0; i < this.recode.length; i ++) {
 
                             var coords = new kakao.maps.LatLng(this.recode[i].latitude, this.recode[i].longitude);
                             let marker = new kakao.maps.Marker({//호이스팅해결
@@ -361,16 +361,21 @@ export default {
                                 this.send = [];
                                 this.data =null;
                                 
-                                this.send[0] = {latitude:marker.getPosition().Ha.toFixed(10),
-                                longitude:marker.getPosition().Ga.toFixed(10),
+                                this.send[0] = {latitude:(marker.getPosition().Ha+"").substring(0,11),
+                                longitude:(marker.getPosition().Ga+"").substring(0,11),
                                 sd:this.locationSelect,
                                 sgg:this.locationSelect2};
+           
+                                // this.send[0] = {aroundId:this.recode[i].aroundId,
+                                // sd:this.locationSelect,
+                                // sgg:this.locationSelect2};
+        
                   
                                 //이력 미리보기
                                 getdetailrecord(this.send, response => {
                                  
                                     this.data = response;
-                           
+                                   // console.log(this.data)
                            
                                 })
                              });
@@ -385,17 +390,24 @@ export default {
                             this.send = [];
                             this.data =null;
                             for(var idx=0; idx<markers.length; idx++){
-                                this.send[idx] = {latitude:markers[idx].getPosition().Ha.toFixed(10),
-                                longitude:markers[idx].getPosition().Ga.toFixed(10),
+                                this.send[idx] = {latitude:(markers[idx].getPosition().Ha+"").substring(0,11),
+                                longitude:(markers[idx].getPosition().Ga+"").substring(0,11),
                                 sd:this.locationSelect,
                                 sgg:this.locationSelect2};
                             }
+                            // console.log(markers)
+                            // for(var idx=0; idx<markers.length; idx++){
+                            //     this.send[idx] = {aroundId:this.recode[idx].aroundId,
+                            //     sd:this.locationSelect,
+                            //     sgg:this.locationSelect2};
+                            // }
                   
 
                             this.dataImage = null;
                             getdetailrecord(this.send, response => {
                             
                                 this.data = response;
+                                //console.log(this.data)
                 
                             })
         
