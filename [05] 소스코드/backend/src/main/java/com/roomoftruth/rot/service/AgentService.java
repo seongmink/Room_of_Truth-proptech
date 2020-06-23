@@ -77,7 +77,6 @@ public class AgentService {
 		Agent agent = agentRepository.getAgentByUserNum(num);
 
 		AgentDetailResponseDto result = new AgentDetailResponseDto(agent);
-		System.out.println(result.toString());
 		return result;
 	}
 

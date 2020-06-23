@@ -87,8 +87,6 @@ public class ContractController {
 
         for (ContractListRequestDto request : arounds) {
             for (ContractListResponseDto dto : contracts) {
-                System.out.println("longitude : " + dto.getLongitude() + ", latitude : " + dto.getLatitude());
-                System.out.println("Request : " + request.getLongitude() + ", " + request.getLatitude());
                 if (dto.getLongitude().contains(request.getLongitude()) &&
                         dto.getLatitude().contains(request.getLatitude())) {
                     result.add(new ContractListImageResponseDto(dto));
